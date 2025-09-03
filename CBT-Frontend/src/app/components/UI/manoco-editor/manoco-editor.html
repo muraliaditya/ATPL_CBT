@@ -1,0 +1,16 @@
+<div class="code-editor">
+  <ngx-monaco-editor
+    style="height: 100%"
+    [options]="editorOptions"
+    [(ngModel)]="code"
+  >
+  </ngx-monaco-editor>
+</div>
+<div>
+  <button (click)="toggletheme()">toggle</button>
+  <h1 (click)="changeEditorOptions('cpp')">cpp</h1>
+  <h2 (click)="changeEditorOptions('c')">c</h2>
+  <h1 (click)="changeEditorOptions('python')">python</h1>
+  <h2 (click)="changeEditorOptions('javascript')">js</h2>
+  <h2 (click)="changeEditorOptions('java')">java</h2>
+</div>
