@@ -1,4 +1,8 @@
-<div class="h-[100vh] w-full flex items-center justify-center gap-5 p-5">
+<div
+  class="h-[100vh] w-full flex relative items-center justify-center gap-5 p-5"
+>
+  <p-toast />
+
   <form
     [formGroup]="userForm"
     class="w-[400px] p-5 rounded-lg h-[400px] shadow-lg flex flex-col gap-5 items-center justify-between"
@@ -32,7 +36,7 @@
 
       <p-floatlabel variant="on" class="w-full">
         <input
-          formControlName="collegeRegNo"
+          formControlName="collegeRollNo"
           pInputText
           class="w-full"
           id="college_reg_no"
@@ -43,12 +47,12 @@
         <label for="college_reg_no">College Registration No</label>
         <div
           *ngIf="
-            userForm.controls['collegeRegNo'].invalid &&
-            userForm.controls['collegeRegNo'].touched
+            userForm.controls['collegeRollNo'].invalid &&
+            userForm.controls['collegeRollNo'].touched
           "
           class="text-red-400 font-medium text-sm text-left"
         >
-          <div *ngIf="userForm.controls['collegeRegNo'].errors?.['required']">
+          <div *ngIf="userForm.controls['collegeRollNo'].errors?.['required']">
             college Regd no is required
           </div>
         </div>
