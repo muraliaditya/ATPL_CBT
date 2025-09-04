@@ -3,6 +3,10 @@ package com.aaslin.cbt.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 public class CodingSubmissionDetailsId implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -13,22 +17,6 @@ public class CodingSubmissionDetailsId implements Serializable {
 	
 	public CodingSubmissionDetailsId(String codingQuestionId, String codingSubmissionId) {
 		this.codingQuestionId = codingQuestionId;
-		this.codingSubmissionId = codingSubmissionId;
-	}
-	
-	public String getCodingQuestionId() {
-		return codingQuestionId;
-	}
-	
-	public void setCodingQuestionId(String codingQuestionId) {
-		this.codingQuestionId = codingQuestionId;
-	}
-	
-	public String getCodingSubmissionId() {
-		return codingSubmissionId;
-	}
-	
-	public void setCodingSubmissionId(String codingSubmissionId) {
 		this.codingSubmissionId = codingSubmissionId;
 	}
 	

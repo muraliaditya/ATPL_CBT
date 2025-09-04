@@ -10,9 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "testcases")
+@Getter
+@Setter
 public class TestCases {
 
     @Id
@@ -52,93 +56,12 @@ public class TestCases {
     @JoinColumn(name = "coding_question_id", insertable = false, updatable = false)
     private CodingQuestion codingQuestion;
     
-    // Getters and Setters
-    public String getTestcaseId() {
-        return testcaseId;
-    }
-
-    public void setTestcaseId(String testcaseId) {
-        this.testcaseId = testcaseId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getInput1() {
-        return input1;
-    }
-
-    public void setInput1(String input1) {
-        this.input1 = input1;
-    }
-
-    public String getInput2() {
-        return input2;
-    }
-
-    public void setInput2(String input2) {
-        this.input2 = input2;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public void setOutput(String output) {
-        this.output = output;
-    }
-
     public TestcaseType getTestcaseType() {
         return testcaseType;
     }
 
     public void setTestcaseType(TestcaseType testcaseType) {
         this.testcaseType = testcaseType;
-    }
-
-    public int getWeightage() {
-        return weightage;
-    }
-
-    public void setWeightage(int weightage) {
-        this.weightage = weightage;
-    }
-
-    public BigDecimal getExecutionTimeLimit() {
-        return executionTimeLimit;
-    }
-
-    public void setExecutionTimeLimit(BigDecimal executionTimeLimit) {
-        this.executionTimeLimit = executionTimeLimit;
-    }
-
-    public Long getMemoryLimit() {
-        return memoryLimit;
-    }
-
-    public void setMemoryLimit(Long memoryLimit) {
-        this.memoryLimit = memoryLimit;
-    }
-
-    public String getCodingQuestionId() {
-        return codingQuestionId;
-    }
-
-    public void setCodingQuestionId(String codingQuestionId) {
-        this.codingQuestionId = codingQuestionId;
-    }
-    
-    public CodingQuestion getCodingQuestion() {
-        return codingQuestion;
-    }
-
-    public void setCodingQuestion(CodingQuestion codingQuestion) {
-        this.codingQuestion = codingQuestion;
     }
 
     public enum TestcaseType {

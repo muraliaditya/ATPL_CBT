@@ -11,10 +11,14 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "coding_submission_details")
 @IdClass(CodingSubmissionDetailsId.class)
+@Getter
+@Setter
 public class CodingSubmissionDetails {
 	
 	@Id
@@ -56,22 +60,6 @@ public class CodingSubmissionDetails {
 	@JoinColumn(name = "coding_submission_id", insertable = false, updatable = false)
 	private Submissions submission;
 	
-	// Getters and Setters
-	public String getCodingQuestionId() {
-		return codingQuestionId;
-	}
-	
-	public void setCodingQuestionId(String codingQuestionId) {
-		this.codingQuestionId = codingQuestionId;
-	}
-	
-	public String getCodingSubmissionId() {
-		return codingSubmissionId;
-	}
-	
-	public void setCodingSubmissionId(String codingSubmissionId) {
-		this.codingSubmissionId = codingSubmissionId;
-	}
 	
 	public Language getLanguage() {
 		return language;
@@ -79,54 +67,6 @@ public class CodingSubmissionDetails {
 	
 	public void setLanguage(Language language) {
 		this.language = language;
-	}
-	
-	public int getScore() {
-		return score;
-	}
-	
-	public void setScore(int score) {
-		this.score = score;
-	}
-	
-	public String getTestcasesPassed() {
-		return testcasesPassed;
-	}
-	
-	public void setTestcasesPassed(String testcasesPassed) {
-		this.testcasesPassed = testcasesPassed;
-	}
-	
-	public String getCode() {
-		return code;
-	}
-	
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
-	public boolean isFinal() {
-		return isFinal;
-	}
-	
-	public void setFinal(boolean isFinal) {
-		this.isFinal = isFinal;
-	}
-	
-	public String getStatus() {
-		return status;
-	}
-	
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	public LocalDateTime getSubmittedAt() {
-		return submittedAt;
-	}
-	
-	public void setSubmittedAt(LocalDateTime submittedAt) {
-		this.submittedAt = submittedAt;
 	}
 	
 	public CodingQuestion getCodingQuestion() {

@@ -9,9 +9,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "submissions")
+@Getter
+@Setter
 public class Submissions {
 	
 	@Id
@@ -50,63 +54,6 @@ public class Submissions {
 	
 	@OneToMany(mappedBy = "submission", cascade = jakarta.persistence.CascadeType.ALL)
 	private List<CodingSubmissionDetails> codingSubmissionDetails;
-	
-	// Getters and Setters
-	public String getSubmissionId() {
-		return submissionId;
-	}
-	
-	public void setSubmissionId(String submissionId) {
-		this.submissionId = submissionId;
-	}
-	
-	public String getContestId() {
-		return contestId;
-	}
-	
-	public void setContestId(String contestId) {
-		this.contestId = contestId;
-	}
-	
-	public String getUserId() {
-		return userId;
-	}
-	
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	
-	public String getMcqSubmissionId() {
-		return mcqSubmissionId;
-	}
-	
-	public void setMcqSubmissionId(String mcqSubmissionId) {
-		this.mcqSubmissionId = mcqSubmissionId;
-	}
-	
-	public String getCodingSubmissionId() {
-		return codingSubmissionId;
-	}
-	
-	public void setCodingSubmissionId(String codingSubmissionId) {
-		this.codingSubmissionId = codingSubmissionId;
-	}
-	
-	public int getTotalCodingScore() {
-		return totalCodingScore;
-	}
-	
-	public void setTotalCodingScore(int totalCodingScore) {
-		this.totalCodingScore = totalCodingScore;
-	}
-	
-	public int getTotalMcqScore() {
-		return totalMcqScore;
-	}
-	
-	public void setTotalMcqScore(int totalMcqScore) {
-		this.totalMcqScore = totalMcqScore;
-	}
 	
 	public Contest getContest() {
 		return contest;

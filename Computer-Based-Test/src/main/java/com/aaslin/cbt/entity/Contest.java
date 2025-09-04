@@ -14,9 +14,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "contests")
+@Getter
+@Setter
 public class Contest {
 	
 	@Id
@@ -64,88 +68,6 @@ public class Contest {
 	
 	@OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
 	private List<Submissions> submissions;
-	
-	// Getters and Setters
-	public String getContestId() {
-		return contestId;
-	}
-	
-	public void setContestId(String contestId) {
-		this.contestId = contestId;
-	}
-	
-	public String getContestName() {
-		return contestName;
-	}
-	
-	public void setContestName(String contestName) {
-		this.contestName = contestName;
-	}
-	
-	public Status getStatus() {
-		return status;
-	}
-	
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-	
-	public String getAllowedCollegeId() {
-		return allowedCollegeId;
-	}
-	
-	public void setAllowedCollegeId(String allowedCollegeId) {
-		this.allowedCollegeId = allowedCollegeId;
-	}
-	
-	public LocalDateTime getStartTime() {
-		return startTime;
-	}
-	
-	public void setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
-	}
-	
-	
-	public LocalDateTime getEndTime() {
-		return endTime;
-	}
-	
-	public void setEndTime(LocalDateTime endTime) {
-		this.endTime = endTime;
-	}
-	
-	public LocalTime getDuration() {
-		return duration;
-	}
-	
-	public void setDuration(LocalTime duration) {
-		this.duration = duration;
-	}
-	
-	public int getTotalMcqQuestions() {
-		return totalMcqQuestions;
-	}
-	
-	public void setTotalMcqQuestions(int totalMcqQuestions) {
-		this.totalMcqQuestions = totalMcqQuestions;
-	}
-	
-	public int getTotalCodingQuestions() {
-		return totalCodingQuestions;
-	}
-	
-	public void setTotalCodingQuestions(int totalCodingQuestions) {
-		this.totalCodingQuestions = totalCodingQuestions;
-	}
-	
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
 	
 	public User getCreator() {
 		return creator;

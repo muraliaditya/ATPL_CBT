@@ -11,9 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "coding_questions")
+@Getter
+@Setter
 public class CodingQuestion {
 	
 	@Id
@@ -50,61 +54,12 @@ public class CodingQuestion {
 	@OneToMany(mappedBy = "codingQuestion", cascade = jakarta.persistence.CascadeType.ALL)
 	private List<CodingSubmissionDetails> codingSubmissionDetails;
 	
-	// Getters and Setters
-	public String getCodingQuestionId() {
-		return codingQuestionId;
-	}
-	
-	public void setCodingQuestionId(String codingQuestionId) {
-		this.codingQuestionId = codingQuestionId;
-	}
-	
-	public String getQuestion() {
-		return question;
-	}
-	
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-	
-	public String getContestId() {
-		return contestId;
-	}
-	
-	public void setContestId(String contestId) {
-		this.contestId = contestId;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
 	public Difficulty getDifficulty() {
 		return difficulty;
 	}
 	
 	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
-	}
-	
-	public String getInputType() {
-		return inputType;
-	}
-	
-	public void setInputType(String inputType) {
-		this.inputType = inputType;
-	}
-	
-	public String getOutputType() {
-		return outputType;
-	}
-	
-	public void setOutputType(String outputType) {
-		this.outputType = outputType;
 	}
 	
 	public Contest getContest() {

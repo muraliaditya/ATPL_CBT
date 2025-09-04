@@ -6,9 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "mcq_answers")
+@Getter
+@Setter
 public class MCQAnswers {
 	
 	@Id
@@ -35,48 +39,7 @@ public class MCQAnswers {
 	@ManyToOne
 	@JoinColumn(name = "mcq_id", insertable = false, updatable = false)
 	private MCQQuestion mcq;
-	
-	// Getters and Setters
-	public String getMcqAnswerId() {
-		return mcqAnswerId;
-	}
-	
-	public void setMcqAnswerId(String mcqAnswerId) {
-		this.mcqAnswerId = mcqAnswerId;
-	}
-	
-	public String getMcqSubmissionId() {
-		return mcqSubmissionId;
-	}
-	
-	public void setMcqSubmissionId(String mcqSubmissionId) {
-		this.mcqSubmissionId = mcqSubmissionId;
-	}
-	
-	public String getMcqId() {
-		return mcqId;
-	}
-	
-	public void setMcqId(String mcqId) {
-		this.mcqId = mcqId;
-	}
-	
-	public String getSelectedOption() {
-		return selectedOption;
-	}
-	
-	public void setSelectedOption(String selectedOption) {
-		this.selectedOption = selectedOption;
-	}
-	
-	public boolean isCorrect() {
-		return isCorrect;
-	}
-	
-	public void setCorrect(boolean isCorrect) {
-		this.isCorrect = isCorrect;
-	}
-	
+
 	public Submissions getSubmission() {
 		return submission;
 	}
