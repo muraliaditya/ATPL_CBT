@@ -1,72 +1,74 @@
 package com.aaslin.code_runner.service;
 
+import com.aaslin.code_runner.RunRequest;
+import com.aaslin.code_runner.RunResponse;
+import org.springframework.stereotype.Service;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.aaslin.code_runner.RunRequest;
-import com.aaslin.code_runner.RunResponse;
+import java.util.*;
 
 @Service
-public class DockerRunnerService {
+public class DockerRunnerService implements CodeRunnerService {
 
-	private record ImageAndCommand(String image,List<String> runCmd) {}
+    private record ImageAndCommand(String image, List<String> runCmd) {}
+
+    @Override
     public RunResponse run(RunRequest req) {
         try {
+            // Create temporary working directory
             Path work = Files.createTempDirectory("code-");
+
+            // Determine filename
             String fileName = switch (req.getLanguage()) {
                 case PYTHON -> "main.py";
                 case CPP -> "main.cpp";
                 case JAVA -> "Main.java";
                 case NODE -> "main.js";
+                case C -> "main.c";
             };
+
             Path source = work.resolve(fileName);
             Files.writeString(source, req.getCode(), StandardCharsets.UTF_8);
-            if (req.getStdin() != null) {
+
+            if (req.getStdin() != null && !req.getStdin().isEmpty()) {
                 Files.writeString(work.resolve("stdin.txt"), req.getStdin(), StandardCharsets.UTF_8);
             }
 
             ImageAndCommand config = buildConfig(req);
 
+            // Build docker run command
             List<String> cmd = new ArrayList<>();
-            cmd.addAll(List.of("docker", "run",
+            cmd.addAll(List.of(
+                    "docker", "run",
                     "--rm",
                     "--network=none",
-                    "--cpus=0.5",
-                    "-m", "256m",
-                    "--pids-limit", "128",
-                    "--read-only",
                     "-v", work.toAbsolutePath() + ":/app:rw",
-                    "-w", "/app"));
-            cmd.addAll(List.of("--tmpfs", "/tmp:rw,noexec,nosuid,size=64m"));
-            cmd.add(config.image());
+                    "-w", "/app",
+                    config.image()
+            ));
 
-            String stdinPart = (req.getStdin() != null && !req.getStdin().isEmpty()) ? " < stdin.txt" : "";
-            String joined = String.join(" ", config.runCmd()) + stdinPart;
-            String shell = String.format("sh -lc 'timeout %ds %s'", Math.max(1, req.getTimeLimitSec()), joined);
-            cmd.addAll(List.of("sh", "-lc", shell));
+            // Append language-specific command
+            cmd.addAll(config.runCmd());
 
             ProcessBuilder pb = new ProcessBuilder(cmd);
-            pb.redirectErrorStream(false);
+            pb.redirectErrorStream(true); // combine stdout & stderr
             Process p = pb.start();
 
-            String stdout = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            String stderr = new String(p.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
+            String output = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             int exit = p.waitFor();
 
-            String status;
-            if (exit == 124 || stderr.contains("Timed out")) status = "TLE";
-            else if (exit == 0) status = "OK";
-            else status = "RUNTIME_ERROR";
+            String status = exit == 0 ? "OK" : "RUNTIME_ERROR";
 
-            try { Files.walk(work).sorted(Comparator.reverseOrder()).forEach(path -> { try { Files.delete(path);} catch (Exception ignored) {} }); } catch (Exception ignored) {}
+            // Cleanup temp files
+            try {
+                Files.walk(work).sorted(Comparator.reverseOrder())
+                        .forEach(path -> { try { Files.delete(path);} catch (Exception ignored) {} });
+            } catch (Exception ignored) {}
 
-            return new RunResponse(stdout, stderr, exit, status);
+            return new RunResponse(output.trim(), "", exit, status);
+
         } catch (Exception e) {
             return new RunResponse("", e.getMessage(), 1, "INTERNAL_ERROR");
         }
@@ -74,10 +76,11 @@ public class DockerRunnerService {
 
     private ImageAndCommand buildConfig(RunRequest req) {
         return switch (req.getLanguage()) {
-            case PYTHON -> new ImageAndCommand("code-runner:python", List.of("python", "main.py"));
-            case CPP -> new ImageAndCommand("code-runner:cpp", List.of("sh", "-lc", "g++ -O2 -std=c++17 main.cpp -o main && ./main"));
-            case JAVA -> new ImageAndCommand("code-runner:java", List.of("sh", "-lc", "javac Main.java && java Main"));
+            case PYTHON -> new ImageAndCommand("code-runner:python", List.of("python3", "main.py"));
+            case CPP -> new ImageAndCommand("code-runner:cpp", List.of("sh", "-c", "g++ main.cpp -o main && ./main < stdin.txt"));
+            case JAVA -> new ImageAndCommand("code-runner:java", List.of("sh", "-c", "javac Main.java && java Main < stdin.txt"));
             case NODE -> new ImageAndCommand("code-runner:node", List.of("node", "main.js"));
+            case C -> new ImageAndCommand("code-runner:c", List.of("sh", "-c", "gcc main.c -o main && ./main < stdin.txt"));
         };
     }
 }
