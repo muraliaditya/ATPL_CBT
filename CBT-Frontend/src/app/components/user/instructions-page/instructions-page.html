@@ -1,1 +1,39 @@
 <app-navbar></app-navbar>
+<div class="flex justify-center w-full p-5">
+  <div class="w-[80%]">
+    <div class="mt-10 p-5 border shadow-md rounded-lg border-gray-200">
+      <div class="flex items-center gap-2">
+        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <p class="font-semibold text-2xl">{{ codingQuestions }} Contests</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <img src="/svgs/mcqs.svg" class="w-5 h-5" />
+        <p class="font-semibold text-2xl">{{ mcqsQuestions }} Mcqs</p>
+      </div>
+    </div>
+    <div class="mt-10 p-5 border shadow-md rounded-lg border-gray-200">
+      <h1 class="text-xl font-bold">Instructions</h1>
+      <div *ngFor="let eachInstruction of instructionsSet">
+        <h2 class="text-lg font-semibold">
+          {{ eachInstruction.instructionHeader }}
+        </h2>
+        <ul
+          class="list-disc pl-7"
+          *ngFor="let instruction of eachInstruction.instructions"
+        >
+          <li class="text-medium">{{ instruction }}</li>
+        </ul>
+      </div>
+      <div class="flex gap-2 items-center">
+        <input type="checkbox" />
+        <p>Accept and Proceed</p>
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="px-5 py-2 mt-5 text-white flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
+    >
+      Start Test
+    </button>
+  </div>
+</div>
