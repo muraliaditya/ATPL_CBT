@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,8 +36,10 @@ public class Contest {
 	@Column(name = "status")
 	private Status status;
 	
-	@Column(name = "allowed_college_id", columnDefinition = "TEXT")
-	private String allowedCollegeId;
+	@ElementCollection
+	@CollectionTable(name = "contest_allowed_colleges", joinColumns = @JoinColumn(name = "contest_id"))
+	@Column(name = "college_uid")
+	private List<String> allowedCollegeUids;
 	
 	@Column(name = "start_time")
 	private LocalDateTime startTime;

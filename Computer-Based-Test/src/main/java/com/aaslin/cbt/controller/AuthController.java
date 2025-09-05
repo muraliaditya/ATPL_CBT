@@ -1,40 +1,53 @@
 package com.aaslin.cbt.controller;
 
+import com.aaslin.cbt.dto.LoginResponseDto;
+import com.aaslin.cbt.dto.UserDto;
+import com.aaslin.cbt.entity.Contest;
 import com.aaslin.cbt.entity.User;
-import com.aaslin.cbt.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
+import com.aaslin.cbt.repository.ContestRepository;
+import com.aaslin.cbt.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
+    
+    @Autowired 
+    private ContestRepository contestRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user, HttpSession session) {
-        try {
-            User savedUser = userService.login(user);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody User userInput) {
+        User user = authService.authenticateUserAndJoinContest(userInput);
 
-            // If the user is ADMIN - store session details
-            if (savedUser.getRole() == User.Role.ADMIN) {
-                session.setAttribute("adminId", savedUser.getUserId());
-                session.setAttribute("email", savedUser.getEmail());
-                session.setAttribute("collegeUid", savedUser.getCollegeUid());
-                session.setAttribute("collegeRollNo", savedUser.getCollegeRollNo());
-                session.setAttribute("role", savedUser.getRole().name());
-            }
+        // Convert User → UserDto
+        UserDto userDto = new UserDto(
+                user.getUserId(),
+                user.getRole().name(),
+                user.getEmail(),
+                user.getCollegeUid(),
+                user.getCollegeRollNo()
+        );
 
-            return ResponseEntity.ok(savedUser);
-        } catch (Exception e) {
-            e.printStackTrace(); //  Log the actual error
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        if (user.getRole() == User.Role.ADMIN) {
+            // Admin - contestId = null
+            return ResponseEntity.ok(new LoginResponseDto(null, userDto));
         }
+
+        // For USER - find contest automatically
+        Contest contest = contestRepository.findByStatusAndAllowedCollegeUidsContaining(
+                Contest.Status.ACTIVE,
+                userInput.getCollegeUid()
+        ).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No active contest found"));
+
+        return ResponseEntity.ok(new LoginResponseDto(contest.getContestId(), userDto));
     }
 
 }
