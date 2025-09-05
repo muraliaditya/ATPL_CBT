@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Navbar } from '../../UI/navbar/navbar';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Navbar } from '../../../components/UI/navbar/navbar';
 
 interface InstructionsHeader {
   instructionHeader: string;
@@ -9,14 +10,17 @@ interface InstructionsHeader {
 
 @Component({
   selector: 'app-instructions-page',
-  imports: [Navbar, CommonModule],
+  imports: [Navbar, CommonModule, FormsModule],
   templateUrl: './instructions-page.html',
   styleUrl: './instructions-page.css',
 })
 export class InstructionsPage {
   contestName: string = 'CONTEST-1';
+
   codingQuestions: number = 3;
   mcqsQuestions: number = 20;
+  isChecked: boolean = false;
+  showCheckBoxMessage: boolean = false;
   instructionsSet: InstructionsHeader[] = [
     {
       instructionHeader: 'Pre-Test Setup',
@@ -65,4 +69,13 @@ export class InstructionsPage {
       ],
     },
   ];
+
+  proceedToTest() {
+    if (!this.isChecked) {
+      console.log('agree the instructions!');
+      this.showCheckBoxMessage = true;
+    } else {
+      this.showCheckBoxMessage = false;
+    }
+  }
 }

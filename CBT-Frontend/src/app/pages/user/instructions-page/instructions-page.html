@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 <div class="flex justify-center w-full p-5">
-  <div class="w-[80%]">
+  <div class="w-[80%] max-w-[1200px]">
     <div class="mt-10 p-5 border shadow-md rounded-lg border-gray-200">
       <div class="flex items-center gap-2">
         <img src="/svgs/code.svg" class="w-5 h-5" />
@@ -25,12 +25,16 @@
         </ul>
       </div>
       <div class="flex gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" [(ngModel)]="isChecked" />
         <p>Accept and Proceed</p>
+      </div>
+      <div class="text-red-400 font-medium text-sm text-left h-4 w-full">
+        @if(showCheckBoxMessage){ agree the instructions! }
       </div>
     </div>
     <button
-      type="submit"
+      type="click"
+      (click)="proceedToTest()"
       class="px-5 py-2 mt-5 text-white flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
     >
       Start Test

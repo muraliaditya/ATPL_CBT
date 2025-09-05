@@ -12,6 +12,19 @@ import { routes } from './app.routes';
 
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
+import { leetcodeTheme } from './themes/code-area-themes/leetcodeTheme';
+import { lightTheme } from './themes/code-area-themes/lightTheme';
+import {
+  NgxMonacoEditorConfig,
+  provideMonacoEditor,
+} from 'ngx-monaco-editor-v2';
+
+const monacoConfig: NgxMonacoEditorConfig = {
+  onMonacoLoad: () => {
+    (window as any).monaco.editor.defineTheme('leetcodeTheme', leetcodeTheme);
+    (window as any).monaco.editor.defineTheme('lightTheme', lightTheme);
+  },
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +33,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideNoopAnimations(),
     provideHttpClient(),
+
     providePrimeNG({
       theme: {
         preset: MyPreset,
@@ -33,5 +47,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    provideMonacoEditor(monacoConfig),
   ],
 };

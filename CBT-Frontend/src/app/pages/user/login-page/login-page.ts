@@ -5,7 +5,6 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Auth } from '../../../services/user/auth';
-import { Message } from 'primeng/message';
 
 import {
   ReactiveFormsModule,
