@@ -1,5 +1,9 @@
 package com.aaslin.code_runner;
 
+import java.util.List;
+
+import com.aaslin.code_runner.dto.TestCase;
+
 import lombok.Data;
 
 @Data
@@ -7,7 +11,9 @@ public class RunRequest {
     private Language language;
     private String code;
     private String stdin;
-    private int timeLimitSec = 2; // default
+    private int timeLimitSec = 2;
+    private List<TestCase> testCases;
+    
 
     public enum Language {
         PYTHON, CPP, JAVA, NODE, C;
@@ -23,4 +29,5 @@ public class RunRequest {
             };
         }
     }
+
 }

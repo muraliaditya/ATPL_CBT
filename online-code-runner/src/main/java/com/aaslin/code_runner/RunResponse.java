@@ -7,8 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class RunResponse {
 
-	private  String stdout;
-	private  String stderr;
+	private  String output;
+	private  String error;
 	private  int exitCode;
 	private  String status;
 	

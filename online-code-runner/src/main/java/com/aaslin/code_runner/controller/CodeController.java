@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/code")
+@RequestMapping("api/code")
 @RequiredArgsConstructor
 public class CodeController {
 
@@ -36,13 +36,13 @@ public class CodeController {
 
             RunResponse runRes = runnerService.run(runReq);
 
-            boolean passed = runRes.getStdout().trim().equals(tc.getExpectedOutput().trim());
+            boolean passed = runRes.getOutput().trim().equals(tc.getExpectedOutput().trim());
 
             CodeResponse resp = new CodeResponse();
             resp.setInput(tc.getInput());
             resp.setExpectedOutput(tc.getExpectedOutput());
-            resp.setActualOutput(runRes.getStdout().trim());
-            resp.setError(runRes.getStderr());
+            resp.setActualOutput(runRes.getOutput().trim());
+            resp.setError(runRes.getError());
             resp.setStatus(runRes.getStatus());
             resp.setPassed(passed);
 

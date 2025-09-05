@@ -1,108 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Code Runner</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
-    h1 { color: #333; }
-    textarea, input, select, button { width: 100%; padding: 8px; margin: 5px 0; font-family: monospace; }
-    textarea { height: 150px; }
-    .testcase { border: 1px solid #ccc; padding: 10px; margin: 5px 0; background-color: #fff; }
-    .results { white-space: pre-wrap; background: #222; color: #0f0; padding: 10px; margin-top: 10px; }
-    .btn-small { width: auto; margin-top: 5px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Code Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f8f9fa;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    textarea {
+      height: 200px;
+      font-family: monospace;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Online Code Runner</h1>
+    
+    <label for="questionId">Question ID</label>
+    <input type="text" id="questionId" placeholder="e.g., q1">
 
-<h1>Online Code Runner</h1>
+    <label for="language">Language</label>
+    <select id="language">
+      <option value="java">Java</option>
+      <option value="python">Python</option>
+      <option value="cpp">C++</option>
+      <option value="c">C</option>
+    </select>
 
-<label>Language:</label>
-<select id="language">
-    <option value="JAVA">Java</option>
-    <option value="CPP">C++</option>
-    <option value="PYTHON">Python</option>
-    <option value="NODE">Node.js</option>
-</select>
+    <label for="code">Code</label>
+    <textarea id="code">// Write your code here</textarea>
 
-<label>Code:</label>
-<textarea id="code" placeholder="Write your code here..."></textarea>
+    <label>
+      <input type="checkbox" id="isFinal"> Final Submission
+    </label>
 
-<h3>Test Cases</h3>
-<div id="testcases"></div>
-<button class="btn-small" onclick="addTestCase()">Add Test Case</button>
+    <button onclick="submitCode()">Run & Submit</button>
 
-<button onclick="runCode()">Run Code</button>
+    <div id="result"></div>
+  </div>
 
-<h3>Results:</h3>
-<div class="results" id="results"></div>
+  <script>
+    async function submitCode() {
+      const questionId = document.getElementById("questionId").value.trim();
+      const language = document.getElementById("language").value;
+      const code = document.getElementById("code").value;
+      const isFinal = document.getElementById("isFinal").checked;
 
-<script>
-let testcaseCount = 0;
-
-// Add new test case
-function addTestCase() {
-    testcaseCount++;
-    const div = document.createElement('div');
-    div.className = 'testcase';
-    div.id = 'tc' + testcaseCount;
-    div.innerHTML = `
-        <label>Input:</label>
-        <input type="text" class="input" placeholder="Input for test case">
-        <label>Expected Output:</label>
-        <input type="text" class="expected" placeholder="Expected output">
-        <label>Public Test Case:</label>
-        <input type="checkbox" class="isPublic" checked>
-        <button class="btn-small" onclick="removeTestCase('tc${testcaseCount}')">Remove</button>
-    `;
-    document.getElementById('testcases').appendChild(div);
-}
-
-// Remove test case
-function removeTestCase(id) {
-    const div = document.getElementById(id);
-    div.parentNode.removeChild(div);
-}
-
-// Run code
-function runCode() {
-    const language = document.getElementById('language').value;
-    const code = document.getElementById('code').value;
-    const testcasesDivs = document.querySelectorAll('.testcase');
-    const testCases = [];
-
-    testcasesDivs.forEach(div => {
-        const input = div.querySelector('.input').value;
-        const expectedOutput = div.querySelector('.expected').value;
-        const isPublic = div.querySelector('.isPublic').checked;
-        testCases.push({ input, expectedOutput, isPublic });
-    });
-
-    if (testCases.length === 0) {
-        alert("Please add at least one test case.");
+      if (!questionId || !code) {
+        alert("Please provide Question ID and Code");
         return;
+      }
+
+      const payload = {
+        codingQuestionId: questionId,
+        language: language,
+        code: code,
+        isFinal: isFinal
+      };
+
+      try {
+        const res = await fetch("http://localhost:8080/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Failed to connect to backend");
+
+        const data = await res.json();
+        document.getElementById("result").innerText =
+          "Submission ID: " + data.codingSubmissionId + "\n" +
+          "Question ID: " + data.codingQuestionId + "\n" +
+          "Language: " + data.language + "\n" +
+          "Score: " + data.score + "\n" +
+          "Testcases Passed: " + data.testcasesPassed + "\n" +
+          "Status: " + data.status + "\n" +
+          "Submitted At: " + data.submittedAt;
+      } catch (err) {
+        document.getElementById("result").innerText = "Error: " + err.message;
+      }
     }
-
-    const requestBody = { language, code, testCases };
-
-    fetch('code/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('results').textContent = JSON.stringify(data, null, 2);
-    })
-    .catch(err => {
-        document.getElementById('results').textContent = 'Error: ' + err;
-    });
-}
-
-// Add one initial test case
-addTestCase();
-</script>
-
+  </script>
 </body>
 </html>
