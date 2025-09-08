@@ -30,6 +30,9 @@ export const MyPreset = definePreset(Aura, {
           color: '#ffffff',
           focusColor: '#ffffff',
         },
+        surface: {
+          border: '{blue.600}',
+        },
       },
       dark: {
         primary: {
@@ -44,6 +47,13 @@ export const MyPreset = definePreset(Aura, {
           color: 'rgba(255,255,255,.87)',
           focusColor: 'rgba(255,255,255,.87)',
         },
+      },
+    },
+  },
+  components: {
+    inputtext: {
+      root: {
+        focusBorderColor: '{blue.600}',
       },
     },
   },

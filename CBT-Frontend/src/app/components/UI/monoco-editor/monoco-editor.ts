@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CodeEditorThemeService } from '../../../services/code-editor-theme-service';
 interface monacoEditorType {
   language: string;
   automaticLayout: boolean;
+  minimap: any;
 }
 @Component({
   selector: 'app-monaco-editor',
@@ -16,6 +17,9 @@ export class MonacoEditor {
   editorOptions: monacoEditorType = {
     language: 'cpp',
     automaticLayout: true,
+    minimap: {
+      enabled: false,
+    },
   };
 
   constructor(private applyTheme: CodeEditorThemeService) {}

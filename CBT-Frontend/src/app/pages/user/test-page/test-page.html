@@ -1,34 +1,27 @@
 <div class="h-[100vh]">
-  <app-navbar></app-navbar>
-
-  <div class="flex h-[calc(100%-60px)]">
-    <div class="w-10 shadow-lg h-full relative">
+  <div class="h-[60px] items-center justify-center flex shadow-lg">
+    <div class="flex gap-2 p-1 w-fit bg-slate-200 h-fit">
       <div
-        class="flex gap-2 -rotate-90 p-1 bg-slate-200 h-fit w-70 origin-top-left relative top-90"
+        [ngClass]="[
+          currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
+        ]"
+        class="flex items-center gap-2 w-fit bg-red px-5 h-fit cursor-pointer"
+        (click)="changeSection('Coding')"
       >
-        <div
-          [ngClass]="[
-            currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
-          ]"
-          class="flex items-center gap-2 flex-1 w-fit bg-red px-5 h-fit cursor-pointer"
-          (click)="changeSection('Coding')"
-        >
-          <img src="/svgs/code.svg" class="w-5 h-5" />
-          <p class="font-bold text-lg">Coding</p>
-        </div>
-        <div
-          [ngClass]="[
-            currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : ''
-          ]"
-          class="flex items-center gap-2 flex-1 w-fit px-5 h-fit cursor-pointer"
-          (click)="changeSection('Mcqs')"
-        >
-          <img src="/images/test.png" class="w-7 h-7" />
-          <p class="font-bold text-lg">Mcqs</p>
-        </div>
+        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <p class="font-bold text-lg">Coding</p>
+      </div>
+      <div
+        [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
+        class="flex items-center gap-2 w-fit px-5 h-fit cursor-pointer"
+        (click)="changeSection('Mcqs')"
+      >
+        <img src="/images/test.png" class="w-7 h-7" />
+        <p class="font-bold text-lg">Mcqs</p>
       </div>
     </div>
-
+  </div>
+  <div class="h-[calc(100%-60px)]">
     <div class="p-5 w-[calc(100%-40px)] h-full flex justify-center">
       <div class="w-[80%] max-w-[1200px]">
         <div

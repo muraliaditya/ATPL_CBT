@@ -4,13 +4,21 @@ import { InstructionsPage } from './pages/user/instructions-page/instructions-pa
 import { TestPage } from './pages/user/test-page/test-page';
 
 export const routes: Routes = [
-  { path: '', component: LoginPage },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/user/login-page/login-page').then((c) => c.LoginPage),
+  },
   {
     path: 'test-instructions',
-    component: InstructionsPage,
+    loadComponent: () =>
+      import('./pages/user/instructions-page/instructions-page').then(
+        (c) => c.InstructionsPage
+      ),
   },
   {
     path: 'test',
-    component: TestPage,
+    loadComponent: () =>
+      import('./pages/user/test-page/test-page').then((c) => c.TestPage),
   },
 ];

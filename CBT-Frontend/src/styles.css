@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
 :root {
   --ui-mode: light;
   color-scheme: light;
@@ -13,3 +14,12 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.btn {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+
+/* @theme {
+  --breakpoint-xs: 500px;
+} */
+/* max-xs:bg-yellow-300 */
