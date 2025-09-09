@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Navbar } from '../../../components/UI/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { CodingQuestions, McqQuestions } from '../../../models/test/questions';
 import { McqSection } from '../../../components/test-page/mcq-section/mcq-section';
 import { CodeSection } from '../../../components/test-page/code-section/code-section';
 import { MonacoEditor } from '../../../components/UI/monoco-editor/monoco-editor';
+import { CodeEditorThemeService } from '../../../services/code-editor-theme-service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-test-page',
@@ -12,11 +14,14 @@ import { MonacoEditor } from '../../../components/UI/monoco-editor/monoco-editor
   templateUrl: './test-page.html',
   styleUrl: './test-page.css',
 })
-export class TestPage implements OnInit {
+export class TestPage implements OnInit, OnDestroy {
   hours: number = 0;
   minutes: number = 32;
   seconds: number = 34;
   currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
+  themeSubcription!: Subscription;
+  currentTheme: string = '';
+
   codingQuestions: CodingQuestions[] = [
     {
       codingQuestionId: 'code1',
@@ -30,14 +35,17 @@ export class TestPage implements OnInit {
         {
           input1: 'hello',
           output: 'olleh',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
         {
           input1: 'world',
           output: 'dlrow',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
         {
           input1: 'OpenAI',
           output: 'IAnepO',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
       ],
     },
@@ -53,14 +61,17 @@ export class TestPage implements OnInit {
         {
           input1: '[1, -2, 3, 4, -1, 2, 1, -5, 4]',
           output: '9',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
         {
           input1: '[-2, -3, -1, -5]',
           output: '-1',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
         {
           input1: '[5, 4, -1, 7, 8]',
           output: '23',
+          desc: ' The only possible triplet does not sum up to 0.',
         },
       ],
     },
@@ -130,6 +141,12 @@ export class TestPage implements OnInit {
       options: ['Microsoft', 'Bell Labs', 'Apple', 'Sun Microsystems'],
     },
   ];
+
+  constructor(private themeService: CodeEditorThemeService) {}
+
+  toggleTheme() {
+    this.themeService.setTheme();
+  }
   changeSection(section: 'Mcqs' | 'Coding') {
     this.currentSection = section;
   }
@@ -155,7 +172,16 @@ export class TestPage implements OnInit {
       }
     }, 1000);
   }
+
   ngOnInit(): void {
     this.addTimer();
+    this.themeSubcription = this.themeService.getcurrentTheme().subscribe({
+      next: (data) => {
+        this.currentTheme = data;
+      },
+    });
+  }
+  ngOnDestroy(): void {
+    this.themeSubcription.unsubscribe();
   }
 }

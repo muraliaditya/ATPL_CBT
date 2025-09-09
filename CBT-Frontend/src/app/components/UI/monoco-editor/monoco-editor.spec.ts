@@ -8,9 +8,8 @@ describe('MonocoEditor', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MonocoEditor]
-    })
-    .compileComponents();
+      imports: [MonocoEditor],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MonocoEditor);
     component = fixture.componentInstance;
