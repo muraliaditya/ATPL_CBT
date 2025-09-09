@@ -18,4 +18,5 @@ export interface Testcase {
   input1: string;
   input2?: string;
   output: string;
+  explanation?: string;
 }

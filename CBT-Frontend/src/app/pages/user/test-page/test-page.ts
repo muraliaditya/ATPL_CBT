@@ -5,6 +5,7 @@ import { CodingQuestions, McqQuestions } from '../../../models/test/questions';
 import { McqSection } from '../../../components/test-page/mcq-section/mcq-section';
 import { CodeSection } from '../../../components/test-page/code-section/code-section';
 import { MonacoEditor } from '../../../components/UI/monoco-editor/monoco-editor';
+import { CodeEditorThemeService } from '../../../services/code-editor-theme-service';
 
 @Component({
   selector: 'app-test-page',
@@ -30,10 +31,12 @@ export class TestPage implements OnInit {
         {
           input1: 'hello',
           output: 'olleh',
+          explanation: 'The only possible triplet does not sum up to 0.',
         },
         {
           input1: 'world',
           output: 'dlrow',
+          explanation: 'The only possible triplet does not sum up to 0.',
         },
         {
           input1: 'OpenAI',
@@ -53,10 +56,12 @@ export class TestPage implements OnInit {
         {
           input1: '[1, -2, 3, 4, -1, 2, 1, -5, 4]',
           output: '9',
+          explanation: 'The only possible triplet does not sum up to 0.',
         },
         {
           input1: '[-2, -3, -1, -5]',
           output: '-1',
+          explanation: 'The only possible triplet does not sum up to 0.',
         },
         {
           input1: '[5, 4, -1, 7, 8]',
@@ -130,6 +135,12 @@ export class TestPage implements OnInit {
       options: ['Microsoft', 'Bell Labs', 'Apple', 'Sun Microsystems'],
     },
   ];
+
+  constructor(private applyTheme: CodeEditorThemeService) {}
+
+  toggletheme() {
+    this.applyTheme.setTheme();
+  }
   changeSection(section: 'Mcqs' | 'Coding') {
     this.currentSection = section;
   }
