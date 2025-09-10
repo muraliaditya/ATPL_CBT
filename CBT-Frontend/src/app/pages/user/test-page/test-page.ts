@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Navbar } from '../../../components/UI/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { CodingQuestions, McqQuestions } from '../../../models/test/questions';
@@ -6,6 +6,7 @@ import { McqSection } from '../../../components/test-page/mcq-section/mcq-sectio
 import { CodeSection } from '../../../components/test-page/code-section/code-section';
 import { MonacoEditor } from '../../../components/UI/monoco-editor/monoco-editor';
 import { CodeEditorThemeService } from '../../../services/code-editor-theme-service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-test-page',
@@ -13,11 +14,16 @@ import { CodeEditorThemeService } from '../../../services/code-editor-theme-serv
   templateUrl: './test-page.html',
   styleUrl: './test-page.css',
 })
-export class TestPage implements OnInit {
+export class TestPage implements OnInit, OnDestroy {
+  @ViewChild(CodeSection) codeSectionComponent!: CodeSection;
   hours: number = 0;
   minutes: number = 32;
   seconds: number = 34;
+  currentCodingQuestionNo: number = 0;
   currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
+  themeSubcription!: Subscription;
+  currentTheme: string = '';
+
   codingQuestions: CodingQuestions[] = [
     {
       codingQuestionId: 'code1',
@@ -29,18 +35,24 @@ export class TestPage implements OnInit {
       outputType: 'string',
       testcases: [
         {
+          id: 't11',
           input1: 'hello',
           output: 'olleh',
-          explanation: 'The only possible triplet does not sum up to 0.',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
+          id: 't22',
+
           input1: 'world',
           output: 'dlrow',
-          explanation: 'The only possible triplet does not sum up to 0.',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
+          id: 't33',
+
           input1: 'OpenAI',
           output: 'IAnepO',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
       ],
     },
@@ -54,18 +66,25 @@ export class TestPage implements OnInit {
       outputType: 'number',
       testcases: [
         {
+          id: 't44',
+
           input1: '[1, -2, 3, 4, -1, 2, 1, -5, 4]',
           output: '9',
-          explanation: 'The only possible triplet does not sum up to 0.',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
+          id: 't55',
+
           input1: '[-2, -3, -1, -5]',
           output: '-1',
-          explanation: 'The only possible triplet does not sum up to 0.',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
+          id: 't66',
+
           input1: '[5, 4, -1, 7, 8]',
           output: '23',
+          explanation: ' The only possible triplet does not sum up to 0.',
         },
       ],
     },
@@ -136,10 +155,19 @@ export class TestPage implements OnInit {
     },
   ];
 
-  constructor(private applyTheme: CodeEditorThemeService) {}
+  constructor(private themeService: CodeEditorThemeService) {}
 
-  toggletheme() {
-    this.applyTheme.setTheme();
+  changeCurrentCodingQuesNo(idx: number) {
+    this.currentCodingQuestionNo = idx;
+    this.codeSectionComponent.showFirstTestCase(
+      this.codeSectionComponent.getQuestionAtIndex(idx)
+    );
+    this.codeSectionComponent.setCurrentTestCases(
+      this.codeSectionComponent.getQuestionAtIndex(idx)
+    );
+  }
+  toggleTheme() {
+    this.themeService.setTheme();
   }
   changeSection(section: 'Mcqs' | 'Coding') {
     this.currentSection = section;
@@ -166,7 +194,16 @@ export class TestPage implements OnInit {
       }
     }, 1000);
   }
+
   ngOnInit(): void {
     this.addTimer();
+    this.themeSubcription = this.themeService.getcurrentTheme().subscribe({
+      next: (data) => {
+        this.currentTheme = data;
+      },
+    });
+  }
+  ngOnDestroy(): void {
+    this.themeSubcription.unsubscribe();
   }
 }

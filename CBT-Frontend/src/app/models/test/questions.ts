@@ -15,6 +15,7 @@ export interface CodingQuestions {
 }
 
 export interface Testcase {
+  id: string;
   input1: string;
   input2?: string;
   output: string;

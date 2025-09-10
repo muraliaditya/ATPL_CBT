@@ -1,184 +1,141 @@
-<div class="w-full p-4 bg-gray-50 h-full">
+<div *ngIf="getCurrentQuestion()" class="w-full bg-gray-50 h-full">
   <p-splitter
-    [style]="{ height: '100%' }"
-    class="border border-gray-300 rounded-lg shadow-lg bg-white"
+    [ngStyle]="{ height: '100%' }"
+    class="!border-0 shadow-lg bg-gray-200 rounded-lg"
   >
-    <ng-template pTemplate="panel">
-      <div class="h-full flex flex-col">
+    <ng-template class="rounded-lg" pTemplate="panel">
+      <div class="h-full w-full flex flex-col rounded-lg overflow-hidden">
         <div
-          class="bg-blue-600 text-white px-6 py-3 font-semibold text-lg border-b"
+          class="shadow-md px-6 py-1 font-semibold text-lg bg-indigo-500 text-white rounded-t-lg"
         >
-          Problem Statement
+          Description
         </div>
 
         <div class="flex-1 p-6 overflow-y-auto bg-white">
-          <h3 class="text-2xl font-bold text-blue-700 mb-4">3Sum Problem</h3>
+          <h3 class="text-2xl font-bold mb-4">
+            {{ getCurrentQuestion()?.question }}
+          </h3>
 
-          <p class="text-gray-700 leading-relaxed mb-6">
-            Given an integer array nums, return all the triplets [nums[i],
-            nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i]
-            + nums[j] + nums[k] == 0. Notice that the solution set must not
-            contain duplicate triplets.
+          <p class="text-gray-700 text-lg leading-relaxed mb-6">
+            {{ getCurrentQuestion()?.description }}
           </p>
 
           <div
-            class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4"
-          >
-            <h4 class="text-lg font-semibold text-gray-800 mb-2">Example 1:</h4>
-            <p class="mb-1">
-              <span class="font-medium">Input:</span> nums = [-1,0,1,2,-1,-4]
-            </p>
-            <p class="mb-2">
-              <span class="font-medium">Output:</span> [[-1,-1,2],[-1,0,1]]
-            </p>
-            <p class="font-medium mb-2">Explanation:</p>
-            <ul class="list-disc pl-6 space-y-1 text-sm">
-              <li>nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0</li>
-              <li>nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0</li>
-              <li>nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0</li>
-            </ul>
-            <p class="text-sm mt-2">
-              The distinct triplets are [-1,0,1] and [-1,-1,2].
-            </p>
-          </div>
-
-          <div
-            class="bg-gray-50 border-l-4 border-gray-400 p-4 rounded-r-lg mb-4"
-          >
-            <h4 class="text-lg font-semibold text-gray-800 mb-2">Example 2:</h4>
-            <p class="mb-1">
-              <span class="font-medium">Input:</span> nums = [0,1,1]
-            </p>
-            <p class="mb-1"><span class="font-medium">Output:</span> []</p>
-            <p class="text-sm">
-              <span class="font-medium">Explanation:</span> The only possible
-              triplet does not sum up to 0.
-            </p>
-          </div>
-
-          <div
-            class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg mb-4"
-          >
-            <h4 class="text-lg font-semibold text-gray-800 mb-2">Example 3:</h4>
-            <p class="mb-1">
-              <span class="font-medium">Input:</span> nums = [0,0,0]
-            </p>
-            <p class="mb-1">
-              <span class="font-medium">Output:</span> [[0,0,0]]
-            </p>
-            <p class="text-sm">
-              <span class="font-medium">Explanation:</span> The only possible
-              triplet sums up to 0.
-            </p>
-          </div>
-
-          <div
-            class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg"
+            *ngFor="let testcase of currentTestCases; index as idx"
+            class="p-4 rounded-r-lg mb-4"
           >
             <h4 class="text-lg font-semibold text-gray-800 mb-2">
-              Constraints:
+              Example {{ idx + 1 }}:
             </h4>
-            <ul class="list-disc pl-6 space-y-1 text-sm">
-              <li>3 ≤ nums.length ≤ 3000</li>
-              <li>-10<sup>5</sup> ≤ nums[i] ≤ 10<sup>5</sup></li>
-            </ul>
+            <p class="mb-1">
+              <span class="font-medium">Input:</span> nums =
+              {{ currentTestCases[idx].input1 }}
+            </p>
+            <p class="mb-2">
+              <span class="font-medium">Output:</span>
+              {{ currentTestCases[idx].output }}
+            </p>
+            <p class="font-medium mb-2">Explanation:</p>
+            <p class="text-sm mt-2">
+              {{ currentTestCases[idx].explanation }}
+            </p>
           </div>
         </div>
       </div>
     </ng-template>
 
     <ng-template pTemplate="panel">
-      <p-splitter layout="vertical" [style]="{ height: '100%' }">
-        <ng-template pTemplate="panel" [ngStyle]="{ 'flex-grow': '2' }">
-          <app-monaco-editor></app-monaco-editor>
+      <p-splitter
+        [panelSizes]="[70, 30]"
+        layout="vertical"
+        class="rounded-lg bg-gray-200 overflow-hidden"
+      >
+        <ng-template pTemplate="panel">
+          <div class="h-full w-full rounded-lg flex flex-col overflow-hidden">
+            <div
+              class="bg-indigo-600 flex gap-5 rounded-t-lg items-center text-white text-sm font-bold px-2 py-1.5"
+            >
+              <div class="flex gap-2 items-center text-base">
+                <img src="/svgs/code.svg" class="w-4 h-4" />
+
+                <div class="h-fit mb-1">code</div>
+              </div>
+              <div class="flex gap-1 items-center cursor-pointer text-base">
+                <div class="h-fit mb-1 w-10">{{ language }}</div>
+                <img src="/svgs/down-arrow.svg" class="w-5 h-5 invert" />
+              </div>
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <app-monaco-editor
+                [currentLanguage]="language"
+              ></app-monaco-editor>
+            </div>
+            <div
+              class="bg-white border-t border-gray-200 flex gap-2 rounded-b-lg text-white text-sm font-bold px-3 py-1"
+            >
+              <button
+                class="px-4 font-bold text-sm rounded-md cursor-pointer py-1.5 w-fit h-fit bg-blue-500 text-white"
+              >
+                Compile and Run
+              </button>
+              <button
+                class="px-4 font-bold text-sm rounded-md cursor-pointer py-1.5 w-fit h-fit bg-blue-500 text-white"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </ng-template>
 
-        <ng-template pTemplate="panel" [ngStyle]="{ 'flex-grow': '1' }">
-          <div class="h-full flex flex-col">
+        <ng-template pTemplate="panel">
+          <div class="h-full flex flex-col rounded-lg overflow-hidden">
             <div
-              class="bg-purple-600 text-white px-6 py-3 font-semibold text-lg border-b"
+              class="bg-indigo-600 text-white px-6 py-1 font-semibold text-lg border-b rounded-t-lg"
             >
               Output & Test Results
             </div>
-
-            <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
+            <div
+              class="p-4 flex flex-1 bg-white flex-col gap-3 overflow-y-auto"
+            >
               <div
-                class="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm"
+                *ngIf="getCurrentQuestion()?.testcases?.length"
+                class="flex gap-2 flex-wrap"
               >
-                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
-                  <span
-                    class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2"
-                    >Test 1</span
-                  >
-                  Test Case 1
-                </h5>
-                <div class="space-y-2 text-sm">
-                  <p>
-                    <span class="font-medium text-gray-700">Input:</span>
-                    <code class="bg-gray-100 px-2 py-1 rounded text-xs"
-                      >[-1,0,1,2,-1,-4]</code
-                    >
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Expected:</span>
-                    <code class="bg-gray-100 px-2 py-1 rounded text-xs"
-                      >[[-1,-1,2],[-1,0,1]]</code
-                    >
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Your Output:</span>
-                    <code
-                      class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-500"
-                      >Run code to see output</code
-                    >
-                  </p>
-                  <p class="flex items-center">
-                    <span class="font-medium text-gray-700 mr-2">Status:</span>
-                    <span
-                      class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium"
-                      >Pending</span
-                    >
-                  </p>
+                <div
+                  [ngClass]="
+                    viewCurrentTestCase?.id === testcase.id
+                      ? 'bg-blue-100 text-blue-800 border-blue-200'
+                      : ' border-blue-200'
+                  "
+                  (click)="changeQuestion(testcase)"
+                  class="text-sm px-3 border cursor-pointer py-1 rounded-sm font-semibold"
+                  *ngFor="
+                    let testcase of getCurrentQuestion()?.testcases;
+                    index as idx
+                  "
+                >
+                  Case {{ idx + 1 }}
                 </div>
               </div>
-
               <div
+                *ngIf="viewCurrentTestCase"
                 class="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm"
               >
-                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
-                  <span
-                    class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2"
-                    >Test 2</span
-                  >
-                  Test Case 2
-                </h5>
                 <div class="space-y-2 text-sm">
-                  <p>
-                    <span class="font-medium text-gray-700">Input:</span>
-                    <code class="bg-gray-100 px-2 py-1 rounded text-xs"
-                      >[0,1,1]</code
-                    >
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Expected:</span>
-                    <code class="bg-gray-100 px-2 py-1 rounded text-xs"
-                      >[]</code
-                    >
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Your Output:</span>
+                  <div class="flex flex-col gap-2">
+                    <div class="font-medium text-gray-700">Input:</div>
                     <code
-                      class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-500"
-                      >Run code to see output</code
+                      class="bg-black text-white px-2 py-1 rounded text-xs"
+                      >{{ viewCurrentTestCase.input1 }}</code
                     >
-                  </p>
-                  <p class="flex items-center">
-                    <span class="font-medium text-gray-700 mr-2">Status:</span>
-                    <span
-                      class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium"
-                      >Pending</span
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <div class="font-medium text-gray-700">Expected:</div>
+                    <code
+                      class="bg-black text-white px-2 py-1 rounded text-xs"
+                      >{{ viewCurrentTestCase.output }}</code
                     >
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>

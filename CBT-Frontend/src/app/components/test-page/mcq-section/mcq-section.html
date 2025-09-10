@@ -45,7 +45,7 @@
       <button
         type="click"
         (click)="goToPrevQuestion()"
-        [disabled]="currentQuestionNo <= 1"
+        [disabled]="currentQuestionNo === 0"
         class="px-5 py-1 text-base text-white flex gap-2 items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
       >
         Prev

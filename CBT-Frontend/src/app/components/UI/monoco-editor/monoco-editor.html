@@ -1,9 +1,9 @@
-<div class="code-editor">
+<div class="code-editor h-full bg-white">
   <ngx-monaco-editor
     style="height: 100%"
     [options]="editorOptions"
+    (ngModelChange)="changedCode($event)"
     [(ngModel)]="code"
   >
   </ngx-monaco-editor>
-  <button (click)="toggletheme()">toggle</button>
 </div>

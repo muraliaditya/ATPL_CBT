@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CodeEditorThemeService } from '../../../services/code-editor-theme-service';
@@ -13,7 +13,8 @@ interface monacoEditorType {
   templateUrl: './monoco-editor.html',
   styleUrl: './monoco-editor.css',
 })
-export class MonacoEditor {
+export class MonacoEditor implements OnInit {
+  @Input() currentLanguage: string = '';
   editorOptions: monacoEditorType = {
     language: 'cpp',
     automaticLayout: true,
@@ -23,10 +24,6 @@ export class MonacoEditor {
   };
 
   constructor(private applyTheme: CodeEditorThemeService) {}
-
-  toggletheme() {
-    this.applyTheme.setTheme();
-  }
 
   onEditorInit(editor: any) {
     console.log(this.applyTheme.getDefaultTheme());
@@ -38,6 +35,9 @@ export class MonacoEditor {
       this.editorOptions = { ...this.editorOptions, language: currentLanguage };
       this.code = '';
     }
+  }
+  changedCode(value: String) {
+    console.log(value);
   }
 
   code = `
@@ -59,4 +59,11 @@ int main() {
     return 0;
 }
    `;
+  ngOnInit(): void {
+    console.log(this.currentLanguage);
+    this.editorOptions = {
+      ...this.editorOptions,
+      language: this.currentLanguage,
+    };
+  }
 }
