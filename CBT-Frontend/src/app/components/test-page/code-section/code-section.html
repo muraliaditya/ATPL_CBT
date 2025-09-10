@@ -1,10 +1,10 @@
 <div *ngIf="getCurrentQuestion()" class="w-full bg-gray-50 h-full">
   <p-splitter
     [ngStyle]="{ height: '100%' }"
-    class="border border-gray-300 shadow-lg bg-white"
+    class="border border-gray-300 shadow-lg bg-gray-200 rounded-lg"
   >
     <ng-template class="rounded-lg" pTemplate="panel">
-      <div class="h-full flex flex-col">
+      <div class="h-full flex flex-col rounded-lg overflow-hidden">
         <div
           class="shadow-md px-6 py-1 font-semibold text-lg bg-indigo-500 text-white rounded-t-lg"
         >
@@ -45,9 +45,13 @@
     </ng-template>
 
     <ng-template pTemplate="panel">
-      <p-splitter [panelSizes]="[66.67, 33.33]" layout="vertical">
+      <p-splitter
+        [panelSizes]="[66.67, 33.33]"
+        layout="vertical"
+        class="rounded-lg bg-gray-200 overflow-hidden"
+      >
         <ng-template pTemplate="panel">
-          <div class="h-full w-full">
+          <div class="h-full w-full rounded-lg flex flex-col overflow-hidden">
             <div
               class="bg-indigo-600 flex gap-5 rounded-t-lg items-center text-white text-sm font-bold px-2 py-1.5"
             >
@@ -61,9 +65,11 @@
                 <img src="/svgs/down-arrow.svg" class="w-5 h-5 invert" />
               </div>
             </div>
-            <app-monaco-editor></app-monaco-editor>
+            <div class="flex-1 overflow-hidden">
+              <app-monaco-editor></app-monaco-editor>
+            </div>
             <div
-              class="border border-gray-200 flex gap-2 rounded-b-lg text-white text-sm font-bold px-3 py-1"
+              class="bg-white border-t border-gray-200 flex gap-2 rounded-b-lg text-white text-sm font-bold px-3 py-1"
             >
               <button
                 class="px-4 font-bold text-sm rounded-md cursor-pointer py-1 w-fit h-fit bg-blue-500 text-white"
@@ -80,13 +86,13 @@
         </ng-template>
 
         <ng-template pTemplate="panel">
-          <div class="h-full flex flex-col">
+          <div class="h-full flex flex-col rounded-lg overflow-hidden">
             <div
-              class="bg-indigo-600 text-white px-6 py-1 font-semibold text-lg border-b"
+              class="bg-indigo-600 text-white px-6 py-1 font-semibold text-lg border-b rounded-t-lg"
             >
               Output & Test Results
             </div>
-            <div class="p-4 flex flex-col gap-3 overflow-y-auto">
+            <div class="p-4 flex bg-white flex-col gap-3 overflow-y-auto">
               <div
                 *ngIf="getCurrentQuestion()?.testcases?.length"
                 class="flex gap-2 flex-wrap"
