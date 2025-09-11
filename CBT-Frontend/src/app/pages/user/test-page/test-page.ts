@@ -19,7 +19,7 @@ export class TestPage implements OnInit, OnDestroy {
   hours: number = 0;
   minutes: number = 32;
   seconds: number = 34;
-  currentCodingQuestionNo: number = 0;
+  currentCodingQuestionNo: number = -1;
   currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
   themeSubcription!: Subscription;
   currentTheme: string = '';
@@ -202,6 +202,7 @@ export class TestPage implements OnInit, OnDestroy {
         this.currentTheme = data;
       },
     });
+    this.currentCodingQuestionNo = 0;
   }
   ngOnDestroy(): void {
     this.themeSubcription.unsubscribe();

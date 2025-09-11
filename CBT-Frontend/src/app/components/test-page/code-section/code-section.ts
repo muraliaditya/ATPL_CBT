@@ -5,6 +5,14 @@ import { PanelModule } from 'primeng/panel';
 import { MonacoEditor } from '../../UI/monoco-editor/monoco-editor';
 import { CodingQuestions, Testcase } from '../../../models/test/questions';
 import { CommonModule } from '@angular/common';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+
+interface languageCodes {
+  name: string;
+  code: string;
+}
+
 @Component({
   selector: 'app-code-section',
   imports: [
@@ -13,14 +21,37 @@ import { CommonModule } from '@angular/common';
     CardModule,
     SplitterModule,
     CommonModule,
+    Select,
+    FormsModule,
   ],
   templateUrl: './code-section.html',
   styleUrl: './code-section.css',
 })
 export class CodeSection implements OnInit {
   language: string = 'cpp';
-  @Input() currentQuestionNo: number = 0;
+
+  currentCode = `
+  // C++ program to check if the number is even
+// or odd using modulo operator
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n = 11;
+
+    // If n is completely divisible by 2
+    if (n % 2 == 0)
+        cout << "Even";
+
+    // If n is NOT completely divisible by 2
+    else
+        cout << "Odd";
+    return 0;
+}
+   `;
+  @Input() currentQuestionNo: number = -1;
   @Input() questions: CodingQuestions[] = [];
+  languagesSupported: string[] = ['cpp', 'python', 'java', 'javascript'];
   currentTestCases: Testcase[] = [];
   viewCurrentTestCase: Testcase | null = null;
 
@@ -46,14 +77,8 @@ export class CodeSection implements OnInit {
 
   setCurrentTestCases(initialQuestion?: CodingQuestions) {
     if (initialQuestion?.testcases.length) {
-      console.log(initialQuestion);
-      console.log(
-        [...initialQuestion.testcases].filter(
-          (testcase) => testcase.explanation
-        )
-      );
       this.currentTestCases = [...initialQuestion.testcases].filter(
-        (testcase) => testcase.explanation
+        (testcase) => testcase.explanation?.trim()
       );
     } else {
       this.currentTestCases = [];

@@ -6,7 +6,7 @@
     <ng-template class="rounded-lg" pTemplate="panel">
       <div class="h-full w-full flex flex-col rounded-lg overflow-hidden">
         <div
-          class="shadow-md px-6 py-1 font-semibold text-lg bg-indigo-500 text-white rounded-t-lg"
+          class="shadow-md px-6 py-1 font-semibold text-lg bg-indigo-600 text-white rounded-t-lg"
         >
           Description
         </div>
@@ -29,15 +29,15 @@
             </h4>
             <p class="mb-1">
               <span class="font-medium">Input:</span> nums =
-              {{ currentTestCases[idx].input1 }}
+              {{ testcase.input1 }}
             </p>
             <p class="mb-2">
               <span class="font-medium">Output:</span>
-              {{ currentTestCases[idx].output }}
+              {{ testcase.output }}
             </p>
             <p class="font-medium mb-2">Explanation:</p>
             <p class="text-sm mt-2">
-              {{ currentTestCases[idx].explanation }}
+              {{ testcase.explanation }}
             </p>
           </div>
         </div>
@@ -60,14 +60,19 @@
 
                 <div class="h-fit mb-1">code</div>
               </div>
-              <div class="flex gap-1 items-center cursor-pointer text-base">
-                <div class="h-fit mb-1 w-10">{{ language }}</div>
-                <img src="/svgs/down-arrow.svg" class="w-5 h-5 invert" />
+              <div class="card flex justify-center">
+                <p-select
+                  [options]="languagesSupported"
+                  [(ngModel)]="language"
+                  placeholder="Select a language"
+                  class="min-w-32 pt-0"
+                />
               </div>
             </div>
             <div class="flex-1 overflow-hidden">
               <app-monaco-editor
                 [currentLanguage]="language"
+                [code]="currentCode"
               ></app-monaco-editor>
             </div>
             <div

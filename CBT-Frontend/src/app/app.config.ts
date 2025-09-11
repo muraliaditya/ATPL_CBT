@@ -18,6 +18,7 @@ import {
   NgxMonacoEditorConfig,
   provideMonacoEditor,
 } from 'ngx-monaco-editor-v2';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
 
 const monacoConfig: NgxMonacoEditorConfig = {
   onMonacoLoad: () => {
@@ -28,6 +29,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    NgxCsvParserModule,
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

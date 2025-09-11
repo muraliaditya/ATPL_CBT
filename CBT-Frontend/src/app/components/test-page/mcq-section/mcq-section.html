@@ -19,7 +19,7 @@
   </div>
   <div
     class="border border-gray-200 p-5 w-[80%] rounded-md shadow-md"
-    *ngIf="questions[currentQuestionNo]"
+    *ngIf="getCurrentQuestion()"
   >
     <h1 class="text-2xl font-semibold">
       {{ currentQuestionNo + 1 }} . {{ questions[currentQuestionNo].question }}

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { McqQuestions } from '../../../models/test/questions';
 import { CommonModule } from '@angular/common';
 import { RadioButton } from 'primeng/radiobutton';
@@ -10,9 +10,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './mcq-section.html',
   styleUrl: './mcq-section.css',
 })
-export class McqSection {
+export class McqSection implements OnInit {
   @Input() questions: McqQuestions[] = [];
-  currentQuestionNo: number = 0;
+  currentQuestionNo: number = -1;
   selectedOption: string = '';
 
   goToNextQuestion() {
@@ -20,6 +20,10 @@ export class McqSection {
   }
   goToPrevQuestion() {
     this.currentQuestionNo = this.currentQuestionNo - 1;
+  }
+
+  getCurrentQuestion(): McqQuestions | undefined {
+    return this.questions[this.currentQuestionNo];
   }
 
   onChange(value: string) {
@@ -52,5 +56,8 @@ export class McqSection {
   }
   changeQuestionNumber(num: number) {
     this.currentQuestionNo = num;
+  }
+  ngOnInit(): void {
+    this.currentQuestionNo = 0;
   }
 }

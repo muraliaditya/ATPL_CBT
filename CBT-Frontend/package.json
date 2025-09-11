@@ -33,6 +33,7 @@
     "@primeuix/themes": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.12",
     "monaco-editor": "^0.52.2",
+    "ngx-csv-parser": "^2.0.0",
     "ngx-monaco-editor-v2": "^20.0.0",
     "postcss": "^8.5.6",
     "primeng": "^20.1.1",

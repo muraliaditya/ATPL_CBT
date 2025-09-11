@@ -2,6 +2,7 @@
   <div class="h-[60px] relative items-center justify-center flex shadow-lg">
     <div class="flex gap-2 py-1.5 px-3 w-fit bg-slate-200 h-fit">
       <div
+        *ngIf="mcqQuestions.length"
         [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
         class="flex items-center gap-2 w-fit py-1 px-5 h-fit cursor-pointer"
         (click)="changeSection('Mcqs')"
@@ -10,6 +11,7 @@
         <p class="font-bold text-lg">Mcqs</p>
       </div>
       <div
+        *ngIf="codingQuestions.length"
         [ngClass]="[
           currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
         ]"
@@ -48,7 +50,12 @@
             <h1>{{ getDisplayTime() }}</h1>
             Time left
           </div>
-          <div class="flex gap-2" *ngIf="currentSection === 'Coding'">
+          <div
+            class="flex gap-2"
+            *ngIf="
+              currentSection === 'Coding' && currentCodingQuestionNo !== -1
+            "
+          >
             <button
               *ngFor="let question of codingQuestions; index as i"
               (click)="changeCurrentCodingQuesNo(i)"
@@ -57,7 +64,7 @@
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-200'
               "
-              class="px-4 font-bold rounded-md cursor-pointer py-2 w-fit h-fit"
+              class="px-3 font-bold text-sm rounded-md cursor-pointer py-1.5 w-fit h-fit"
             >
               {{ i + 1 }}
             </button>

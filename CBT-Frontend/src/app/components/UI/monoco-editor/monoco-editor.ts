@@ -15,6 +15,7 @@ interface monacoEditorType {
 })
 export class MonacoEditor implements OnInit {
   @Input() currentLanguage: string = '';
+  @Input() code: string = '';
   editorOptions: monacoEditorType = {
     language: 'cpp',
     automaticLayout: true,
@@ -40,27 +41,9 @@ export class MonacoEditor implements OnInit {
     console.log(value);
   }
 
-  code = `
-  // C++ program to check if the number is even
-// or odd using modulo operator
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    int n = 11;
-
-    // If n is completely divisible by 2
-    if (n % 2 == 0)
-        cout << "Even";
-
-    // If n is NOT completely divisible by 2
-    else
-        cout << "Odd";
-    return 0;
-}
-   `;
   ngOnInit(): void {
     console.log(this.currentLanguage);
+    console.log(this.code);
     this.editorOptions = {
       ...this.editorOptions,
       language: this.currentLanguage,
