@@ -1,0 +1,9 @@
+title,description,difficulty,inputFormat,outputFormat,sampleInput,sampleOutput,createdBy
+Reverse Number,Write a program to reverse a number,easy,Integer n,Reversed integer,1234,4321,dev1
+Factorial,Find factorial of a number,medium,Integer n,Factorial of n,5,120,dev2
+Palindrome,Check if a number is palindrome,medium,Integer n,YES if palindrome else NO,121,YES,dev3
+Sum of Digits,Find the sum of digits of a number,easy,Integer n,Sum of digits,987,24,dev4
+Fibonacci Series,Print first n Fibonacci numbers,medium,Integer n,Series of n Fibonacci numbers,7,0 1 1 2 3 5 8,dev5
+Prime Check,Check if a number is prime,medium,Integer n,YES if prime else NO,19,YES,dev6
+Armstrong Number,Check if a number is Armstrong,hard,Integer n,YES if Armstrong else NO,153,YES,dev7
+Matrix Multiplication,Multiply two matrices,hard,Matrix A and B,Resultant matrix,"[[1,2],[3,4]] & [[5,6],[7,8]]","[[19,22],[43,50]]",dev8

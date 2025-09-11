@@ -22,13 +22,13 @@ import com.example.cbt_system.service.CsvImportService;
 public class QuestionController {
 	
 //	private final QuestionRepository questionRepo;
-//
+////
 //	public QuestionController(QuestionRepository questionRepo) {
 //		super();
 //		this.questionRepo = questionRepo;
 //	}
 //	
-//	@PostMapping
+//	@PostMapping("/add")
 //	public Question addQuestion(@RequestBody Question question) {
 //		question.setStatus("pending");
 //		return questionRepo.save(question);
