@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { LoginPage } from './pages/user/login-page/login-page';
 import { InstructionsPage } from './pages/user/instructions-page/instructions-page';
 import { TestPage } from './pages/user/test-page/test-page';
-import { CsvParser } from './components/user/csv-parser/csv-parser';
 
 export const routes: Routes = [
   {
@@ -21,9 +20,5 @@ export const routes: Routes = [
     path: 'test',
     loadComponent: () =>
       import('./pages/user/test-page/test-page').then((c) => c.TestPage),
-  },
-  {
-    path: 'parse',
-    component: CsvParser,
   },
 ];
