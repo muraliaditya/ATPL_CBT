@@ -10,7 +10,7 @@ interface InstructionsHeader {
 
 @Component({
   selector: 'app-instructions-page',
-  imports: [Navbar, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './instructions-page.html',
   styleUrl: './instructions-page.css',
 })

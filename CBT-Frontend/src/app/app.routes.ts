@@ -2,12 +2,11 @@ import { Routes } from '@angular/router';
 import { LoginPage } from './pages/user/login-page/login-page';
 import { InstructionsPage } from './pages/user/instructions-page/instructions-page';
 import { TestPage } from './pages/user/test-page/test-page';
-
+import { ParticipantForm } from './pages/user/participant-form/participant-form';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./pages/user/login-page/login-page').then((c) => c.LoginPage),
+    component: ParticipantForm,
   },
   {
     path: 'test-instructions',

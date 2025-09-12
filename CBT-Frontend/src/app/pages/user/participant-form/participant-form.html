@@ -1,0 +1,141 @@
+<div
+  class="h-[100vh] w-full flex relative items-center justify-center gap-5 p-5"
+>
+  <p-toast />
+
+  <form
+    [formGroup]="participantForm"
+    class="w-[400px] p-5 rounded-lg shadow-lg flex flex-col gap-5 items-center justify-between"
+    (ngSubmit)="onSubmit()"
+  >
+    <h2 class="text-3xl font-bold">Join Contest</h2>
+    <div class="flex flex-col gap-4 w-[90%]">
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="name"
+          pInputText
+          class="w-full"
+          id="name"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="name">name</label>
+        <div
+          *ngIf="
+            participantForm.controls['name'].invalid &&
+            participantForm.controls['name'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div *ngIf="participantForm.controls['name'].errors?.['required']">
+            name is required
+          </div>
+        </div>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="collegeRedgNo"
+          pInputText
+          class="w-full"
+          id="college_reg_no"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="college_reg_no">College Registration No</label>
+        <div
+          *ngIf="
+            participantForm.controls['collegeRedgNo'].invalid &&
+            participantForm.controls['collegeRedgNo'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="participantForm.controls['collegeRedgNo'].errors?.['required']"
+          >
+            college Regd no is required
+          </div>
+        </div>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="email"
+          class="w-full"
+          pInputText
+          id="email"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="email">Email</label>
+        <div
+          *ngIf="
+            participantForm.controls['email'].invalid &&
+            participantForm.controls['email'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div *ngIf="participantForm.controls['email'].errors?.['required']">
+            email is required
+          </div>
+          <div *ngIf="participantForm.controls['email'].errors?.['email']">
+            enter valid email
+          </div>
+        </div>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="collegeName"
+          class="w-full"
+          pInputText
+          id="collegeName"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="collegeName">college Name</label>
+        <div
+          *ngIf="
+            participantForm.controls['collegeName'].invalid &&
+            participantForm.controls['collegeName'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="participantForm.controls['collegeName'].errors?.['required']"
+          >
+            college Name is required
+          </div>
+        </div>
+      </p-floatlabel>
+    </div>
+    <button
+      type="submit"
+      [disabled]="participantForm.invalid"
+      class="w-[90%] p-2 text-white flex gap-2 items-center justify-center bg-blue-500 text-xl disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
+    >
+      <!-- @if(isSubmitting){
+      <p-progress-spinner
+        strokeWidth="6"
+        fill="transparent"
+        animationDuration=".5s"
+        class="!m-0"
+        [style]="{ width: '25px', height: '25px' }"
+      />
+
+      }  -->
+
+      Join
+    </button>
+  </form>
+  <div>
+    <img
+      class="w-[400px] h-[400px] rounded-lg"
+      src="https://miro.medium.com/v2/resize:fit:1200/0*n-2bW82Z6m6U2bij.jpeg"
+      alt="side-image"
+    />
+  </div>
+</div>
