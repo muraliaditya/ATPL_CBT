@@ -18,6 +18,9 @@ Login!: FormGroup;
     });
   }
   submit(): void {
-    alert('form submitted');
+    if(this.Login.valid){
+      alert("Admin logged In");
+      this.Login.reset()
+    }
 }
 }

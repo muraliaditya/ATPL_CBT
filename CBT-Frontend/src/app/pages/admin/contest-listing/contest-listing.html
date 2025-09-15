@@ -1,0 +1,83 @@
+<div class=" p-5 ">
+    <div class="flex justify-between">
+    <div class="flex gap-3">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <label for="on_label">ContestName</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <label for="on_label">ContestId</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select [options]="status" [(ngModel)]="choice" placeholder="Status" class="w-40 pt-0" />
+        <label for="on_label">Status</label>
+    </p-floatlabel>
+    <button class="btn">Search</button>
+    </div>
+    <button class="btn">Create Contest</button>
+    </div>
+    <div class="mt-5 flex ">
+    <table class="table-auto w-full border-seperate border-spacing-6 border border-gray-700">
+    <thead class="m-5">
+    <tr>
+      <th>Contest ID </th>
+      <th>Contest Name</th>
+      <th>Status</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Duration </th>
+      <th>Eligibility</th>
+      <th>Results</th>
+    </tr>
+  </thead>
+  <tbody class="m-5">
+    <tr class="border border-gray-600 text-center">
+      <td>#CT-0441</td>
+      <td>Contest 1</td>
+      <td><p-message class="w-10" severity="error">Completed</p-message></td>
+      <td>24 Jan 2025<br>
+        5.00pm
+      </td>
+      <td>24 Jan 2025<br>
+        7.00pm
+      </td>
+      <td>120 min</td>
+      <td>Student</td>
+      <td><button class="btn">View Results</button></td>
+    </tr>
+    <tr class="border border-gray-600 text-center">
+      <td>#CT-0443</td>
+      <td>Contest 1</td>
+      <td><p-message styleClass="p-0" severity="success">Active</p-message></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Priliminary</td>
+      <td><button class="btn">View Results</button></td>
+    </tr>
+    <tr class="border border-gray-600 text-center">
+      <td>#CT-0442</td>
+      <td>Contest 1</td>
+      <td class="size-fit text-center"><p-message class="size-fit text-center" severity="error">Completed</p-message></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Advanced</td>
+      <td><button class="btn">View Results</button></td>
+    </tr>
+    <tr class="border border-gray-600 text-center">
+      <td>#CT-0443</td>
+      <td>Contest 1</td>
+      <td><p-message severity="success">Active</p-message></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><button class="btn">View Results</button></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
