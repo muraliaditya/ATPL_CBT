@@ -1,124 +1,142 @@
-<div class="w-full p-5">
+<div class="w-full h-full p-5 overflow-y-auto">
   <div class="flex flex-col gap-4">
-    <h1 class="text-3xl font-bold">Contest Results</h1>
-    <h1 class="text-2xl font-bold text-zinc-400">#{{ currentContestId }}</h1>
+    <div class="w-full p-5">
+      <div class="flex flex-col gap-4">
+        <h1 class="text-3xl font-bold">Contest Results</h1>
+        <h1 class="text-2xl font-bold text-zinc-400">
+          #{{ currentContestId }}
+        </h1>
 
-    <div class="flex items-center gap-6">
-      <div class="flex gap-5 items-center">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="codingMarks"
-            type="number"
-            min="0"
-            [(ngModel)]="codingMarks"
-            autocomplete="off"
-          />
-          <label for="codingMarks">Coding Marks</label>
-        </p-floatlabel>
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="McqMarks"
-            type="number"
-            min="0"
-            [(ngModel)]="McqMarks"
-            autocomplete="off"
-          />
-          <label for="McqMarks">MCQ Marks</label>
-        </p-floatlabel>
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="TotalMarks"
-            type="number"
-            [(ngModel)]="TotalMarks"
-            min="0"
-            autocomplete="off"
-          />
-          <label for="TotalMarks">Total Marks</label>
-        </p-floatlabel>
-      </div>
+        <div class="flex items-center gap-6">
+          <div class="flex gap-5 items-center">
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="codingMarks"
+                type="number"
+                min="0"
+                [(ngModel)]="codingMarks"
+                autocomplete="off"
+              />
+              <label for="codingMarks">Coding Marks</label>
+            </p-floatlabel>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="McqMarks"
+                type="number"
+                min="0"
+                [(ngModel)]="McqMarks"
+                autocomplete="off"
+              />
+              <label for="McqMarks">MCQ Marks</label>
+            </p-floatlabel>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="TotalMarks"
+                type="number"
+                [(ngModel)]="TotalMarks"
+                min="0"
+                autocomplete="off"
+              />
+              <label for="TotalMarks">Total Marks</label>
+            </p-floatlabel>
+          </div>
 
-      <button
-        type="button"
-        [disabled]="disableFilterButton()"
-        (click)="filterData()"
-        class="py-1 text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
-      >
-        Filter
-      </button>
-    </div>
-    <div class="flex gap-4">
-      <p-floatlabel variant="on">
-        <input
-          pInputText
-          id="username"
-          type="text"
-          [(ngModel)]="userSearch"
-          autocomplete="off"
-          required
-        />
-        <label for="username">username</label>
-      </p-floatlabel>
-      <button
-        type="button"
-        (click)="userNameSearch()"
-        [disabled]="!userSearch.length"
-        class="py-1 w-fit text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
-      >
-        Search
-      </button>
-    </div>
-    <div class="mt-5" *ngIf="resultsData.length">
-      <div class="rounded-lg w-full">
-        <table class="w-full border-[#E2E8F0]">
-          <thead>
-            <tr class="bg-[#FAFAFA] text-[#64748B] border-[#E2E8F0] border">
-              <th class="text-left py-3 px-2" *ngFor="let header of headers">
-                {{ header }}
-              </th>
-              <th class="text-left py-3 px-2">answers</th>
-            </tr>
-          </thead>
-          <tbody class="border-[#E2E8F0] border">
-            <tr
-              class="border-b-[#E2E8F0] border border-x-0"
-              *ngFor="let result of resultsData"
-            >
-              <td
-                [ngClass]="
-                  boldColumns.includes(prior.toString()) ? 'font-bold' : ''
-                "
-                class="px-2 py-3"
-                *ngFor="let prior of priority"
+          <button
+            type="button"
+            [disabled]="disableFilterButton()"
+            (click)="filterData()"
+            class="py-1 text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+          >
+            Filter
+          </button>
+        </div>
+        <div class="flex gap-4">
+          <p-floatlabel variant="on">
+            <input
+              pInputText
+              id="username"
+              type="text"
+              [(ngModel)]="userSearch"
+              autocomplete="off"
+              required
+            />
+            <label for="username">username</label>
+          </p-floatlabel>
+          <button
+            type="button"
+            (click)="userNameSearch()"
+            [disabled]="!userSearch.length"
+            class="py-1 w-fit text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+          >
+            Search
+          </button>
+        </div>
+
+        <div
+          class="w-full border border-slate-200 rounded-lg overflow-hidden overflow-x-auto shadow-sm"
+        >
+          <table class="w-full">
+            <thead>
+              <tr class="bg-[#FAFAFA] text-slate-600 border-b border-slate-200">
+                <th
+                  class="text-left py-4 px-4 font-semibold"
+                  *ngFor="let header of headers"
+                >
+                  {{ header }}
+                </th>
+                <th class="text-left py-4 px-4 font-semibold">answers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="hover:bg-slate-50 border-b border-slate-200 transition-colors duration-150 last:border-b-0"
+                *ngFor="let result of resultsData; let isLast = last"
               >
-                <ng-container *ngIf="prior === 'participantId'">
-                  {{ "#" + result[prior.toString()] }}
-                </ng-container>
-                <ng-container *ngIf="prior === 'userName'">
-                  <div class="text-sm flex flex-col font-semibold">
-                    <div>{{ result[prior.toString()] }}</div>
-                    <h1 class="text-slate-400">{{ result.email }}</h1>
-                  </div>
-                </ng-container>
-                <ng-container
-                  *ngIf="prior !== 'participantId' && prior !== 'userName'"
+                <td
+                  *ngFor="let prior of priority"
+                  class="px-4 py-4"
+                  [ngClass]="
+                    boldColumns.includes(prior.toString())
+                      ? 'font-bold text-black'
+                      : 'text-slate-700'
+                  "
                 >
-                  {{ result[prior.toString()] }}
-                </ng-container>
-              </td>
-              <td>
-                <button
-                  type="button"
-                  class="py-1 text-white px-3 flex gap-2 items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
-                >
-                  View Answers
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <ng-container *ngIf="prior === 'participantId'">
+                    <span class="font-mono text-slate-500">{{
+                      "#" + result[prior.toString()]
+                    }}</span>
+                  </ng-container>
+                  <ng-container *ngIf="prior === 'userName'">
+                    <div class="flex flex-col">
+                      <span class="font-semibold text-slate-900">{{
+                        result[prior.toString()]
+                      }}</span>
+                      <span class="text-sm text-slate-400">{{
+                        result.email
+                      }}</span>
+                    </div>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="prior !== 'participantId' && prior !== 'userName'"
+                  >
+                    {{ result[prior.toString()] }}
+                  </ng-container>
+                </td>
+                <td class="px-4 py-4">
+                  <button
+                    type="button"
+                    class="py-2 px-4 whitespace-nowrap text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-400 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 outline-none border-none focus:outline-none active:outline-none"
+                  >
+                    View Answers
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
