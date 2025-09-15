@@ -39,7 +39,7 @@ export class ViewResult implements OnInit {
     );
   }
   constructor(private route: ActivatedRoute) {}
-
+  //hi
   resultsData: Participants[] = [];
   originalData: Participants[] = [];
 
