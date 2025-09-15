@@ -10,7 +10,7 @@
     <label for="on_label">ContestId</label>
     </p-floatlabel>
     <p-floatlabel class="w-full md:w-56" variant="on">
-            <p-select [options]="status" [(ngModel)]="choice" placeholder="Status" class="w-40 pt-0" />
+            <p-select [options]="status" [(ngModel)]="choice" class="w-40 pt-0" />
         <label for="on_label">Status</label>
     </p-floatlabel>
     <button class="btn">Search</button>
@@ -18,64 +18,52 @@
     <button class="btn">Create Contest</button>
     </div>
     <div class="mt-5 flex ">
-    <table class="table-auto w-full border-seperate border-spacing-6 border border-gray-700">
-    <thead class="m-5">
+    <table class="table-auto w-full border-seperate border-spacing-2 border border-gray-100">
+    <thead class="bg-gray-100 text-center">
     <tr>
-      <th>Contest ID </th>
-      <th>Contest Name</th>
-      <th>Status</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Duration </th>
-      <th>Eligibility</th>
-      <th>Results</th>
+      <th class="px-4 py-2 ">Contest ID</th>
+        <th class="px-4 py-2">Contest Name</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Start Time</th>
+        <th class="px-4 py-2">End Time</th>
+        <th class="px-4 py-2">Duration</th>
+        <th class="px-4 py-2">Eligibility</th>
+        <th class="px-4 py-2">Results</th>
     </tr>
   </thead>
   <tbody class="m-5">
-    <tr class="border border-gray-600 text-center">
-      <td>#CT-0441</td>
-      <td>Contest 1</td>
-      <td><p-message class="w-10" severity="error">Completed</p-message></td>
-      <td>24 Jan 2025<br>
-        5.00pm
-      </td>
-      <td>24 Jan 2025<br>
-        7.00pm
-      </td>
-      <td>120 min</td>
-      <td>Student</td>
-      <td><button class="btn">View Results</button></td>
-    </tr>
-    <tr class="border border-gray-600 text-center">
-      <td>#CT-0443</td>
-      <td>Contest 1</td>
-      <td><p-message styleClass="p-0" severity="success">Active</p-message></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>Priliminary</td>
-      <td><button class="btn">View Results</button></td>
-    </tr>
-    <tr class="border border-gray-600 text-center">
-      <td>#CT-0442</td>
-      <td>Contest 1</td>
-      <td class="size-fit text-center"><p-message class="size-fit text-center" severity="error">Completed</p-message></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>Advanced</td>
-      <td><button class="btn">View Results</button></td>
-    </tr>
-    <tr class="border border-gray-600 text-center">
-      <td>#CT-0443</td>
-      <td>Contest 1</td>
-      <td><p-message severity="success">Active</p-message></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td><button class="btn">View Results</button></td>
-    </tr>
+    <tr *ngFor="let contest of contests; let i = index"
+    (click)="toggleMenu(i, $event)"
+          class="border border-gray-300 text-center hover:bg-gray-50 cursor-pointer relative">
+
+        <td class="px-4 py-2">{{ contest.id }}</td>
+        <td class="px-4 py-2">{{ contest.name }}</td>
+        <td class="px-4 py-2">
+          <span class="px-2 py-1 rounded text-sm font-medium"
+                [ngClass]="contest.status === 'COMPLETED'
+                            ? 'bg-red-100 text-red-600'
+                            : 'bg-green-100 text-green-600'">
+            {{ contest.status }}
+          </span>
+        </td>
+        <td class="px-4 py-2">{{ contest.startTime || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.endTime || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.duration || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.eligibility || ' ' }}</td>
+        <td class="px-4 py-2 relative">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"          >
+            View Results
+          </button>
+        </td>
+        <div *ngIf="openRow === i"
+               class="absolute right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded p-2 w-28 z-10">
+            <ul class="text-left">
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer" (click)="onView(contest)">View</li>
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer" (click)="onEdit(contest)">Edit</li>
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer text-red-600" (click)="onDelete(contest)">Delete</li>
+            </ul>
+          </div>
+      </tr>
   </tbody>
 </table>
 </div>
