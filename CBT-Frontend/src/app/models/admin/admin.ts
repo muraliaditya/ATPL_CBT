@@ -17,7 +17,6 @@ export interface CodeQuestions {
   codeQuestionId: string;
   questionName: string;
   difficulty: string;
-  example:string;
   description:string;
   inputParams:string[];
   inputType: string[];

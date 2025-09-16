@@ -113,7 +113,7 @@ coding:CodeQuestions[]= [
       difficulty: 'Easy',
       description:
         'Write a function that takes a string and returns it reversed.',
-      example:'Input : Teacher Output: rehcaeT',
+      
       inputParams: ['str'],
       inputType: ['string'],
       outputType: 'string',
@@ -140,7 +140,6 @@ coding:CodeQuestions[]= [
       difficulty: 'Easy',
       description:
         'Write a function that takes a string and returns it reversed.',
-      example:'str',
       inputParams: ['str'],
       inputType: ['string'],
       outputType: 'string',
