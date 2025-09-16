@@ -6,16 +6,3 @@
   background-color: rgb(37 99 235) !important;
 }
 
-:host ::ng-deep .p-select .p-select-label,
-:host ::ng-deep .p-select .p-select-item {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  color: white !important;
-}
-
-:host ::ng-deep .p-select {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  background-color: rgb(79 70 229) !important;
-  border: none !important;
-}

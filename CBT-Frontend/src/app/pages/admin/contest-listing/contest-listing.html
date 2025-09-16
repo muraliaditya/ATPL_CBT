@@ -1,0 +1,71 @@
+<div class=" p-5 ">
+    <div class="flex justify-between">
+    <div class="flex gap-3">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <label for="on_label">ContestName</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <label for="on_label">ContestId</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select [options]="status" [(ngModel)]="choice" class="w-40 pt-0" />
+        <label for="on_label">Status</label>
+    </p-floatlabel>
+    <button class="btn">Search</button>
+    </div>
+    <button class="btn">Create Contest</button>
+    </div>
+    <div class="mt-5 flex ">
+    <table class="table-auto w-full border-seperate border-spacing-2 border border-gray-100">
+    <thead class="bg-gray-100 text-center">
+    <tr>
+      <th class="px-4 py-2 ">Contest ID</th>
+        <th class="px-4 py-2">Contest Name</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Start Time</th>
+        <th class="px-4 py-2">End Time</th>
+        <th class="px-4 py-2">Duration</th>
+        <th class="px-4 py-2">Eligibility</th>
+        <th class="px-4 py-2">Results</th>
+    </tr>
+  </thead>
+  <tbody class="m-5">
+    <tr *ngFor="let contest of contests; let i = index"
+    (click)="toggleMenu(i, $event)"
+          class="border border-gray-300 text-center hover:bg-gray-50 cursor-pointer relative">
+
+        <td class="px-4 py-2">{{ contest.id }}</td>
+        <td class="px-4 py-2">{{ contest.name }}</td>
+        <td class="px-4 py-2">
+          <span class="px-2 py-1 rounded text-sm font-medium"
+                [ngClass]="contest.status === 'COMPLETED'
+                            ? 'bg-red-100 text-red-600'
+                            : 'bg-green-100 text-green-600'">
+            {{ contest.status }}
+          </span>
+        </td>
+        <td class="px-4 py-2">{{ contest.startTime || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.endTime || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.duration || ' ' }}</td>
+        <td class="px-4 py-2">{{ contest.eligibility || ' ' }}</td>
+        <td class="px-4 py-2 relative">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"          >
+            View Results
+          </button>
+        </td>
+        <div *ngIf="openRow === i"
+               class="absolute right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded p-2 w-28 z-10">
+            <ul class="text-left">
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer" (click)="onView(contest)">View</li>
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer" (click)="onEdit(contest)">Edit</li>
+              <li class="px-2 py-1 hover:bg-gray-100 cursor-pointer text-red-600" (click)="onDelete(contest)">Delete</li>
+            </ul>
+          </div>
+      </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
