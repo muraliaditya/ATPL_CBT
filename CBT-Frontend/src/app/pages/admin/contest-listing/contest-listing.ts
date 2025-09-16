@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { CommonModule } from '@angular/common';
-
 interface Contest {
   id: string;
   name: string;
