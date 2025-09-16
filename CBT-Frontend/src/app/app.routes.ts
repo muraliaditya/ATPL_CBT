@@ -5,7 +5,6 @@ import { TestPage } from './pages/user/test-page/test-page';
 import { AdminLogin } from './pages/admin/admin-login/admin-login';
 import { ParticipantForm } from './pages/user/participant-form/participant-form';
 import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-section';
-import { ViewResult } from './pages/admin/view-result/view-result';
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
 export const routes: Routes = [
   {
@@ -31,10 +30,7 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminMainSection,
     children: [
-      {
-        path: 'manage-contests',
-        component: ViewResult,
-      },
+     
     ],
   },
   {
