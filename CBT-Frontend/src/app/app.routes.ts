@@ -5,11 +5,7 @@ import { TestPage } from './pages/user/test-page/test-page';
 import { AdminLogin } from './pages/admin/admin-login/admin-login';
 import { ParticipantForm } from './pages/user/participant-form/participant-form';
 import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-section';
-import { ViewResult } from './pages/admin/view-result/view-result';
-<<<<<<< HEAD
-=======
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
->>>>>>> origin/cbt-frontend2
 export const routes: Routes = [
   {
     path: '',
@@ -23,43 +19,23 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'admin-login',
+    component: AdminLogin,
+  },
+  {
     path: 'test',
     loadComponent: () =>
       import('./pages/user/test-page/test-page').then((c) => c.TestPage),
   },
   {
-<<<<<<< HEAD
-=======
-    path:'admin-login',component:AdminLogin
-  },
-  {
->>>>>>> origin/cbt-frontend2
     path: 'admin',
     component: AdminMainSection,
     children: [
-      {
-<<<<<<< HEAD
-        path: 'view-result/:id',
-=======
-        path: 'manage-contests',
->>>>>>> origin/cbt-frontend2
-        component: ViewResult,
-      },
-    ],
-  },
-  {
-<<<<<<< HEAD
-    path: 'admin-login',
-    component: AdminLogin,
-=======
-    path: 'admin',
-    component: AdminMainSection,
-    children: [
+     
       {
         path: 'manage-contestsList',
         component: ContestListing,
       },
     ],
->>>>>>> origin/cbt-frontend2
   },
 ];
