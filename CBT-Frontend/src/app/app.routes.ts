@@ -6,6 +6,8 @@ import { AdminLogin } from './pages/admin/admin-login/admin-login';
 import { ParticipantForm } from './pages/user/participant-form/participant-form';
 import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-section';
 import { ViewResult } from './pages/admin/view-result/view-result';
+import { CreateContest } from './pages/admin/create-contest/create-contest';
+import { Practice } from './compoennts/practice/practice';
 export const routes: Routes = [
   {
     path: '',
@@ -31,10 +33,18 @@ export const routes: Routes = [
         path: 'view-result/:id',
         component: ViewResult,
       },
+      {
+        path: 'create-contest',
+        component: CreateContest,
+      },
     ],
   },
   {
     path: 'admin-login',
     component: AdminLogin,
+  },
+  {
+    path: 'path',
+    component: Practice,
   },
 ];

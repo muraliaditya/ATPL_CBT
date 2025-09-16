@@ -212,7 +212,7 @@ export class ViewResult implements OnInit {
     if (id) {
       this.currentContestId = id;
     }
-    this.eligibilty = 'Student';
+    this.eligibilty = 'Experienced';
     this.compareCategory();
   }
 }

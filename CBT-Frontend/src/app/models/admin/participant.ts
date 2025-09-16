@@ -15,3 +15,9 @@ export interface Participants {
   mcqMarks: number;
   totalMarks: number;
 }
+
+interface McqQuestion {
+  id: string;
+  name: string;
+  option1: string;
+}

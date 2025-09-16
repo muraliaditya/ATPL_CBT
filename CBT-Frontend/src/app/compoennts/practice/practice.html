@@ -1,0 +1,10 @@
+<section *ngIf="mcqs$ | async as mcqs">
+  <div *ngFor="let q of mcqs" class="mcq-item">
+    <h3>{{ q.question }}</h3>
+    <ol type="a">
+      <li *ngFor="let opt of q.options">{{ opt }}</li>
+    </ol>
+  </div>
+  <button (click)="addQuestion()">add</button>
+  <button (click)="changeQuestion()">change</button>
+</section>

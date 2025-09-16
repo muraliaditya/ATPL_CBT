@@ -3,7 +3,9 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
 
+import { appReducers } from './stores/main-store/app.reducer';
 import { provideRouter } from '@angular/router';
 import { MyPreset } from './themes/my-preference';
 
@@ -19,6 +21,8 @@ import {
   provideMonacoEditor,
 } from 'ngx-monaco-editor-v2';
 import { NgxCsvParserModule } from 'ngx-csv-parser';
+import { provideStore } from '@ngrx/store';
+import { contestReducer } from './stores/sub-stores/contest-store/contest.reducer';
 
 const monacoConfig: NgxMonacoEditorConfig = {
   onMonacoLoad: () => {
@@ -35,11 +39,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideNoopAnimations(),
     provideHttpClient(),
-
     providePrimeNG({
       theme: {
         preset: MyPreset,
-
         options: {
           darkModeSelector: false,
           cssLayer: {
@@ -50,5 +52,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideMonacoEditor(monacoConfig),
+    provideStore(appReducers),
   ],
 };
