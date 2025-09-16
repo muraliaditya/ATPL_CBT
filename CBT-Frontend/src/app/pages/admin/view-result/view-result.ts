@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { Participants } from '../../../models/admin/participant';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -216,16 +215,4 @@ export class ViewResult implements OnInit {
     this.eligibilty = 'Student';
     this.compareCategory();
   }
-=======
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-view-result',
-  imports: [],
-  templateUrl: './view-result.html',
-  styleUrl: './view-result.css'
-})
-export class ViewResult {
-
->>>>>>> origin/cbt-frontend2
 }
