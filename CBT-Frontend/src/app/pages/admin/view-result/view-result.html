@@ -70,48 +70,71 @@
         Search
       </button>
     </div>
-    <div class="mt-5" *ngIf="resultsData.length">
-      <div class="rounded-lg w-full">
-        <table class="w-full border-[#E2E8F0]">
+    <div
+      class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden"
+    >
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-full">
           <thead>
-            <tr class="bg-[#FAFAFA] text-[#64748B] border-[#E2E8F0] border">
-              <th class="text-left py-3 px-2" *ngFor="let header of headers">
+            <tr
+              class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200"
+            >
+              <th
+                class="text-left py-5 px-6 font-semibold text-slate-700 tracking-wide uppercase text-xs"
+                *ngFor="let header of headers"
+              >
                 {{ header }}
               </th>
-              <th class="text-left py-3 px-2">answers</th>
+              <th
+                class="text-left py-5 px-6 font-semibold text-slate-700 tracking-wide uppercase text-xs"
+              >
+                Actions
+              </th>
             </tr>
           </thead>
-          <tbody class="border-[#E2E8F0] border">
+          <tbody class="divide-y divide-slate-100">
             <tr
-              class="border-b-[#E2E8F0] border border-x-0"
-              *ngFor="let result of resultsData"
+              class="hover:bg-slate-50 transition-colors duration-200 group"
+              *ngFor="let result of resultsData; let isLast = last"
             >
               <td
-                [ngClass]="
-                  boldColumns.includes(prior.toString()) ? 'font-bold' : ''
-                "
-                class="px-2 py-3"
                 *ngFor="let prior of priority"
+                class="px-6 py-5"
+                [ngClass]="
+                  boldColumns.includes(prior.toString())
+                    ? 'font-bold text-slate-900'
+                    : 'text-slate-700'
+                "
               >
                 <ng-container *ngIf="prior === 'participantId'">
-                  {{ "#" + result[prior.toString()] }}
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 font-mono"
+                  >
+                    {{ "#" + result[prior.toString()] }}
+                  </span>
                 </ng-container>
                 <ng-container *ngIf="prior === 'userName'">
-                  <div class="text-sm flex flex-col font-semibold">
-                    <div>{{ result[prior.toString()] }}</div>
-                    <h1 class="text-slate-400">{{ result.email }}</h1>
+                  <div class="flex flex-col space-y-1">
+                    <span class="font-semibold text-slate-900 text-sm">
+                      {{ result[prior.toString()] }}
+                    </span>
+                    <span class="text-xs text-slate-500">
+                      {{ result.email }}
+                    </span>
                   </div>
                 </ng-container>
                 <ng-container
                   *ngIf="prior !== 'participantId' && prior !== 'userName'"
                 >
-                  {{ result[prior.toString()] }}
+                  <span class="text-sm font-medium">{{
+                    result[prior.toString()]
+                  }}</span>
                 </ng-container>
               </td>
-              <td>
+              <td class="px-6 py-5">
                 <button
                   type="button"
-                  class="py-1 text-white px-3 flex gap-2 items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+                  class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow-md transition-colors duration-200 outline-none border-none focus:outline-none active:outline-none whitespace-nowrap"
                 >
                   View Answers
                 </button>
