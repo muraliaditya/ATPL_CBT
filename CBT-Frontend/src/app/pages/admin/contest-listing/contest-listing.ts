@@ -6,15 +6,6 @@ import { Select } from 'primeng/select';
 import { Message } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { Contest } from '../../../models/admin/admin';
-// interface Contest {
-//   id: string;
-//   name: string;
-//   status: 'ACTIVE' | 'COMPLETED';
-//   startTime?: string;
-//   endTime?: string;
-//   duration?: string;
-//   eligibility?: string;
-// }
 @Component({
   selector: 'app-contest-listing',
   imports: [CommonModule,Message,Select,FloatLabelModule,FormsModule,InputTextModule],
@@ -24,7 +15,8 @@ import { Contest } from '../../../models/admin/admin';
 export class ContestListing {
   choice: string = '';
   status: string[] = ['Completed','Active','InActive'];
-  value2='';
+  ContestId='';
+  ContestName='';
   contests: Contest[] = [
     {
       id: '#CT-0441',

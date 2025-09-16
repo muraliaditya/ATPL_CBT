@@ -7,6 +7,7 @@ import { ParticipantForm } from './pages/user/participant-form/participant-form'
 import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-section';
 import { ViewResult } from './pages/admin/view-result/view-result';
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
+import { ViewContest } from './pages/admin/view-contest/view-contest';
 export const routes: Routes = [
   {
     path: '',
@@ -36,6 +37,10 @@ export const routes: Routes = [
       {
         path: 'view-result/:id',
         component: ViewResult,
+      },
+      {
+        path: 'view-contest/:id',
+        component: ViewContest,
       },
       {
         path: 'manage-contestsList',

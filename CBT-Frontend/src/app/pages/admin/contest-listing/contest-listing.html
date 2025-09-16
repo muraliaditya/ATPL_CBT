@@ -2,18 +2,20 @@
     <div class="flex justify-between">
     <div class="flex gap-3">
     <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <input pInputText id="on_label" [(ngModel)]="ContestId" autocomplete="off" />
     <label for="on_label">ContestName</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="value2" autocomplete="off" />
+    <input pInputText id="on_label" [(ngModel)]="ContestName" autocomplete="off" />
     <label for="on_label">ContestId</label>
     </p-floatlabel>
     <p-floatlabel class="w-full md:w-56" variant="on">
             <p-select [options]="status" [(ngModel)]="choice" class="w-40 pt-0" />
         <label for="on_label">Status</label>
     </p-floatlabel>
-    <button class="btn">Search</button>
+    <button [disabled]="!ContestId && !ContestName && !choice" class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400">
+  Search
+  </button>
     </div>
     <button class="btn">Create Contest</button>
     </div>

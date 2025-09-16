@@ -1,0 +1,15 @@
+<div class="w-full">
+  <div
+    (click)="changeShowState()"
+    class="flex justify-between p-3 border bg-slate-100/20 border-gray-200 shadow-lg rounded-sm cursor-pointer items-center"
+  >
+    <h1 class="w-full font-bold text-lg">{{ headingText }}</h1>
+    <img src="/svgs/BottomArrow.svg" class="w-5 h-5" alt="bottom-arrow" />
+  </div>
+  <div
+    class="p-4 transition ease-out duration-500 border border-gray-200 mt-2 shadow-md rounded-sm"
+    *ngIf="showSection"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>
