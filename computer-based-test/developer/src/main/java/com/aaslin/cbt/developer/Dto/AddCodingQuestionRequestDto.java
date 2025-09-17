@@ -20,6 +20,7 @@ public class AddCodingQuestionRequestDto {
 	 private String methodName;
 	 private BigDecimal executionTimeLimit;
 	 private Long memoryLimit;
+	 private Boolean isActive;
 
 	 private List<AddTestcaseRequestDto> testcases;
 }

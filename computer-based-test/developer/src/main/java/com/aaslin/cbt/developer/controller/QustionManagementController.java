@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionResponse;
+import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
+import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
 import com.aaslin.cbt.developer.Dto.CodingQuestionResponse;
 import com.aaslin.cbt.developer.Dto.FetchCodingQuestionDto;
 import com.aaslin.cbt.developer.Dto.RecentCodingQuestionResponse;
 import com.aaslin.cbt.developer.service.AddCodingQuestionService;
+import com.aaslin.cbt.developer.service.AddMcqQuestionService;
 import com.aaslin.cbt.developer.service.CodingQuestionService;
 import com.aaslin.cbt.developer.service.FetchCodingQuestionService;
 import com.aaslin.cbt.developer.service.RecentCodingQuestionService;
@@ -46,14 +49,14 @@ public class QustionManagementController {
     }
     
     @Autowired
-    private AddCodingQuestionService addQuestionService;
+    private AddCodingQuestionService codingQuestionService;
 
-    @PostMapping
+    @PostMapping("/coding-questions")
     public ResponseEntity<AddCodingQuestionResponse> addQuestion(
             @RequestBody AddCodingQuestionRequestDto request) {
         try {
         	String userId = "DEV001";
-            AddCodingQuestionResponse response = addQuestionService.addCodingQuestion(request, userId);
+        	AddCodingQuestionResponse response = codingQuestionService.addCodingQuestion(request, userId);
             return ResponseEntity.ok(response);  
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -62,6 +65,25 @@ public class QustionManagementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new AddCodingQuestionResponse("Server error: " + e.getMessage(), "error"));
         }
+    }
+    
+    @Autowired 
+    private AddMcqQuestionService mcqQuestionService;
+    
+    @PostMapping("/mcq-questions")
+    public ResponseEntity<AddMcqQuestionResponse> addMcqQuestions(
+            @RequestBody AddMcqQuestionRequestDto request) {
+    	try {
+    		String userId = "DEV001";
+    		AddMcqQuestionResponse response = mcqQuestionService.addMcqQuestions(request, userId);
+    		return ResponseEntity.ok(response);
+    	} catch(IllegalArgumentException e) {
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(new AddMcqQuestionResponse("Failed: "+e.getMessage(),"error"));
+    	} catch(Exception e) {
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new AddMcqQuestionResponse("Server error: " + e.getMessage(), "error"));
+    	}
     }
     
 }

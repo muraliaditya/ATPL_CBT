@@ -61,6 +61,9 @@ public class McqQuestions {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name="is_active")
+    private Boolean isActive = true;
+    
     public enum ApprovalStatus {
     	PENDING,APPROVED,REJECTED
     }

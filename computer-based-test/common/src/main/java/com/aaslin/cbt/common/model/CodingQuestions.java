@@ -71,6 +71,9 @@ public class CodingQuestions {
     
     @Column(name = "input_params", columnDefinition = "JSON",nullable=false)
     private String inputParams; 
+    
+    @Column(name="is_active")
+    private Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")

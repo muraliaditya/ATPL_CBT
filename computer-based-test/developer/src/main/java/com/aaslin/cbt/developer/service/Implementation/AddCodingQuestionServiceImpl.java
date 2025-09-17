@@ -1,23 +1,24 @@
 package com.aaslin.cbt.developer.service.Implementation;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.aaslin.cbt.common.model.CodingQuestions;
 import com.aaslin.cbt.common.model.Testcases;
 import com.aaslin.cbt.common.model.User;
-import com.aaslin.cbt.developer.util.CustomIdGenerator;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionResponse;
 import com.aaslin.cbt.developer.Dto.AddTestcaseRequestDto;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
 import com.aaslin.cbt.developer.repository.TestcaseRepository;
 import com.aaslin.cbt.developer.service.AddCodingQuestionService;
+import com.aaslin.cbt.developer.util.CustomIdGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 @Service
 public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
@@ -53,7 +54,8 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         question.setMethodName(request.getMethodName());
         question.setExecutionTimeLimit(request.getExecutionTimeLimit());
         question.setMemoryLimit(request.getMemoryLimit());
-
+        question.setIsActive(true);
+        
         LocalDateTime now = LocalDateTime.now();
         question.setCreatedAt(now);
         question.setUpdatedAt(now);
@@ -96,7 +98,7 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
                 }
                 tc.setInputValues(objectMapper.writeValueAsString(inputWrapper));
 
-                // output → JSON
+                // output to JSON
                 tc.setExpectedOutput(objectMapper.writeValueAsString(Map.of("output", tcDto.getOutput())));
             } catch (Exception e) {
                 throw new RuntimeException("Failed to serialize testcase data", e);
