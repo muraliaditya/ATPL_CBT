@@ -1,0 +1,139 @@
+<div>
+  <app-admin-header heading="View Participant Response"></app-admin-header>
+  <div class="p-5">
+    <div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
+      <div
+        [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
+        class="flex flex-1 justify-center items-center gap-2 w-fit py-2 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Mcqs')"
+      >
+        <img src="/images/test.png" class="w-7 h-7" />
+        <p class="font-bold text-lg">Mcqs</p>
+      </div>
+      <div
+        [ngClass]="[
+          currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
+        ]"
+        class="flex flex-1 justify-center items-center gap-2 w-fit bg-red py-2 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Coding')"
+      >
+        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <p class="font-bold text-lg">Coding</p>
+      </div>
+    </div>
+    <div
+      *ngIf="mcqQuestions.length && currentSection === 'Mcqs'"
+      class="mt-5 flex flex-col gap-4"
+    >
+      <div
+        class="px-5 py-3 flex flex-col gap-3 rounded-lg shadow-md border border-gray-200"
+        *ngFor="let mcqQuestions of mcqQuestions; index as idx"
+      >
+        <h1 class="font-bold text-lg">
+          {{ idx + 1 }} . {{ mcqQuestions.question }}
+        </h1>
+        <div class="flex flex-col gap-1 pl-2 font-medium">
+          <h2>A . {{ mcqQuestions.option1 }}</h2>
+          <h2>B . {{ mcqQuestions.option2 }}</h2>
+          <h2>C . {{ mcqQuestions.option3 }}</h2>
+          <h2>D. {{ mcqQuestions.option4 }}</h2>
+        </div>
+        <div
+          [ngClass]="
+            mcqQuestions.isCorrect
+              ? 'bg-green-50 text-green-500  border-green-500 '
+              : 'bg-red-50 text-red-500  border-red-500'
+          "
+          class="w-fit font-semibold px-4 py-2 border-l-3"
+        >
+          Selected Answer : {{ mcqQuestions.selectedAnswer }}
+        </div>
+        <div class="font-semibold px-4">
+          Answer : {{ mcqQuestions.answerKey }}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2" *ngIf="currentSection === 'Coding'">
+      <h1 class="font-bold text-2xl">Questions</h1>
+
+      <div *ngFor="let codingQuestion of codingQuestions; index as i">
+        <app-toggle-section
+          [headingText]="constructHeader(codingQuestion.questionName)"
+          [showSection]="constructShowSectionCondition(i)"
+        >
+          <div class="flex flex-col gap-2">
+            <h1 class="font-semibold text-xl">Description</h1>
+            <h1></h1>
+            <h2>{{ codingQuestion.description }}</h2>
+            <div
+              *ngFor="
+                let testcase of codingQuestion.testcases
+                  | testcaseFilter : filterTestCase;
+                index as idx
+              "
+              class="pt-3"
+            >
+              <div>Example {{ idx + 1 }} :</div>
+              <div *ngFor="let inputValue of testcase.inputValues; index as i">
+                {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+              </div>
+              {{ testcase.explanation }}
+            </div>
+            <div
+              class="h-[300px] overflow-y-auto font-semibold bg-black text-white rounded-lg"
+            >
+              <div class="font-bold text-lg bg-indigo-500 px-2 py-2">
+                Participant Code
+              </div>
+              <div class="p-5">{{ codingQuestion.submittedCode }}</div>
+            </div>
+            <div class="font-bold text-xl">
+              TestCases Passed -
+              {{
+                codingQuestion.publicTestCasesPassed +
+                  codingQuestion.privateTestCasesPassed
+              }}
+              / {{ codingQuestion.testcases.length }}
+            </div>
+            <div *ngFor="let testcase of codingQuestion.testcases; index as i">
+              <h1 class="font-semibold text-lg mt-1 text-zinc-500">
+                TestCase - {{ i + 1 }}
+              </h1>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">input : -</div>
+                  <div class="flex flex-col gap-2 w-fit">
+                    <code
+                      class="bg-black text-white px-2 py-1 rounded"
+                      *ngFor="
+                        let inputValue of testcase.inputValues;
+                        index as i
+                      "
+                    >
+                      {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+                    </code>
+                  </div>
+                  <div class="font-medium">output : -</div>
+                  <code class="bg-black text-white px-2 py-1 rounded">
+                    {{ testcase.expectedOutput }}
+                  </code>
+                </div>
+                <div
+                  [ngClass]="
+                    testcase.testcaseStatus === 'PASSED'
+                      ? 'bg-green-50 text-green-500 '
+                      : 'bg-red-50 text-red-500'
+                  "
+                  class="font-semibold px-4 rounded-full text-sm"
+                >
+                  {{ testcase.testcaseStatus === "PASSED" ? "PASS" : "FAIL" }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </app-toggle-section>
+      </div>
+    </div>
+  </div>
+</div>

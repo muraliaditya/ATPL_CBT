@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+:root {
+  --ui-mode: light;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.btn {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+
+.p-splitter-gutter:hover {
+  background: #228ef2 !important; /* bg-blue-600 */
+}
+
+/* @theme {
+  --breakpoint-xs: 500px;
+} */
+/* max-xs:bg-yellow-300 */

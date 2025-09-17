@@ -1,0 +1,63 @@
+<div class="flex gap-3">
+  <div
+    class="w-65 rounded-md border border-slate-200 shadow-md p-4 h-fit flex flex-wrap gap-4"
+  >
+    <!-- <div
+      class="w-[calc(25%-calc(46px/4))] flex justify-center"
+    > -->
+    <button
+      *ngFor="let mcqquestion of questions; index as i"
+      (click)="changeQuestionNumber(i)"
+      [ngClass]="
+        currentQuestionNo === i ? 'bg-blue-500 text-white' : 'bg-gray-200'
+      "
+      class="px-4 font-bold rounded-md cursor-pointer py-2 w-fit h-fit"
+    >
+      {{ i + 1 }}
+    </button>
+    <!-- </div> -->
+  </div>
+  <div
+    class="border border-gray-200 p-5 w-[80%] rounded-md shadow-md"
+    *ngIf="getCurrentQuestion()"
+  >
+    <h1 class="text-2xl font-semibold">
+      {{ currentQuestionNo + 1 }} . {{ questions[currentQuestionNo].question }}
+    </h1>
+    @if(questions[currentQuestionNo].options.length){
+    <ul
+      class="pt-2 pl-4"
+      *ngFor="let option of questions[currentQuestionNo].options; index as i"
+    >
+      <div class="flex items-center gap-2">
+        <p-radiobutton
+          (ngModelChange)="onChange($event)"
+          [name]="questions[currentQuestionNo].mcqId"
+          [value]="option"
+          [(ngModel)]="selectedOption"
+          [inputId]="option"
+        />
+        <label for="ingredient1" class="ml-2">{{ option }}</label>
+      </div>
+    </ul>
+    }
+    <div class="flex gap-3 justify-end">
+      <button
+        type="click"
+        (click)="goToPrevQuestion()"
+        [disabled]="currentQuestionNo === 0"
+        class="px-5 py-1 text-base text-white flex gap-2 items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
+      >
+        Prev
+      </button>
+      <button
+        type="click"
+        (click)="goToNextQuestion()"
+        [disabled]="currentQuestionNo === questions.length - 1"
+        class="px-5 py-1 text-white flex gap-2 items-center justify-center bg-blue-500 text-base disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>

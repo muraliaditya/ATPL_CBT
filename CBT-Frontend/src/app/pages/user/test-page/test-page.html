@@ -1,0 +1,91 @@
+<div class="h-[100vh]">
+  <div class="h-[60px] relative items-center justify-center flex shadow-lg">
+    <div class="flex gap-2 py-1.5 px-3 w-fit bg-slate-200 h-fit">
+      <div
+        *ngIf="mcqQuestions.length"
+        [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
+        class="flex items-center gap-2 w-fit py-1 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Mcqs')"
+      >
+        <img src="/images/test.png" class="w-7 h-7" />
+        <p class="font-bold text-lg">Mcqs</p>
+      </div>
+      <div
+        *ngIf="codingQuestions.length"
+        [ngClass]="[
+          currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
+        ]"
+        class="flex items-center gap-2 w-fit bg-red py-1 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Coding')"
+      >
+        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <p class="font-bold text-lg">Coding</p>
+      </div>
+    </div>
+    <div
+      *ngIf="currentSection === 'Coding'"
+      (click)="toggleTheme()"
+      class="p-2 rounded-md shadow-lg border-1 border-blue-500 absolute right-5 top-1/2 cursor-pointer -translate-y-1/2"
+    >
+      <img
+        *ngIf="currentTheme === 'lightTheme'"
+        class="w-5 h-5"
+        src="/svgs/dark-mode.svg"
+      />
+      <img
+        *ngIf="currentTheme === 'leetcodeTheme'"
+        class="w-5 h-5"
+        src="/svgs/light-mode.svg"
+      />
+    </div>
+  </div>
+  <div class="h-[calc(100%-60px)]">
+    <div class="p-1 h-full flex justify-center">
+      <div class="w-[90%]">
+        <div
+          class="w-full flex justify-between items-center py-2 font-bold text-xl"
+        >
+          <div class="flex gap-1 items-center">
+            <img src="/svgs/Timer.svg" class="w-8 h-8" />
+            <h1>{{ getDisplayTime() }}</h1>
+            Time left
+          </div>
+          <div
+            class="flex gap-2"
+            *ngIf="
+              currentSection === 'Coding' && currentCodingQuestionNo !== -1
+            "
+          >
+            <button
+              *ngFor="let question of codingQuestions; index as i"
+              (click)="changeCurrentCodingQuesNo(i)"
+              [ngClass]="
+                currentCodingQuestionNo === i
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200'
+              "
+              class="px-3 font-bold text-sm rounded-md cursor-pointer py-1.5 w-fit h-fit"
+            >
+              {{ i + 1 }}
+            </button>
+          </div>
+
+          <button
+            class="px-4 font-bold text-base rounded-md cursor-pointer py-2 w-fit h-fit bg-blue-500 text-white"
+          >
+            Submit Test
+          </button>
+        </div>
+        <div *ngIf="currentSection === 'Mcqs'">
+          <app-mcq-section [questions]="mcqQuestions"></app-mcq-section>
+        </div>
+        <div class="h-[calc(100%-75px)]" *ngIf="currentSection === 'Coding'">
+          <app-code-section
+            [questions]="codingQuestions"
+            [currentQuestionNo]="currentCodingQuestionNo"
+          ></app-code-section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

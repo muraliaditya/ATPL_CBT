@@ -1,0 +1,149 @@
+<div class="w-full p-5">
+  <div class="flex flex-col gap-4">
+    <h1 class="text-3xl font-bold">Contest Results</h1>
+    <h1 class="text-2xl font-bold text-zinc-400">#{{ currentContestId }}</h1>
+
+    <div class="flex items-center gap-6">
+      <div class="flex gap-5 items-center">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="codingMarks"
+            type="number"
+            min="0"
+            [(ngModel)]="codingMarks"
+            autocomplete="off"
+          />
+          <label for="codingMarks">Coding Marks</label>
+        </p-floatlabel>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="McqMarks"
+            type="number"
+            min="0"
+            [(ngModel)]="McqMarks"
+            autocomplete="off"
+          />
+          <label for="McqMarks">MCQ Marks</label>
+        </p-floatlabel>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="TotalMarks"
+            type="number"
+            [(ngModel)]="TotalMarks"
+            min="0"
+            autocomplete="off"
+          />
+          <label for="TotalMarks">Total Marks</label>
+        </p-floatlabel>
+      </div>
+
+      <button
+        type="button"
+        [disabled]="disableFilterButton()"
+        (click)="filterData()"
+        class="py-1 text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+      >
+        Filter
+      </button>
+    </div>
+    <div class="flex gap-4">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="username"
+          type="text"
+          [(ngModel)]="userSearch"
+          autocomplete="off"
+          required
+        />
+        <label for="username">username</label>
+      </p-floatlabel>
+      <button
+        type="button"
+        (click)="userNameSearch()"
+        [disabled]="!userSearch.length"
+        class="py-1 w-fit text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+      >
+        Search
+      </button>
+    </div>
+    <div
+      class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden"
+    >
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-full">
+          <thead>
+            <tr
+              class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200"
+            >
+              <th
+                class="text-left py-5 px-6 font-semibold text-slate-700 tracking-wide uppercase text-xs"
+                *ngFor="let header of headers"
+              >
+                {{ header }}
+              </th>
+              <th
+                class="text-left py-5 px-6 font-semibold text-slate-700 tracking-wide uppercase text-xs"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr
+              class="hover:bg-slate-50 transition-colors duration-200 group"
+              *ngFor="let result of resultsData; let isLast = last"
+            >
+              <td
+                *ngFor="let prior of priority"
+                class="px-6 py-5"
+                [ngClass]="
+                  boldColumns.includes(prior.toString())
+                    ? 'font-bold text-slate-900'
+                    : 'text-slate-700'
+                "
+              >
+                <ng-container *ngIf="prior === 'participantId'">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 font-mono"
+                  >
+                    {{ "#" + result[prior.toString()] }}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="prior === 'userName'">
+                  <div class="flex flex-col space-y-1">
+                    <span class="font-semibold text-slate-900 text-sm">
+                      {{ result[prior.toString()] }}
+                    </span>
+                    <span class="text-xs text-slate-500">
+                      {{ result.email }}
+                    </span>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="prior !== 'participantId' && prior !== 'userName'"
+                >
+                  <span class="text-sm font-medium">{{
+                    result[prior.toString()]
+                  }}</span>
+                </ng-container>
+              </td>
+              <td class="px-6 py-5">
+                <button
+                  type="button"
+                  (click)="goToParticipantResponse(result.submissionId)"
+                  class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow-md transition-colors duration-200 outline-none border-none focus:outline-none active:outline-none whitespace-nowrap"
+                >
+                  View Answers
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

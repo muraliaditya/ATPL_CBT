@@ -1,0 +1,7 @@
+::ng-deep .custom-styling {
+  width: 90% !important;
+}
+
+::ng-deep .custom-styling button {
+  width: 90% !important;
+}
