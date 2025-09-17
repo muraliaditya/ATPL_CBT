@@ -1,0 +1,128 @@
+<div>
+  <app-admin-header heading="Create Contest"></app-admin-header>
+  <div class="p-5">
+    <div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
+      <div
+        [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
+        class="flex flex-1 justify-center items-center gap-2 w-fit py-2 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Mcqs')"
+      >
+        <img src="/images/test.png" class="w-7 h-7" />
+        <p class="font-bold text-lg">Mcqs</p>
+      </div>
+      <div
+        [ngClass]="[
+          currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
+        ]"
+        class="flex flex-1 justify-center items-center gap-2 w-fit bg-red py-2 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Coding')"
+      >
+        <p class="font-bold text-lg">Coding</p>
+      </div>
+    </div>
+    <div>
+      <h1 class="text-lg font-semibold">Sections</h1>
+      <section *ngIf="McqList$ | async as mcqs">
+        <div *ngFor="let section of mcqs | keyvalue">
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-2">
+              <div class="font-bold text-xl">{{ section.key }}</div>
+              <img
+                *ngIf="!checkIsSectionFinalised(section.value)"
+                (click)="deleteMcqSection(section.key)"
+                src="/svgs/DeleteIcon.svg"
+                alt="deleteIcon"
+                class="w-5 h-5 cursor-pointer"
+              />
+            </div>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                *ngIf="!checkIsSectionFinalised(section.value)"
+                (click)="acceptAllMcqList(section.key)"
+                class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+              >
+                Accept All
+              </button>
+              <button
+                type="button"
+                *ngIf="!checkIsSectionFinalised(section.value)"
+                class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+              >
+                Regenerate
+              </button>
+            </div>
+          </div>
+          <div
+            class="mt-5 flex flex-col gap-4"
+            *ngFor="let question of section.value | keyvalue; index as idx"
+          >
+            <div
+              class="px-5 flex justify-between py-3 rounded-lg shadow-md border border-gray-200"
+            >
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-2">
+                  <h1 class="font-bold text-lg">
+                    {{ idx + 1 }} . {{ question.value.question }}
+                  </h1>
+                  <img
+                    *ngIf="
+                      !(finalisedIDs$ | async)?.includes(
+                        question.value.mcqQuestionId
+                      )
+                    "
+                    src="/svgs/DeleteIcon.svg"
+                    alt="deleteIcon"
+                    (click)="deleteMcqQuestion(section.key, question.key)"
+                    class="w-5 h-5 cursor-pointer"
+                  />
+                </div>
+                <div class="flex flex-col gap-1 pl-2 font-medium">
+                  <h2>A . {{ question.value.option1 }}</h2>
+                  <h2>B . {{ question.value.option2 }}</h2>
+                  <h2>C . {{ question.value.option3 }}</h2>
+                  <h2>D. {{ question.value.option4 }}</h2>
+                </div>
+
+                <div
+                  class="w-fit font-semibold px-4 py-2 border-l-3 bg-green-50 text-green-500 border-green-500"
+                >
+                  Answer : {{ question.value.answerKey }}
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  !(finalisedIDs$ | async)?.includes(
+                    question.value.mcqQuestionId
+                  )
+                "
+                class="flex gap-2"
+              >
+                <button
+                  type="button"
+                  (click)="acceptOneMcq(question.value.mcqQuestionId)"
+                  class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                >
+                  Accept
+                </button>
+                <button
+                  type="button"
+                  (click)="
+                    replaceMcqQuestion(
+                      section.key,
+
+                      question.key
+                    )
+                  "
+                  class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                >
+                  Regenerate
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

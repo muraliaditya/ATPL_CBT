@@ -3,6 +3,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { appReducers } from './store/main-store/app.reducer';
 
 import { provideRouter } from '@angular/router';
 import { MyPreset } from './themes/my-preference';
@@ -37,18 +38,18 @@ export const appConfig: ApplicationConfig = {
     provideNoopAnimations(),
     provideHttpClient(),
     providePrimeNG({
-        theme: {
-            preset: MyPreset,
-            options: {
-                darkModeSelector: false,
-                cssLayer: {
-                    name: 'primeng',
-                    order: 'theme, base, primeng',
-                },
-            },
+      theme: {
+        preset: MyPreset,
+        options: {
+          darkModeSelector: false,
+          cssLayer: {
+            name: 'primeng',
+            order: 'theme, base, primeng',
+          },
         },
+      },
     }),
     provideMonacoEditor(monacoConfig),
-    provideStore()
-],
+    provideStore(appReducers),
+  ],
 };

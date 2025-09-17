@@ -11,7 +11,6 @@ import { RouterPrevService } from '../../../services/common/router-prev-service'
 })
 export class AdminHeader {
   @Input() heading: string = '';
-  @Input() navigateUrl: string = '';
   constructor(
     private router: Router,
     private location: Location,

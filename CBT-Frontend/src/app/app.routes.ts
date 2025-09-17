@@ -8,6 +8,8 @@ import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-se
 import { ViewResult } from './pages/admin/view-result/view-result';
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
 import { ViewParticipantResponse } from './pages/admin/view-participant-response/view-participant-response';
+import { CreateContest } from './pages/admin/create-contest/create-contest';
+
 export const routes: Routes = [
   {
     path: '',
@@ -44,6 +46,10 @@ export const routes: Routes = [
       {
         path: 'view-response/:id',
         component: ViewParticipantResponse,
+      },
+      {
+        path: 'create-contest',
+        component: CreateContest,
       },
     ],
   },
