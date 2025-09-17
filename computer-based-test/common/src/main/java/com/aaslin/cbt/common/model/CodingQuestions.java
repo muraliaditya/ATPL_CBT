@@ -3,6 +3,7 @@ package com.aaslin.cbt.common.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,6 +46,9 @@ public class CodingQuestions {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name="method_name",nullable=false)
+    private String methodName;
 
     
     @Column(name = "java_boiler_code", columnDefinition = "TEXT",nullable=false)
@@ -54,8 +58,8 @@ public class CodingQuestions {
     @Column(name = "python_boiler_code", columnDefinition = "TEXT",nullable=false)
     private String pythonBoilerCode;
 
-    @Column(name = "execution_time_limit", precision = 10)
-    private Double executionTimeLimit;
+    @Column(name = "execution_time_limit", precision = 3,scale=2)
+    private BigDecimal executionTimeLimit;
 
     @Column(name = "memory_limit")
     private Long memoryLimit;

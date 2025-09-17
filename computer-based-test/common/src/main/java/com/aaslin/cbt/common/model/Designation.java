@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Designation {
     @Id
-    @Column(name = "designatin_id", length = 50)
+    @Column(name = "designation_id", length = 50)
     private String designationId;
 
     @Column(name = "designation_name", nullable = false)
