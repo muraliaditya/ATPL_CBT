@@ -14,13 +14,23 @@ import { RouterLink } from '@angular/router';
 })
 export class MCQListing {
   Region: string = '';
-  onEdit(q:mcqSections){
-    this.mcqs = this.mcqs.filter(q=> q.question.replace('p','a'));
+  editingId: string | null = null;
+  editCache: any = {};
+  filteredMcqs: mcqSections[]=[];
+  onEdit(q: mcqSections) {
+    this.editingId = q.mcqQuestionId;
+  }
+  onSave(q: mcqSections) {
+    console.log('Saved:', q);
+    this.editingId = null;
+  }
+  onCancel() {
+    this.editingId = null;
   }
   onDelete(q:mcqSections){
     this.mcqs = this.mcqs.filter(c => c.mcqQuestionId !== q.mcqQuestionId);
   }
-  Section: string[] = ['Quantitative','Aptitude','Reasoning'];
+  Section: string[] = ['Geography','Literature','Science'];
   mcqs: mcqSections[]= [
       {
       mcqQuestionId: 'mcq001',
@@ -78,4 +88,15 @@ export class MCQListing {
       section: 'Literature',
     },
     ]
+    ngOnInit() {
+    this.filteredMcqs = [...this.mcqs];
+  }
+  onSearch() {
+    const r = (this.Region || '').trim();
+    if (!r) {
+      this.filteredMcqs = [...this.mcqs];
+    } else {
+      this.filteredMcqs = this.mcqs.filter(q => q.section === r);
+    }
+  }
 }

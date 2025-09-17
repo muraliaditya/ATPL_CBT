@@ -32,12 +32,11 @@ export class AddMcqQuestion {
     });
   }
   removeQuestion(index: number) {
-    alert(index)
-    this.questions.pop()
-    // this.questions=this.questions.filter((question,index)=> index)
-    //  this.questions=this.questions.filter((question,idx)=>{
-    //    console.log(question,idx)
-    //   console.log(index);
-    //   return idx!==index});
+    alert('Delete Question {{index}}')
+    this.questions.splice(index, 1);
   }
-}
+  submit(){
+    alert('Submitted Added Questions');
+    console.log('Submitted', this.questions);
+  }
+  }
