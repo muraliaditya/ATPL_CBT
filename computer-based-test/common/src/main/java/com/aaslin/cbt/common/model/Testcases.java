@@ -48,10 +48,6 @@ public class Testcases {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "approval_status", length = 20)
-    private ApprovalStatus approvalStatus;
-    
     @OneToMany(mappedBy = "testcase")
     private List<TestcaseResult> testcaseResults;
 
@@ -60,9 +56,6 @@ public class Testcases {
     
     public enum TestcaseType {
     	PUBLIC, PRIVATE 
-    }
-    public enum ApprovalStatus {
-    	PENDING,APPROVED,REJECTED
     }
 }
 

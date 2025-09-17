@@ -69,7 +69,7 @@ public class Participant {
     @PrePersist
     public void prePersist() {
         if (this.participantId == null) {
-        	String currentId=String.format("TC%03d",System.currentTimeMillis()%10000);
+        	String currentId=String.format("PAR%03d",System.currentTimeMillis()%10000);
            this.participantId=currentId;
         }
     }

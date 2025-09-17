@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aaslin.cbt.participant.dto.ContestDetailsResponse;
 import com.aaslin.cbt.participant.dto.ContestEligibilityResponse;
 import com.aaslin.cbt.participant.service.ContestService;
 
@@ -22,6 +23,11 @@ public class ContestController {
 	@GetMapping("/{contestId}/eligibility")
 	public ContestEligibilityResponse getEligiblity(@PathVariable String contestId) {
 		return service.checkEligibility(contestId);
+	}
+	
+	@GetMapping("/{contestId}/basic-info")
+	public ContestDetailsResponse contestDetails(@PathVariable String contestId) {
+		return service.getContestInfo(contestId);
 	}
 	
 }
