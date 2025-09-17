@@ -31,3 +31,25 @@ export interface Testcase {
   testcaseType: string;
   explanation: string;
 }
+
+export interface mcqSections{
+  mcqQuestionId: string;
+  question: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  answerKey: string;
+  weightage: number;
+  section: string;
+}
+
+export interface qs{
+  Question:any;
+  ContestName:any;
+  value1:any;
+  value2:any;
+  value3:any;
+  value4:any;
+  Weightage:any;
+}

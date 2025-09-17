@@ -8,6 +8,10 @@ import { AdminMainSection } from './pages/admin/admin-main-section/admin-main-se
 import { ViewResult } from './pages/admin/view-result/view-result';
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
 import { ViewContest } from './pages/admin/view-contest/view-contest';
+import { EditContest } from './pages/admin/edit-contest/edit-contest';
+import { MCQListing } from './pages/admin/mcq-listing/mcq-listing';
+import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
+import { EditMcq } from './pages/admin/edit-mcq/edit-mcq';
 export const routes: Routes = [
   {
     path: '',
@@ -45,6 +49,22 @@ export const routes: Routes = [
       {
         path: 'manage-contestsList',
         component: ContestListing,
+      },
+      {
+        path: 'edit-contest',
+        component: EditContest,
+      },
+      {
+        path: 'View-MCQListing',
+        component: MCQListing,
+      },
+      {
+        path: 'Add-McqQuestions',
+        component: AddMcqQuestion,
+      },
+      {
+        path: 'Edit-Mcq',
+        component: EditMcq,
       },
     ],
   },

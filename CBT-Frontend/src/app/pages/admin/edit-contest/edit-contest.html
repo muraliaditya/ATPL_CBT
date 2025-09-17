@@ -3,20 +3,34 @@
   <button (click)="goBack()"class="absolute flex items-center text-gray-600">
   <img src="/svgs/Back.svg" alt="Back" class="w-5 h-5">
 </button>
-  <h2 class="font-semibold text-center text-lg w-full">View Contest</h2>
+  <h2 class="font-semibold text-center text-lg w-full">Edit Contest</h2>
 </div>
 <div class="w-full p-9">
-  <div class="pl-15 flex flex-col gap-4">
-    <h1 class="text-sm text-gray-400">Contest #{{ contest.contest_id }}</h1>
-  <div class="text-sm h-auto w-full">
-        <p>Name : {{contest.contest_name}}</p>
-        <p>Status : {{contest.status}}</p>
-        <p>StartDate : {{contest.start_time}}</p>
-        <p>EndDate : {{contest.end_time}}</p>
-        <p>Duration : {{contest.duration}} hrs</p>
-  </div>
-    <div>
-    <div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
+<div class="flex flex-row gap-4 p-2 ">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="ContestId" autocomplete="off" />
+    <label for="on_label">ContestName</label>
+    </p-floatlabel>
+    <p-toggleswitch [(ngModel)]="checked" /><span>Active</span>
+</div>
+<div>
+    <div class="flex gap-3 p-2">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="StartTime" autocomplete="off" />
+    <label for="on_label">Start Time</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="EndTime" autocomplete="off" />
+    <label for="on_label">End Time</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="Duration" autocomplete="off" />
+    <label for="on_label">Duration</label>
+    </p-floatlabel>
+    </div>
+</div>
+
+<div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
       <div
         [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
         class="flex flex-1 justify-center items-center gap-2 w-fit py-1 px-5 h-fit cursor-pointer"
@@ -35,8 +49,9 @@
         <img src="/svgs/code.svg" class="w-5 h-5" />
         <p class="font-bold text-lg">Coding</p>
       </div>
-    </div>
-    <div class="flex flex-col gap-2" *ngIf="currentSection==='Mcqs'">
+</div>
+<div class="w-full m-2">
+<div class="flex flex-col gap-2" *ngIf="currentSection==='Mcqs'">
     <h3>MCQ Sections</h3>
     <div class="flex flex-col gap-2" *ngFor="let section of contest.mcqs.mcqSections">
     <h4>{{ section.section }}</h4>
@@ -78,5 +93,4 @@
         </div>
         </div>
     </div>
-    </div>
-        </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="p-5">
+        <p class="p-2 text-left bg-blue-100 w-50 mb-2">MCQ Questions</p>
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+    <div class="flex gap-3">
+    <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select [options]="Section" [(ngModel)]="Region" class="w-40 pt-0" />
+        <label for="on_label">Category</label>
+    </p-floatlabel>
+    <button class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400">Search</button>
+    </div>
+    <button routerLink="/admin/Add-McqQuestions" class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400">Add Question</button>
+    </div> 
+    <div class="flex flex-col gap-2">
+    <div  *ngFor="let q of mcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
+    <div>
+    <div class="flex flex-1 gap-3">
+    <p><b>{{ i + 1 }}.</b> {{ q.question }}</p>
+    <button (click)="onEdit(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/Edit.svg" alt="Back" class="invert w-5 h-5"><span>Edit</span></button>
+    <button (click)="onDelete(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class="invert w-5 h-5"><span>Delete</span></button>
+    </div>
+    <ul class="list-none">
+      <li>A. {{ q.option1 }}</li>
+      <li>B. {{ q.option2  }}</li>
+      <li>C. {{ q.option3  }}</li>
+      <li>D. {{ q.option4  }}</li>
+    </ul>
+    <p class= "w-fit">Answer :- {{ q.answerKey }}</p>
+    </div>
+    </div>
+    </div>
+</div>
+</div>
