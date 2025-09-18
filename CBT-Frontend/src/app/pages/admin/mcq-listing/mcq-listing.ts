@@ -28,7 +28,7 @@ export class MCQListing {
     this.editingId = null;
   }
   onDelete(q:mcqSections){
-    this.mcqs = this.mcqs.filter(c => c.mcqQuestionId !== q.mcqQuestionId);
+    this.filteredMcqs = this.filteredMcqs.filter(c => c.mcqQuestionId !== q.mcqQuestionId);
   }
   Section: string[] = ['Geography','Literature','Science'];
   mcqs: mcqSections[]= [

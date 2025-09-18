@@ -12,7 +12,7 @@
     <button routerLink="/admin/Add-McqQuestions" class="bg-blue-500 text-white rounded-lg px-3 py-1">Add Question</button>
     </div> 
     <div  class="flex flex-col gap-2">
-    <div  *ngFor="let q of mcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
+    <div  *ngFor="let q of filteredMcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
     <div class="flex flex-1 gap-3">
     <p><b>{{ i + 1 }}.</b> {{ q.question }}</p>
