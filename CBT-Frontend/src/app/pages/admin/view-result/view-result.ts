@@ -3,9 +3,8 @@ import { Participants } from '../../../models/admin/participant';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,8 +15,6 @@ import { Router } from '@angular/router';
     FloatLabel,
     InputTextModule,
     CommonModule,
-    RouterLink,
-    ToggleSection,
   ],
   templateUrl: './view-result.html',
   styleUrl: './view-result.css',
@@ -43,6 +40,7 @@ export class ViewResult implements OnInit {
     );
   }
   constructor(private route: ActivatedRoute, private router: Router) {}
+  //hi
   resultsData: Participants[] = [];
   originalData: Participants[] = [];
 
@@ -166,10 +164,6 @@ export class ViewResult implements OnInit {
       totalMarks: 90,
     },
   ];
-
-  constructHeaderText = (idx: number) => {
-    return `Question ${idx} Hello World`;
-  };
   compareCategory() {
     if (this.eligibilty === 'Student') {
       this.resultsData = this.studentsData;

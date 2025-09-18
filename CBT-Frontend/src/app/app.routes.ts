@@ -10,6 +10,11 @@ import { ContestListing } from './pages/admin/contest-listing/contest-listing';
 import { ViewParticipantResponse } from './pages/admin/view-participant-response/view-participant-response';
 import { CreateContest } from './pages/admin/create-contest/create-contest';
 
+import { ViewContest } from './pages/admin/view-contest/view-contest';
+import { EditContest } from './pages/admin/edit-contest/edit-contest';
+import { MCQListing } from './pages/admin/mcq-listing/mcq-listing';
+import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
+import { EditMcq } from './pages/admin/edit-mcq/edit-mcq';
 export const routes: Routes = [
   {
     path: '',
@@ -40,6 +45,10 @@ export const routes: Routes = [
         component: ViewResult,
       },
       {
+        path: 'view-contest/:id',
+        component: ViewContest,
+      },
+      {
         path: 'manage-contestsList',
         component: ContestListing,
       },
@@ -50,6 +59,19 @@ export const routes: Routes = [
       {
         path: 'create-contest',
         component: CreateContest,
+      },
+      { path: 'edit-contest', component: EditContest },
+      {
+        path: 'View-MCQListing',
+        component: MCQListing,
+      },
+      {
+        path: 'Add-McqQuestions',
+        component: AddMcqQuestion,
+      },
+      {
+        path: 'Edit-Mcq',
+        component: EditMcq,
       },
     ],
   },

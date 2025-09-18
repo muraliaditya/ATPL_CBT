@@ -1,0 +1,96 @@
+
+<div class="flex shadow-lg  p-3 ">
+  <button (click)="goBack()"class="absolute flex items-center text-gray-600">
+  <img src="/svgs/Back.svg" alt="Back" class="w-5 h-5">
+</button>
+  <h2 class="font-semibold text-center text-lg w-full">Edit Contest</h2>
+</div>
+<div class="w-full p-9">
+<div class="flex flex-row gap-4 p-2 ">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="ContestId" autocomplete="off" />
+    <label for="on_label">ContestName</label>
+    </p-floatlabel>
+    <p-toggleswitch [(ngModel)]="checked" /><span>Active</span>
+</div>
+<div>
+    <div class="flex gap-3 p-2">
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="StartTime" autocomplete="off" />
+    <label for="on_label">Start Time</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="EndTime" autocomplete="off" />
+    <label for="on_label">End Time</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+    <input pInputText id="on_label" [(ngModel)]="Duration" autocomplete="off" />
+    <label for="on_label">Duration</label>
+    </p-floatlabel>
+    </div>
+</div>
+
+<div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
+      <div
+        [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
+        class="flex flex-1 justify-center items-center gap-2 w-fit py-1 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Mcqs')"
+      >
+        <img src="/images/test.png" class="w-7 h-7" />
+        <p class="font-bold text-lg">Mcqs</p>
+      </div>
+      <div
+        [ngClass]="[
+          currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
+        ]"
+        class="flex flex-1 justify-center items-center gap-2 w-fit bg-red py-1 px-5 h-fit cursor-pointer"
+        (click)="changeSection('Coding')"
+      >
+        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <p class="font-bold text-lg">Coding</p>
+      </div>
+</div>
+<div class="w-full m-2">
+<div class="flex flex-col gap-2" *ngIf="currentSection==='Mcqs'">
+    <h3>MCQ Sections</h3>
+    <div class="flex flex-col gap-2" *ngFor="let section of contest.mcqs.mcqSections">
+    <h4>{{ section.section }}</h4>
+    <div  *ngFor="let q of section.mcqQuestions; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
+    <p><b>{{ i + 1 }}.</b> {{ q.question_text }}</p>
+    <ul class="list-none">
+      <li>A. {{ q.option_1 }}</li>
+      <li>B. {{ q.option_2 }}</li>
+      <li>C. {{ q.option_3 }}</li>
+      <li>D. {{ q.option_4 }}</li>
+    </ul>
+    <p class="text-green-500 bg-green-50  p-1 border-l-3 border-green-500 w-fit px-7 font-bold">Answer :- {{ q.correctAnswer }}</p>
+    </div>
+    </div>
+    </div>
+    <div class="flex flex-col gap-2" *ngIf="currentSection==='Coding'">
+        <h3>Coding Questions</h3>
+        <div  *ngFor="let q of coding;let i = index;">
+             <app-toggle-section [headingText]="constructHeading(q.questionName)" [showSection]="false">
+        <div class=" mt-2 mb-2 flex justify-between  p-3">
+        <p >Question - {{ i + 1 }}</p> 
+        <p>{{q.difficulty}}</p>
+        </div>
+        <div class="p-2">
+        <p>{{q.description}}</p>
+        <p>input Paramter - {{q.inputParams}}</p>
+        <p>Input Type - {{q.inputType}}</p>
+        <p>Output Type - {{q.outputType}}</p>
+        </div><br>
+        <h3 class="p-2">Test Cases</h3>
+        <div class="p-2" *ngFor="let test of q.testcases;let i = index;">
+        <p class=" mt-2 w-fit">TestCase - {{ i + 1 }}</p> 
+        <p>Input :-</p>
+        <p class="bg-black pl-2 w-50 text-white">{{test.inputValues}}</p>
+        <p>Output :-</p>
+        <p class="bg-black pl-2 w-50 text-white">{{test.expectedOutput}}</p>
+        </div>
+        </app-toggle-section>
+        </div>
+        </div>
+    </div>
+</div>

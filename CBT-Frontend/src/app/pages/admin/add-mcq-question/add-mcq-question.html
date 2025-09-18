@@ -1,0 +1,33 @@
+<div class="p-8">
+    <div class="flex flex-1 justify-between">
+    <p class="p-2 text-left bg-blue-100 w-50 mb-2">MCQ Questions</p>
+    <button class="bg-blue-500 text-white px-4 rounded-md text-center" (click)="addQuestion()">+ Add</button>
+    </div>
+    <div *ngFor="let q of questions; let i = index" class="flex flex-col gap-3 shadow-lg p-2">
+    <div class="flex w-full gap-2">
+
+    <p-floatlabel variant="on">
+    <input class="flex-auto w-150" pInputText id="on_label" [(ngModel)]="q.question" autocomplete="off" />
+    <label for="on_label"> Question {{i+1}}</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-full md:w-70" variant="on">
+            <p-select [options]="category" [(ngModel)]="q.category" class="w-50 pt-0" />
+        <label for="on_label">Category</label>
+    </p-floatlabel>
+    <button (click)="removeQuestion(i)" class=" px-2 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class=" w-5 h-5"></button>
+    </div>
+    <div class="flex flex-col gap-2 w-45">
+        <div class="flex gap-107">
+        <input  pInputText [(ngModel)]="q.options[0]" type="text" pSize="small" placeholder="Option" />
+        <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="q.weightage" autocomplete="off" />
+        <label for="on_label">Weightage</label>
+        </p-floatlabel>
+    </div>
+        <input pInputText [(ngModel)]="q.options[1]" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="q.options[2]" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="q.options[3]" type="text" pSize="small" placeholder="Option" />
+    </div>
+    </div>
+    <button (click)="submit()" class="btn mt-3">Submit</button>
+</div>

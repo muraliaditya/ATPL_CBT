@@ -1,0 +1,67 @@
+<div class="p-5">
+        <p class="p-2 text-left bg-blue-100 w-50 mb-2">MCQ Questions</p>
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+    <div class="flex gap-3">
+    <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select [options]="Section" [(ngModel)]="Region" class="w-40 pt-0" />
+        <label for="on_label">Category</label>
+    </p-floatlabel>
+    <button (click)="onSearch()" class="bg-blue-500 text-white rounded-lg px-3 py-1">Search</button>
+    </div>
+    <button routerLink="/admin/Add-McqQuestions" class="bg-blue-500 text-white rounded-lg px-3 py-1">Add Question</button>
+    </div> 
+    <div  class="flex flex-col gap-2">
+    <div  *ngFor="let q of filteredMcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
+    <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
+    <div class="flex flex-1 gap-3">
+    <p><b>{{ i + 1 }}.</b> {{ q.question }}</p>
+    <button (click)="onEdit(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/Edit.svg" alt="Back" class="invert w-5 h-5"><span>Edit</span></button>
+    <button (click)="onDelete(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class="invert w-5 h-5"><span>Delete</span></button>
+    </div>
+    <ul class="list-none">
+      <li>A. {{ q.option1 }}</li>
+      <li>B. {{ q.option2  }}</li>
+      <li>C. {{ q.option3  }}</li>
+      <li>D. {{ q.option4  }}</li>
+    </ul>
+    <p class= "w-fit">Answer :- {{ q.answerKey }}</p>
+    </div>
+    <ng-template #editMode>
+          <div class="p-8">
+    <div class="flex flex-1 justify-between">
+    <p class="text-left bg-blue-100 w-50 mb-2">Edit Mcq</p>
+    <div class="flex gap-2">
+    <button (click)="onSave(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">save</button>
+    <button (click)="onCancel()" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Cancel</button>
+    </div>
+    </div>
+    <div class="flex flex-col gap-3 shadow-lg p-2">
+    <div class="flex w-full gap-2">
+    <p-floatlabel variant="on">
+    <input class="flex-auto w-150" pInputText id="on_label" [(ngModel)]="q.question" autocomplete="off" />
+    <label for="on_label">Question {{i+1}}</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-full md:w-70" variant="on">
+            <p-select [options]="Section" [(ngModel)]="q.section" class="w-50 pt-0" />
+        <label for="on_label">q.category</label>
+    </p-floatlabel>
+    </div>
+    <div class="flex flex-col gap-2 w-45">
+        <div class="flex gap-107">
+        <input  pInputText [(ngModel)]="q.option1" type="text" pSize="small" placeholder="Option" />
+        <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="q.weightage" autocomplete="off" />
+        <label for="on_label">Weightage</label>
+        </p-floatlabel>
+    </div>
+        <input pInputText [(ngModel)]="q.option2" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="q.option3" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="q.option4" type="text" pSize="small" placeholder="Option" />
+    </div>
+    </div></div>
+        </ng-template>
+        </div>
+    </div>
+</div>
+</div>
