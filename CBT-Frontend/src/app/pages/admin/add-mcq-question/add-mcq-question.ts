@@ -32,7 +32,7 @@ export class AddMcqQuestion {
     });
   }
   removeQuestion(index: number) {
-    alert('Delete Question {{index}}')
+    alert(`Delete Question ${index+1}`)
     this.questions.splice(index, 1);
   }
   submit(){

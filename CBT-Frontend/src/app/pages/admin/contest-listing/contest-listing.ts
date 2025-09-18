@@ -3,14 +3,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
-import { Message } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { Contest } from '../../../models/admin/admin';
 @Component({
   selector: 'app-contest-listing',
   imports: [
     CommonModule,
-    Message,
     Select,
     FloatLabelModule,
     FormsModule,

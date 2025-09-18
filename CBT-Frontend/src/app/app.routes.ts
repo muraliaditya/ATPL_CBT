@@ -9,12 +9,14 @@ import { ViewResult } from './pages/admin/view-result/view-result';
 import { ContestListing } from './pages/admin/contest-listing/contest-listing';
 import { ViewParticipantResponse } from './pages/admin/view-participant-response/view-participant-response';
 import { CreateContest } from './pages/admin/create-contest/create-contest';
-
 import { ViewContest } from './pages/admin/view-contest/view-contest';
 import { EditContest } from './pages/admin/edit-contest/edit-contest';
 import { MCQListing } from './pages/admin/mcq-listing/mcq-listing';
 import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
 import { EditMcq } from './pages/admin/edit-mcq/edit-mcq';
+import { RequestDashboard } from './pages/admin/request-dashboard/request-dashboard';
+import { DashboardEditmcq } from './pages/admin/dashboard-editmcq/dashboard-editmcq';
+import { DashboardViewmcq } from './pages/admin/dashboard-viewmcq/dashboard-viewmcq';
 export const routes: Routes = [
   {
     path: '',
@@ -72,6 +74,18 @@ export const routes: Routes = [
       {
         path: 'Edit-Mcq',
         component: EditMcq,
+      },
+      {
+        path: 'Request-Dashboard',
+        component: RequestDashboard,
+      },
+      {
+        path: 'Request-McqEdit',
+        component: DashboardEditmcq,
+      },
+      {
+        path: 'Request-McqView',
+        component: DashboardViewmcq ,
       },
     ],
   },
