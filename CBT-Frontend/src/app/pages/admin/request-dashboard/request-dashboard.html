@@ -28,7 +28,7 @@
                 <div *ngIf="openRow !== p.devId">
                 <td class="px-4 py-3 relative justify-center flex  gap-7" >
                      <button class="bg-blue-300 text-white px-5 py-2 rounded-md text-center" routerLink="/admin/Request-McqEdit" (click)="onEdit(p)">Edit</button>
-                    <button class="bg-blue-500 text-white px-5 py-2 rounded-md text-center "  (click)="onView(p)">View</button>
+                    <button class="bg-blue-500 text-white px-5 py-2 rounded-md text-center "  [routerLink]="['/admin/Request-McqView', p.questionId]">View</button>
                     <button class="bg-red-500 text-white px-5 py-2 rounded-md text-center " (click)="onDelete(p)">Delete</button>
                 </td>
                 </div>

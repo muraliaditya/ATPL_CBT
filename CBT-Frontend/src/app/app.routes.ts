@@ -84,7 +84,7 @@ export const routes: Routes = [
         component: DashboardEditmcq,
       },
       {
-        path: 'Request-McqView',
+        path: 'Request-McqView/:id',
         component: DashboardViewmcq ,
       },
     ],
