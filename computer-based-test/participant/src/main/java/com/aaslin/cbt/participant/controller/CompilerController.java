@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aaslin.cbt.participant.dto.CompileRunRequest;
 import com.aaslin.cbt.participant.dto.CompileRunResponse;
+import com.aaslin.cbt.participant.dto.SubmissionRequest;
+import com.aaslin.cbt.participant.dto.SubmissionResponse;
 import com.aaslin.cbt.participant.service.CompilerService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,5 +25,8 @@ public class CompilerController {
 		return compilerService.compileAndRun(request);
 		}
 	
-	
+	@PostMapping("/submission")
+	public SubmissionResponse submitCode(@RequestBody SubmissionRequest request) throws Exception {
+		return compilerService.submitCode(request);
+	}
 }

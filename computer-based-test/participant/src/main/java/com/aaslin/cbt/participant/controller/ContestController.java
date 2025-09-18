@@ -30,5 +30,6 @@ public class ContestController {
 		return service.getContestInfo(contestId);
 	}
 	
+	
 }
 
