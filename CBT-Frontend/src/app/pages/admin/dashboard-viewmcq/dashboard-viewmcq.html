@@ -1,6 +1,4 @@
-
-<div *ngIf="mcq">
-    <app-admin-header heading="View Developer Mcq"></app-admin-header> 
+<app-admin-header heading="View Developer Mcq"></app-admin-header> 
     <div  class="flex flex-col gap-2 m-5">  
     <div  *ngFor="let q of mcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
@@ -65,8 +63,7 @@
         </ng-template>
     </div>
     </div>
-    </div>
-
+ -->
 <!-- view-mcq.component.html
 <!-- <div *ngIf="mcq">
   <h3>{{ mcq.question }}</h3>

@@ -16,8 +16,8 @@ import { ActivatedRoute } from '@angular/router';
 export class DashboardViewmcq {
   editingId:string|null=null;
   Section: string[] = ['Geography','Literature','Science'];
-  onEdit(mcq: data) {
-      this.editingId = mcq.mcqQuestionId;
+  onEdit(q: data) {
+      this.editingId = q.mcqQuestionId;
     }
     onSave(q: data) {
       console.log('Saved:', q);
@@ -31,7 +31,10 @@ export class DashboardViewmcq {
     }
     mcqId!: string;
   mcq: any;
-
+    ngOnInit(): void {
+    this.mcqId = this.route.snapshot.paramMap.get('id')!;
+    this.mcq = this.mcqs.find(m => m.mcqQuestionId === this.mcqId);
+  }
   mcqs = [
     {
       mcqQuestionId: 'mcq_12345',
@@ -59,10 +62,7 @@ export class DashboardViewmcq {
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.mcqId = this.route.snapshot.paramMap.get('id')!;
-    this.mcq = this.mcqs.find(m => m.mcqQuestionId === this.mcqId);
-  }
+
 //  Mcq:data[]= [{
 //     "mcqQuestionId": "mcq_12345",
 //     "question": "What is the chemical symbol for gold?",
