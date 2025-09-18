@@ -20,7 +20,7 @@
         <p class="font-bold text-lg">Coding</p>
       </div>
     </div>
-    <div>
+    <div *ngIf="currentSection === 'Mcqs'">
       <h1 class="text-lg font-semibold">Sections</h1>
       <section *ngIf="McqList$ | async as mcqs">
         <div *ngFor="let section of mcqs | keyvalue">
@@ -47,6 +47,7 @@
               <button
                 type="button"
                 *ngIf="!checkIsSectionFinalised(section.value)"
+                (click)="replaceAll(section.key)"
                 class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
               >
                 Regenerate
@@ -100,7 +101,7 @@
               >
                 <button
                   type="button"
-                  (click)="acceptOneMcq(question.value.mcqQuestionId)"
+                  (click)="acceptOneMcq(question.value, section.key)"
                   class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
                 >
                   Accept
@@ -123,6 +124,97 @@
           </div>
         </div>
       </section>
+    </div>
+    <div *ngIf="currentSection === 'Coding'" class="">
+      <form
+        class="mt-2"
+        [formGroup]="codeQuestionsGeneratorForm"
+        (ngSubmit)="AddQuestionPreferences()"
+      >
+        <div class="text-xl font-bold">Coding</div>
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2">
+            <p-floatlabel variant="on">
+              <input
+                formControlName="count"
+                pInputText
+                id="n_count"
+                type="number"
+                autocomplete="off"
+              />
+
+              <label for="n_count">Count</label>
+            </p-floatlabel>
+            <p-floatlabel variant="on">
+              <input
+                formControlName="marks"
+                pInputText
+                id="n_marks"
+                type="number"
+                autocomplete="off"
+              />
+
+              <label for="n_marks">Marks</label>
+            </p-floatlabel>
+
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select
+                formControlName="difficulty"
+                inputId="difficulty"
+                [options]="difficultyOptions"
+                class="w-full"
+              />
+              <label for="difficulty">Difficulty</label>
+            </p-floatlabel>
+          </div>
+          <button
+            [disabled]="codeQuestionsGeneratorForm.invalid"
+            class="px-2 py-1 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+            type="submit"
+          >
+            Select Preferences
+          </button>
+        </div>
+      </form>
+      <form [formGroup]="preferences">
+        <div
+          *ngIf="PreferencesArray.controls.length"
+          class="flex items-start justify-between"
+        >
+          <div class="mt-2 flex flex-col gap-3" formArrayName="choices">
+            <div
+              *ngFor="let prefer of PreferencesArray.controls; let idx = index"
+              [formGroupName]="idx"
+              class="flex gap-3 items-center"
+            >
+              <div>Q{{ idx + 1 }} Preference</div>
+
+              <p-floatlabel class="w-full md:w-56" variant="on">
+                <p-select
+                  formControlName="preferredChoice"
+                  inputId="difficulty"
+                  [options]="difficultyOptions"
+                  class="w-full"
+                />
+                <label for="difficulty">Difficulty</label>
+              </p-floatlabel>
+              <img
+                src="/svgs/DeleteIcon.svg"
+                alt="deleteIcon"
+                (click)="removeField(idx)"
+                class="w-5 h-5 cursor-pointer"
+              />
+            </div>
+          </div>
+          <button
+            [disabled]="preferences.invalid"
+            class="px-2 py-1 mt-2 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+            type="submit"
+          >
+            Generate Questions
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

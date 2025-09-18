@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
-import { ContestMCQQuestion } from '../../../models/admin/contest';
+import {
+  ContestCodingQuestion,
+  ContestMCQQuestion,
+} from '../../../models/admin/contest';
 export const AddMcqSection = createAction(
   '[Contest] AddMcqSection',
   props<{ mcqs: ContestMCQQuestion[]; section: string }>()
@@ -27,5 +30,35 @@ export const AcceptAllMcqs = createAction(
 
 export const AcceptMcqQuestion = createAction(
   '[Contest] AcceptMcq',
-  props<{ McqId: string }>()
+  props<{ Mcq: ContestMCQQuestion; section: string }>()
+);
+
+export const ReplaceSection = createAction(
+  '[Contest] Accept Section',
+  props<{ section: string; mcqs: ContestMCQQuestion[] }>()
+);
+
+export const AcceptCodingQuestion = createAction(
+  '[Contest] Accept Coding Question',
+  props<{ codeQuestion: ContestCodingQuestion }>()
+);
+
+export const DeleteCodingQuestion = createAction(
+  '[Contest] Accept Coding Question',
+  props<{ prevCodeId: number }>()
+);
+
+export const ReplaceCodingQuestion = createAction(
+  '[Contest] Replace Question',
+  props<{ codeQuestion: ContestCodingQuestion; prevCodeId: number }>()
+);
+
+export const AcceptAllCodingQuestions = createAction(
+  '[Contest] AcceptAll Coding Ques',
+  props<{ codeQuestions: ContestCodingQuestion[] }>()
+);
+
+export const ReplaceAllCodingquestions = createAction(
+  '[Contest] Replace All',
+  props<{ codeQuestions: ContestCodingQuestion[] }>()
 );
