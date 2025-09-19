@@ -1,77 +1,71 @@
-<app-admin-header heading="View Developer Mcq"></app-admin-header> 
-    <div  class="flex flex-col gap-2 m-5">  
-    <div  *ngFor="let q of mcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
-    <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
+<app-admin-header heading="View Mcq"></app-admin-header>
+<div *ngIf="mcq;else code">
+  <div *ngIf="editingId!==mcq.mcqQuestionId;else edit">
+  <div  class="flex flex-col gap-2 m-5">  
+    <div class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div class="flex justify-between">
     <div>
-    <p><b>{{ i + 1 }}.</b> {{ q.question }}</p>
+    <p><b>{{ i + 1 }}.</b> {{ mcq.question }}</p>
     </div>
     <div class="flex gap-2">
-    <button (click)="onEdit(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Edit</button>
-    <button (click)="onSave(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Approval</button>
-    <button (click)="onDelete(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Delete</button>
+    <button  (click)="onEdit(mcq)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Edit</button>
+    <button (click)="onApprove(mcq)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Approval</button>
+    <button (click)="onDelete(mcq)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Delete</button>
     </div>
     </div>
     <ul class="list-none">
-      <li>A. {{ q.option1 }}</li>
-      <li>B. {{ q.option2  }}</li>
-      <li>C. {{ q.option3  }}</li>
-      <li>D. {{ q.option4  }}</li>
+      <li>A. {{ mcq.option1 }}</li>
+      <li>B. {{ mcq.option2  }}</li>
+      <li>C. {{ mcq.option3  }}</li>
+      <li>D. {{ mcq.option4  }}</li>
     </ul>
-    <p class= "text-green-500 bg-green-50  p-1 border-l-3 border-green-500 w-fit px-7 font-bold">Answer :- {{ q.answerKey }}</p>
-    <p>Weightage :- {{q.weightage}}</p>
-    <p>Section :- {{q.section}}</p>
+    <p class= "text-green-500 bg-green-50  p-1 border-l-3 border-green-500 w-fit px-7 font-bold">Answer :- {{ mcq.answerKey }}</p>
+    <p>Weightage :- {{mcq.weightage}}</p>
+    <p>Section :- {{mcq.section}}</p>
     </div>
-    <ng-template #editMode>
-    <div class="p-2 w-full">
+</div>
+</div>
+<ng-template #edit>
+  <div class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div class="flex flex-1 justify-between">
     <p class="text-left bg-blue-100 w-50 mb-2">Edit Mcq</p>
     <div class="flex gap-2">
-    <button (click)="onSave(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">save</button>
+    <button (click)="onSave(mcq)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">save</button>
     <button (click)="onCancel()" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg">Cancel</button>
     </div>
     </div>
     <div class="flex flex-col gap-3 shadow-lg p-2">
     <div class="flex w-full gap-2">
     <p-floatlabel variant="on">
-    <input class="flex-auto w-150" pInputText id="on_label" [(ngModel)]="q.question" autocomplete="off" />
-    <label for="on_label">Question {{i+1}}</label>
+    <input class="flex-auto w-150" pInputText id="on_label" [(ngModel)]="mcq.question" autocomplete="off" />
+    <label for="on_label">Question</label>
     </p-floatlabel>
     <p-floatlabel class="w-full md:w-70" variant="on">
-            <p-select [options]="Section" [(ngModel)]="q.section" class="w-50 pt-0" />
-        <label for="on_label">q.category</label>
+            <p-select [options]="Section" [(ngModel)]="mcq.section" class="w-50 pt-0" />
+        <label for="on_label">category</label>
     </p-floatlabel>
     </div>
     <div class="flex flex-col gap-2 w-45">
         <div class="flex gap-107">
-        <input  pInputText [(ngModel)]="q.option1" type="text" pSize="small" placeholder="Option" />
+        <input  pInputText [(ngModel)]="mcq.option1" type="text" pSize="small" placeholder="Option" />
         <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="q.weightage" autocomplete="off" />
+        <input pInputText id="on_label" [(ngModel)]="mcq.weightage" autocomplete="off" />
         <label for="on_label">Weightage</label>
         </p-floatlabel>
     </div>
-        <input pInputText [(ngModel)]="q.option2" type="text" pSize="small" placeholder="Option" />
-        <input pInputText [(ngModel)]="q.option3" type="text" pSize="small" placeholder="Option" />
-        <input pInputText [(ngModel)]="q.option4" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="mcq.option2" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="mcq.option3" type="text" pSize="small" placeholder="Option" />
+        <input pInputText [(ngModel)]="mcq.option4" type="text" pSize="small" placeholder="Option" />
         <p-floatlabel variant="on">
-    <input class="flex-auto w-fit px-4" pInputText id="on_label" [(ngModel)]="q.answerKey" autocomplete="off" />
+    <input class="flex-auto w-fit px-4" pInputText id="on_label" [(ngModel)]="mcq.answerKey" autocomplete="off" />
     <label for="on_label">Answer</label>
     </p-floatlabel>
     </div>
+     </div>
     </div>
-    </div>
-        </ng-template>
-    </div>
-    </div>
- -->
-<!-- view-mcq.component.html
-<!-- <div *ngIf="mcq">
-  <h3>{{ mcq.question }}</h3>
-  <ul>
-    <li>{{ mcq.option1 }}</li>
-    <li>{{ mcq.option2 }}</li>
-    <li>{{ mcq.option3 }}</li>
-    <li>{{ mcq.option4 }}</li>
-  </ul>
-  <p><strong>Answer:</strong> {{ mcq.answerKey }}</p>
-</div> -->
+</ng-template>
+</div>
+<ng-template #code>
+  <h1>Coding</h1>
+</ng-template>
+<!-- [routerLink]="['/admin/Request-McqEdit', mcq.mcqQuestionId]" -->

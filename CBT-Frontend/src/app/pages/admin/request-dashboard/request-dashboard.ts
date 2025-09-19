@@ -17,27 +17,20 @@ import { data } from '../../../models/admin/admin';
 export class RequestDashboard {
   openRow:string|null=null;
   UserName='';
-   constructor(private router: Router) { }
-p: any;
-    onView(p: submissions) {
-      // alert(`Viewing ${p.devId}`);
-      if(this.openRow!==p.questionId){
-      this.router.navigate(["/admin/Request-McqView"],{ queryParams: { id: `${p.questionId}` } });
-      this.openRow=null;
-      }
-    }
+  constructor(private router: Router) { }
+  p: any;
+    
   
-    onEdit(p: submissions) {
-      // alert(`Editing ${p.devId}`);
+    onApproval(p: submissions) {
+       alert(`Approved ${p.devId}`);
+       console.log('Saved:', p.devId,p.questionId,p.questionType,p.userName);
           }
   
     onDelete(p:submissions) {
       if (confirm(`Delete ${p.devId}?`)) {
         this.submit = this.submit.filter((c) => c.devId !== p.devId);
       }
-    }
-
-        
+    }    
   submit:submissions[]= [
     {
       "devId": "#DEV-0441",
@@ -62,7 +55,19 @@ p: any;
       "userName": "john deo",
       "questionType": "Coding",
       "questionId": "code_11111"
-    }
+    },
+    {
+      "devId": "#DEV-0442",
+      "userName": "john deo",
+      "questionType": "Mcq", 
+      "questionId": "mcq002"
+    },
+    {
+      "devId": "#DEV-0442",
+      "userName": "john deo",
+      "questionType": "Mcq", 
+      "questionId": "mcq003"
+    },
   ]
   Mcq:data[]= [{
       "mcqQuestionId": "mcq_12345",

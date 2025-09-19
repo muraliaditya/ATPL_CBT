@@ -17,6 +17,8 @@ import { EditMcq } from './pages/admin/edit-mcq/edit-mcq';
 import { RequestDashboard } from './pages/admin/request-dashboard/request-dashboard';
 import { DashboardEditmcq } from './pages/admin/dashboard-editmcq/dashboard-editmcq';
 import { DashboardViewmcq } from './pages/admin/dashboard-viewmcq/dashboard-viewmcq';
+import { DeveloperLogin } from './pages/developer/developer-login/developer-login';
+import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
 export const routes: Routes = [
   {
     path: '',
@@ -72,7 +74,7 @@ export const routes: Routes = [
         component: AddMcqQuestion,
       },
       {
-        path: 'Edit-Mcq',
+        path: 'Edit-Mcq/:id',
         component: EditMcq,
       },
       {
@@ -80,7 +82,7 @@ export const routes: Routes = [
         component: RequestDashboard,
       },
       {
-        path: 'Request-McqEdit',
+        path: 'Request-McqEdit/:id',
         component: DashboardEditmcq,
       },
       {
@@ -89,4 +91,15 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path:'developer',component:DeveloperLogin,
+    children:[
+      {
+        path:'developer-dashboard',component:DeveloperDashboard,
+      },
+    ],
+  },
+  {
+    path:'developer-dashboard',component:DeveloperDashboard,
+  }
 ];

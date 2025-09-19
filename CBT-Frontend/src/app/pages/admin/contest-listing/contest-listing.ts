@@ -60,7 +60,6 @@ export class ContestListing {
   }
 
   onView(contest: Contest) {
-    alert(`Viewing ${contest.id}`);
     this.openRow = null;
   }
 
