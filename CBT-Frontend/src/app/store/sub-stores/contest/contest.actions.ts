@@ -44,7 +44,7 @@ export const AcceptCodingQuestion = createAction(
 );
 
 export const DeleteCodingQuestion = createAction(
-  '[Contest] Accept Coding Question',
+  '[Contest] Delete Coding Question',
   props<{ prevCodeId: number }>()
 );
 
@@ -54,11 +54,18 @@ export const ReplaceCodingQuestion = createAction(
 );
 
 export const AcceptAllCodingQuestions = createAction(
-  '[Contest] AcceptAll Coding Ques',
+  '[Contest] Accept All Coding Ques',
   props<{ codeQuestions: ContestCodingQuestion[] }>()
 );
 
 export const ReplaceAllCodingquestions = createAction(
   '[Contest] Replace All',
+  props<{ codeQuestions: ContestCodingQuestion[] }>()
+);
+
+export const DeleteCodingSection = createAction('[Contest] Delete All');
+
+export const AddCodingQuestions = createAction(
+  '[Contest] Add Coding Questions',
   props<{ codeQuestions: ContestCodingQuestion[] }>()
 );
