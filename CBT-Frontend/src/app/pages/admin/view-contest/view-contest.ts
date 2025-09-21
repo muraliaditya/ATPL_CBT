@@ -1,119 +1,118 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CodeQuestions } from '../../../models/admin/admin';
-import {Testcase} from '../../../models/admin/admin';
+import { Testcase } from '../../../models/admin/admin';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
 
 @Component({
   selector: 'app-view-contest',
-  imports: [FormsModule,CommonModule,ToggleSection],
+  imports: [FormsModule, CommonModule, ToggleSection],
   templateUrl: './view-contest.html',
-  styleUrl: './view-contest.css'
+  styleUrl: './view-contest.css',
 })
 export class ViewContest {
-  goBack(){
-    console.log("Back");
+  goBack() {
+    console.log('Back');
   }
-  closeDialog(){
-    console.log("closed");
+  closeDialog() {
+    console.log('closed');
   }
- currentContestId: string = '';
- currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
- changeSection(section: 'Mcqs' | 'Coding') {
+  currentContestId: string = '';
+  currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
+  changeSection(section: 'Mcqs' | 'Coding') {
     this.currentSection = section;
   }
-  constructHeading(value:string){
-    return `Question -  ${value}`
+  constructHeading(value: string) {
+    return `Question -  ${value}`;
   }
- contest=
-  {
-  "contest_id": "CT-0441",
-  "contest_name": "Contest 1",
-  "status": "ACTIVE",
-  "start_time": "2025-01-24T17:00:00",
-  "end_time": "2025-01-24T19:00:00",
-  "duration": 120,
-  "eligibility": "Student",
-  "mcqs": {
-    "mcqSections": [
-      {
-        "section": "MCQ",
-        "mcqQuestions": [
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          },
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          },
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          },
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          },
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          },
-          {
-            "mcq_question_id": "mcq1",
-            "question_text": "What is the chemical symbol for gold?",
-            "option_1": "AU",
-            "option_2": "CU", 
-            "option_3": "AG",
-            "option_4": "FE",
-            "correctAnswer": "AU",
-            "weightage": 1
-          }
-        ]
-      }
-    ]
-  }
-}
-coding:CodeQuestions[]= [
-       {
+  contest = {
+    contest_id: 'CT-0441',
+    contest_name: 'Contest 1',
+    status: 'ACTIVE',
+    start_time: '2025-01-24T17:00:00',
+    end_time: '2025-01-24T19:00:00',
+    duration: 120,
+    eligibility: 'Student',
+    mcqs: {
+      mcqSections: [
+        {
+          section: 'MCQ',
+          mcqQuestions: [
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+            {
+              mcq_question_id: 'mcq1',
+              question_text: 'What is the chemical symbol for gold?',
+              option_1: 'AU',
+              option_2: 'CU',
+              option_3: 'AG',
+              option_4: 'FE',
+              correctAnswer: 'AU',
+              weightage: 1,
+            },
+          ],
+        },
+      ],
+    },
+  };
+  coding: CodeQuestions[] = [
+    {
       codeQuestionId: 'code001',
       questionName: 'Reverse a string',
       difficulty: 'Easy',
       description:
         'Write a function that takes a string and returns it reversed.',
-      
+
       inputParams: ['str'],
       inputType: ['string'],
       outputType: 'string',
@@ -133,7 +132,7 @@ coding:CodeQuestions[]= [
           explanation: ' The only possible triplet does not sum up to 0.',
         },
       ],
-    } ,
+    },
     {
       codeQuestionId: 'code001',
       questionName: 'Reverse a string',
@@ -166,6 +165,6 @@ coding:CodeQuestions[]= [
           explanation: ' The only possible triplet does not sum up to 0.',
         },
       ],
-    } 
-]
+    },
+  ];
 }

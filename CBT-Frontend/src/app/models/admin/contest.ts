@@ -36,6 +36,7 @@ export interface ContestCodingQuestion {
   description: string;
   difficulty: 'Easy' | 'difficult' | 'medium';
   inputParams: string[];
+  weightage?: number;
   inputType: string[];
   outputFormat: string;
   testcases: ContestTestcase[];

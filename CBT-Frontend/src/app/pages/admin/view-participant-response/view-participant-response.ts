@@ -11,10 +11,19 @@ import { Participant } from '../../../models/admin/participant-result';
 import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
 import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
+import { CodeBlock } from '../../../components/UI/code-block/code-block';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 
 @Component({
   selector: 'app-view-participant-response',
-  imports: [CommonModule, TestcaseFilterPipe, ToggleSection, AdminHeader],
+  imports: [
+    CommonModule,
+    TestcaseFilterPipe,
+    ToggleSection,
+    AdminHeader,
+    CodeBlock,
+    DynamicLayout,
+  ],
   templateUrl: './view-participant-response.html',
   styleUrl: './view-participant-response.css',
 })
@@ -64,6 +73,7 @@ export class ViewParticipantResponse {
     }
     return false;
   }
+
   mcqQuestions: MCQQuestionResponse[] = [
     {
       mcqQuestionId: 'mcq001',
@@ -148,8 +158,29 @@ export class ViewParticipantResponse {
       questionName: 'Check for palindrome',
       difficulty: 'difficult',
       description: 'Determine if a given string is a palindrome.',
-      submittedCode:
-        "function isPalindrome(str) { return str === str.split('').reverse().join(''); }",
+      submittedCode: `
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        function isPalindrome(str) { 
+        return str === str.split('').reverse().join(''); 
+        }
+        `,
       languageType: 'JavaScript',
       status: Status.WRONG_ANSWER,
       publicTestCasesPassed: 1,

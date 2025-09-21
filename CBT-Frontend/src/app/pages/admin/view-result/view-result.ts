@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 
 @Component({
   selector: 'app-view-result',
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
     FloatLabel,
     InputTextModule,
     CommonModule,
+    DynamicLayout,
   ],
   templateUrl: './view-result.html',
   styleUrl: './view-result.css',
@@ -40,7 +42,6 @@ export class ViewResult implements OnInit {
     );
   }
   constructor(private route: ActivatedRoute, private router: Router) {}
-  //hi
   resultsData: Participants[] = [];
   originalData: Participants[] = [];
 

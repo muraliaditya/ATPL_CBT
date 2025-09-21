@@ -13,6 +13,11 @@ export const DeleteMCQSection = createAction(
   props<{ section: string }>()
 );
 
+export const changeMcqWeightage = createAction(
+  '[Contest] Mcq Weightage',
+  props<{ section: string; prevMcqId: number; weightage: number }>()
+);
+
 export const DeleteMcqQuestion = createAction(
   '[Contest] DeleteMcq',
   props<{ section: string; mcqQuestionId: number }>()
@@ -68,4 +73,9 @@ export const DeleteCodingSection = createAction('[Contest] Delete All');
 export const AddCodingQuestions = createAction(
   '[Contest] Add Coding Questions',
   props<{ codeQuestions: ContestCodingQuestion[] }>()
+);
+
+export const changeCodeWeightage = createAction(
+  '[Contest] chnageCodeWeightage',
+  props<{ codingQuestionId: number; weightage: number }>()
 );

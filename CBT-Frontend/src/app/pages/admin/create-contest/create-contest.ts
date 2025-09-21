@@ -20,8 +20,13 @@ import {
   AcceptAllCodingQuestions,
   ReplaceCodingQuestion,
   ReplaceAllCodingquestions,
+  DeleteCodingSection,
+  changeMcqWeightage,
+  changeCodeWeightage,
 } from '../../../store/sub-stores/contest/contest.actions';
-import { FormArray, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
 
@@ -41,6 +46,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 import { ContestTestcase } from '../../../models/admin/contest';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 
 @Component({
   selector: 'app-create-contest',
@@ -56,21 +62,26 @@ import { ContestTestcase } from '../../../models/admin/contest';
     DatePicker,
     ToggleSection,
     TestcaseFilterPipe,
+    DynamicLayout,
   ],
   templateUrl: './create-contest.html',
   styleUrl: './create-contest.css',
 })
 export class CreateContest implements OnInit {
   codeQuestionsGeneratorForm: FormGroup;
-  contestName: string = '';
-  eligibility: string = '';
-  active: boolean = false;
+  codingWeightageForm: FormGroup;
+  totalMarks: number = 0;
+  totalMcqMarks: number = 0;
+  totalcodingMarks: number = 0;
+  mcqQuestionGenerateForm: FormGroup;
+
   eligibilityOptions: string[] = [
     'Student',
     'Priliminary',
     'Intermediate',
     'Advanced',
   ];
+  McqOptions: string[] = ['Aptitude', 'Reasoning', 'Quant'];
   constructShowSectionCondition(idx: number) {
     if (idx === 0) {
       return true;
@@ -90,12 +101,12 @@ export class CreateContest implements OnInit {
     }
     return false;
   }
-  startTime: Date[] | undefined;
-  endTime: Date[] | undefined;
-  duration: number | '' = '';
+
   codingQuestions$: Observable<Record<number, ContestCodingQuestion>>;
+  sectionWeightageForm: FormGroup;
 
   preferences: FormGroup;
+  contestDetailsForm: FormGroup;
   McqList$: Observable<Record<string, Record<number, ContestMCQQuestion>>>;
   finalisedIDs$: Observable<string[]>;
   finalisedIds: string[] = [];
@@ -106,6 +117,17 @@ export class CreateContest implements OnInit {
   finalisedCodingQuestions$: Observable<ContestCodingQuestion[]>;
 
   constructor(private store: Store<AppState>, private fb: FormBuilder) {
+    this.contestDetailsForm = this.fb.group({
+      contestName: ['', [Validators.required]],
+      eligibility: ['', [Validators.required]],
+      active: [false, [Validators.required]],
+      startTime: [null, [Validators.required]],
+      endTime: [null, [Validators.required]],
+      duration: ['', [Validators.required, Validators.min(1)]],
+    });
+    this.sectionWeightageForm = this.fb.group({});
+    this.codingWeightageForm = this.fb.group({});
+
     this.McqList$ = this.store.select(
       (state) => state.contest.tempMcqQuestions
     );
@@ -126,6 +148,11 @@ export class CreateContest implements OnInit {
       marks: ['', [Validators.required, Validators.min(10)]],
       difficulty: ['', Validators.required],
     });
+    this.mcqQuestionGenerateForm = this.fb.group({
+      mcqSection: ['', Validators.required],
+      count: ['', [Validators.required, Validators.min(1)]],
+      marks: ['', [Validators.required, Validators.min(10)]],
+    });
     this.preferences = this.fb.group({
       choices: this.fb.array([]),
     });
@@ -143,14 +170,58 @@ export class CreateContest implements OnInit {
     );
     return questionMcqs.every((id) => this.finalisedQuestionSet.has(id));
   }
+  checkIsCodingSectionFinalised(
+    sectionData: Record<number, ContestCodingQuestion>
+  ): boolean {
+    let questionKeys = Object.keys(sectionData);
+    let questionMcqs = questionKeys.map(
+      (key) => sectionData[Number(key)].codeQuestionId
+    );
+    return questionMcqs.every((id) => this.finalisedQuestionSet.has(id));
+  }
   currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
   changeSection(value: 'Mcqs' | 'Coding') {
     this.currentSection = value;
   }
 
+  getCodingQuestionControl(questionKey: string): FormControl {
+    let control = this.codingWeightageForm.get(questionKey) as FormControl;
+
+    if (!control) {
+      control = this.fb.control(0, [Validators.required, Validators.min(1)]);
+      this.codingWeightageForm.addControl(questionKey, control);
+    }
+
+    return control;
+  }
+  onCodingWeightageChange(questionKey: string, event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const value = Number(inputElement.value);
+
+    const control = this.getCodingQuestionControl(questionKey);
+
+    if (control.valid) {
+      this.store.dispatch(
+        changeCodeWeightage({
+          codingQuestionId: Number(questionKey),
+          weightage: value,
+        })
+      );
+    }
+  }
+
+  isCodingQuestionInvalid(questionKey: string): boolean {
+    const control = this.codingWeightageForm.get(questionKey);
+    return control ? control.invalid : false;
+  }
+
+  checkIfCodingSectionInvalid(): boolean {
+    return this.codingWeightageForm.invalid;
+  }
+
   replaceCodequestion(prevCodeId: string) {
     let ques: ContestCodingQuestion = {
-      codeQuestionId: 'Q1',
+      codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
       description: 'Write a function that returns the sum of two integers.',
       difficulty: 'Easy',
@@ -191,6 +262,14 @@ export class CreateContest implements OnInit {
         codeQuestions: ques,
       })
     );
+  }
+  trackByCodingQuestion(index: number, item: any) {
+    return `coding-${item.key}-${index}`;
+  }
+  deleteCodingSection() {
+    this.store.dispatch(DeleteCodingSection());
+    this.codingWeightageForm.reset();
+    this.codingWeightageForm = this.fb.group({});
   }
   replaceCodingSection() {
     const codingQuestions: ContestCodingQuestion[] = [
@@ -281,7 +360,9 @@ export class CreateContest implements OnInit {
       })
     );
   }
-
+  generateMcqSection() {
+    console.log(this.mcqQuestionGenerateForm.value);
+  }
   replaceAll(section: string) {
     const Reasoning = [
       {
@@ -312,12 +393,29 @@ export class CreateContest implements OnInit {
 
   deleteMcqSection(category: string) {
     this.store.dispatch(DeleteMCQSection({ section: category }));
+    if (this.sectionWeightageForm.contains(category)) {
+      this.sectionWeightageForm.removeControl(category);
+    }
+    console.log(this.sectionWeightageForm.controls);
   }
   deleteMcqQuestion(category: string, mcqId: string) {
     console.log(category, mcqId);
     this.store.dispatch(
       DeleteMcqQuestion({ section: category, mcqQuestionId: parseInt(mcqId) })
     );
+
+    const sectionGroup = this.sectionWeightageForm.get(category) as FormGroup;
+
+    if (!sectionGroup) return;
+
+    const questionCount = Object.keys(sectionGroup.controls).length;
+
+    if (questionCount === 1) {
+      this.sectionWeightageForm.removeControl(category);
+    } else if (sectionGroup.contains(mcqId)) {
+      sectionGroup.removeControl(mcqId);
+    }
+    console.log(this.sectionWeightageForm.controls);
   }
   acceptAllMcqList(category: string) {
     this.store.dispatch(AcceptAllMcqs({ section: category }));
@@ -357,6 +455,10 @@ export class CreateContest implements OnInit {
   deleteCodeQues(num: string) {
     console.log(num);
     this.store.dispatch(DeleteCodingQuestion({ prevCodeId: parseInt(num) }));
+
+    if (this.codingWeightageForm.contains(num)) {
+      this.codingWeightageForm.removeControl(num);
+    }
   }
 
   removeField(num: number) {
@@ -386,15 +488,90 @@ export class CreateContest implements OnInit {
       ],
     });
   }
+  calculateTotalMcqMarks(mcqsQues: Record<string, ContestMCQQuestion[]>) {
+    let keys = Object.keys(mcqsQues);
+    let totalMarks = 0;
+    for (let key of keys) {
+      let sectionData = mcqsQues[key];
+      totalMarks = sectionData.reduce(
+        (sum, ques) => sum + ques.weightage,
+        totalMarks
+      );
+    }
+    this.totalMcqMarks = totalMarks;
+  }
   AddQuestionPreferences() {
     console.log(this.codeQuestionsGeneratorForm.value.count);
 
     this.addField(this.codeQuestionsGeneratorForm.value.count);
   }
+  getQuestionControl(sectionKey: string, questionKey: string): FormControl {
+    const sectionGroup = this.sectionWeightageForm.get(sectionKey) as FormGroup;
 
+    if (!sectionGroup) {
+      const newGroup = this.fb.group({});
+      this.sectionWeightageForm.addControl(sectionKey, newGroup);
+      return this.getQuestionControl(sectionKey, questionKey);
+    }
+
+    let control = sectionGroup.get(questionKey) as FormControl;
+
+    if (!control) {
+      control = this.fb.control(0, [Validators.required, Validators.min(1)]);
+      sectionGroup.addControl(questionKey, control);
+    }
+
+    return control;
+  }
+  onWeightageChange(sectionKey: string, questionKey: string, event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const value = Number(inputElement.value);
+
+    const control = this.getQuestionControl(sectionKey, questionKey);
+
+    if (control.valid) {
+      this.store.dispatch(
+        changeMcqWeightage({
+          section: sectionKey,
+          prevMcqId: Number(questionKey),
+          weightage: value,
+        })
+      );
+    }
+  }
+
+  isQuestionInvalid(section: string, questionKey: string): boolean {
+    const sectionGroup = this.sectionWeightageForm.get(section) as FormGroup;
+    if (!sectionGroup) return false;
+
+    const control = sectionGroup.get(questionKey);
+    return control ? control.invalid : false;
+  }
+
+  checkIfSectionInvalid(section: string): boolean {
+    const sectionGroup = this.sectionWeightageForm.get(section) as FormGroup;
+    if (sectionGroup?.invalid) {
+      return true;
+    }
+    return false;
+  }
+  trackByQuestion(index: number, question: any) {
+    return `${question.key}-${index}`;
+  }
+  trackByKey(index: number, item: any) {
+    return `${item.key}-${index}`;
+  }
+  calculateTotalCodingMarks(ques: ContestCodingQuestion[]) {
+    let codingMarks = 0;
+    if (ques.length) {
+      codingMarks = ques.reduce((sum, q) => sum + (q.weightage || 0), 0);
+      this.totalcodingMarks = codingMarks;
+    }
+  }
   ngOnInit(): void {
     this.finalisedMcqs$.subscribe((data) => {
-      console.log(data);
+      this.calculateTotalMcqMarks(data);
+      console.log('finalised mcqs data', data);
     });
     const mathMcqs: ContestMCQQuestion[] = [
       {
@@ -476,6 +653,7 @@ export class CreateContest implements OnInit {
         questionName: 'Sum of Two Numbers',
         description: 'Write a function that returns the sum of two integers.',
         difficulty: 'Easy',
+        weightage: 0,
         inputParams: ['a', 'b'],
         inputType: ['number', 'number'],
         outputFormat: 'number',
@@ -502,6 +680,7 @@ export class CreateContest implements OnInit {
         questionName: 'Reverse a String',
         description: 'Create a function that reverses a given string.',
         difficulty: 'medium',
+        weightage: 0,
         inputParams: ['str'],
         inputType: ['string'],
         outputFormat: 'string',
@@ -531,6 +710,7 @@ export class CreateContest implements OnInit {
         description:
           'Implement a function to find the factorial of a non-negative integer.',
         difficulty: 'difficult',
+        weightage: 0,
         inputParams: ['n'],
         inputType: ['number'],
         outputFormat: 'number',
@@ -553,6 +733,45 @@ export class CreateContest implements OnInit {
         ],
       },
     ];
+    this.codingQuestions$.subscribe((codingData) => {
+      const questionKeys = Object.keys(codingData);
+      questionKeys.forEach((key) => {
+        if (!this.codingWeightageForm.get(key)) {
+          const question = codingData[Number(key)];
+          this.codingWeightageForm.addControl(
+            key,
+            this.fb.control(Number(question.weightage || 0), [
+              Validators.required,
+              Validators.min(1),
+            ])
+          );
+        }
+      });
+    });
+    this.McqList$.subscribe((mcqData) => {
+      for (const section of Object.keys(mcqData)) {
+        let sectionGroup = this.sectionWeightageForm.get(section) as FormGroup;
+        if (!sectionGroup) {
+          sectionGroup = this.fb.group({});
+          this.sectionWeightageForm.addControl(section, sectionGroup);
+        }
+
+        const questionKeys = Object.keys(mcqData[section]);
+        questionKeys.forEach((key) => {
+          if (!sectionGroup.get(key)) {
+            const q = mcqData[section][Number(key)];
+            sectionGroup.addControl(
+              key,
+              this.fb.control(Number(q.weightage), [
+                Validators.required,
+                Validators.min(1),
+              ])
+            );
+          }
+        });
+      }
+    });
+
     this.store.dispatch(AddCodingQuestions({ codeQuestions: codingQuestions }));
     this.store.dispatch(AddCodingQuestions({ codeQuestions: ques }));
 
@@ -565,16 +784,18 @@ export class CreateContest implements OnInit {
     });
     this.finalisedQuestionsSet$.subscribe((data) => {
       this.finalisedQuestionSet = data;
+      console.log('finalised ques ids', data);
     });
     this.store.dispatch(
       AddMcqSection({ mcqs: extraScienceMcqs, section: 'Reasoning' })
     );
 
     this.codingQuestions$.subscribe((data) => {
-      console.log(data);
+      console.log('tempcoding Ques', data);
     });
     this.finalisedCodingQuestions$.subscribe((data) => {
-      console.log(data);
+      this.calculateTotalCodingMarks(data);
+      console.log('finalisedcodingQuestions', data);
     });
   }
 }

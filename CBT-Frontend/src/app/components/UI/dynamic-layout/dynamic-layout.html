@@ -1,0 +1,13 @@
+<div class="flex flex-col h-full">
+  <div #headerRef>
+    <ng-content select="[header]"></ng-content>
+  </div>
+
+  <div #mainRef class="overflow-y-auto">
+    <ng-content select="[main]"></ng-content>
+  </div>
+
+  <div #footerRef>
+    <ng-content select="[footer]"></ng-content>
+  </div>
+</div>
