@@ -566,6 +566,8 @@ export class CreateContest implements OnInit {
     if (ques.length) {
       codingMarks = ques.reduce((sum, q) => sum + (q.weightage || 0), 0);
       this.totalcodingMarks = codingMarks;
+    } else {
+      this.totalcodingMarks = 0;
     }
   }
   ngOnInit(): void {

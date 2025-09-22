@@ -8,4 +8,5 @@ export interface CreateContestQuestions {
   finalisedQuestionsSet: Set<string>;
   finalisedMcqQuestions: Record<string, ContestMCQQuestion[]>;
   finalisedcodingQuestions: ContestCodingQuestion[];
+  regenerateOnceListIds: Set<string>;
 }

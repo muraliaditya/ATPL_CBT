@@ -1,96 +1,585 @@
+<app-dynamic-layout>
+  <app-admin-header header heading="Edit Contest"></app-admin-header>
+  <div main class="p-5">
+    <form
+      id="contest-details-form"
+      class="py-5 grid grid-cols-3 grid-rows-2 gap-6"
+      [formGroup]="contestDetailsForm"
+    >
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="contestName"
+          pInputText
+          id="contest-name-input"
+          type="text"
+          class="w-full"
+          autocomplete="off"
+        />
+        <label for="contest-name-input">Contest Name</label>
+      </p-floatlabel>
 
-<div class="flex shadow-lg  p-3 ">
-  <button (click)="goBack()"class="absolute flex items-center text-gray-600">
-  <img src="/svgs/Back.svg" alt="Back" class="w-5 h-5">
-</button>
-  <h2 class="font-semibold text-center text-lg w-full">Edit Contest</h2>
-</div>
-<div class="w-full p-9">
-<div class="flex flex-row gap-4 p-2 ">
-    <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="ContestId" autocomplete="off" />
-    <label for="on_label">ContestName</label>
-    </p-floatlabel>
-    <p-toggleswitch [(ngModel)]="checked" /><span>Active</span>
-</div>
-<div>
-    <div class="flex gap-3 p-2">
-    <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="StartTime" autocomplete="off" />
-    <label for="on_label">Start Time</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="EndTime" autocomplete="off" />
-    <label for="on_label">End Time</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-    <input pInputText id="on_label" [(ngModel)]="Duration" autocomplete="off" />
-    <label for="on_label">Duration</label>
-    </p-floatlabel>
-    </div>
-</div>
+      <p-floatlabel class="w-full" variant="on">
+        <p-select
+          formControlName="eligibility"
+          inputId="eligibility-select"
+          [options]="eligibilityOptions"
+          class="w-full"
+        />
+        <label for="eligibility-select">Eligibility</label>
+      </p-floatlabel>
 
-<div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
+      <div class="flex gap-2 items-center">
+        <p-toggleswitch formControlName="active" inputId="active-toggle" />
+        <label for="active-toggle" class="font-semibold">Active</label>
+      </div>
+
+      <p-floatlabel class="w-full" variant="on">
+        <p-datepicker
+          formControlName="startTime"
+          inputId="start-time-picker"
+          showIcon
+          class="w-full"
+          iconDisplay="input"
+          [showTime]="true"
+          hourFormat="12"
+        ></p-datepicker>
+        <label for="start-time-picker" class="font-bold block mb-2"
+          >Start Time</label
+        >
+      </p-floatlabel>
+
+      <p-floatlabel class="w-full" variant="on">
+        <p-datepicker
+          formControlName="endTime"
+          class="w-full"
+          inputId="end-time-picker"
+          showIcon
+          iconDisplay="input"
+          [showTime]="true"
+          hourFormat="12"
+        ></p-datepicker>
+        <label for="end-time-picker" class="font-bold block mb-2"
+          >End Time</label
+        >
+      </p-floatlabel>
+
+      <p-floatlabel class="w-full" variant="on">
+        <input
+          formControlName="duration"
+          class="w-full"
+          pInputText
+          id="duration-input"
+          type="number"
+          autocomplete="off"
+        />
+        <label for="duration-input">Duration (in minutes)</label>
+      </p-floatlabel>
+    </form>
+
+    <div class="flex gap-2 py-1.5 px-3 w-full bg-slate-200 h-fit">
       <div
         [ngClass]="[currentSection === 'Mcqs' ? 'bg-blue-500 text-white' : '']"
-        class="flex flex-1 justify-center items-center gap-2 w-fit py-1 px-5 h-fit cursor-pointer"
+        class="flex flex-1 justify-center items-center gap-2 w-fit py-2 px-5 h-fit cursor-pointer"
         (click)="changeSection('Mcqs')"
+        role="button"
+        tabindex="0"
       >
-        <img src="/images/test.png" class="w-7 h-7" />
-        <p class="font-bold text-lg">Mcqs</p>
+        <img src="/images/test.png" class="w-7 h-7" alt="MCQ Test Icon" />
+        <p class="font-bold text-lg">MCQs</p>
       </div>
       <div
         [ngClass]="[
           currentSection === 'Coding' ? 'bg-blue-500 text-white' : ''
         ]"
-        class="flex flex-1 justify-center items-center gap-2 w-fit bg-red py-1 px-5 h-fit cursor-pointer"
+        class="flex flex-1 justify-center items-center gap-2 w-fit bg-red py-2 px-5 h-fit cursor-pointer"
         (click)="changeSection('Coding')"
+        role="button"
+        tabindex="0"
       >
-        <img src="/svgs/code.svg" class="w-5 h-5" />
+        <img src="/svgs/code.svg" class="w-5 h-5" alt="Coding Icon" />
         <p class="font-bold text-lg">Coding</p>
       </div>
-</div>
-<div class="w-full m-2">
-<div class="flex flex-col gap-2" *ngIf="currentSection==='Mcqs'">
-    <h3>MCQ Sections</h3>
-    <div class="flex flex-col gap-2" *ngFor="let section of contest.mcqs.mcqSections">
-    <h4>{{ section.section }}</h4>
-    <div  *ngFor="let q of section.mcqQuestions; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
-    <p><b>{{ i + 1 }}.</b> {{ q.question_text }}</p>
-    <ul class="list-none">
-      <li>A. {{ q.option_1 }}</li>
-      <li>B. {{ q.option_2 }}</li>
-      <li>C. {{ q.option_3 }}</li>
-      <li>D. {{ q.option_4 }}</li>
-    </ul>
-    <p class="text-green-500 bg-green-50  p-1 border-l-3 border-green-500 w-fit px-7 font-bold">Answer :- {{ q.correctAnswer }}</p>
     </div>
+
+    <!-- MCQ Section -->
+    <div *ngIf="currentSection === 'Mcqs'">
+      <h1 class="text-lg font-semibold">Sections</h1>
+      <form
+        id="mcq-generator-form"
+        class="mt-2"
+        [formGroup]="mcqQuestionGenerateForm"
+        (ngSubmit)="generateMcqSection()"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select
+                formControlName="mcqSection"
+                inputId="mcq-section-select"
+                name="mcqSection"
+                [options]="McqOptions"
+                class="w-full"
+              />
+              <label for="mcq-section-select">Section</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+              <input
+                formControlName="count"
+                pInputText
+                id="mcq-count-input"
+                name="mcqCount"
+                type="number"
+                autocomplete="off"
+              />
+              <label for="mcq-count-input">Count</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+              <input
+                formControlName="marks"
+                pInputText
+                id="mcq-marks-input"
+                name="mcqMarks"
+                type="number"
+                autocomplete="off"
+              />
+              <label for="mcq-marks-input">Marks</label>
+            </p-floatlabel>
+          </div>
+          <button
+            [disabled]="mcqQuestionGenerateForm.invalid"
+            class="px-2 py-1 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+            type="submit"
+          >
+            Generate
+          </button>
+        </div>
+      </form>
+
+      <section *ngIf="McqList$ | async as mcqs">
+        <div *ngFor="let section of mcqs | keyvalue; trackBy: trackByKey">
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-2">
+              <div class="font-bold text-xl">{{ section.key }}</div>
+              <img
+                (click)="deleteMcqSection(section.key)"
+                src="/svgs/DeleteIcon.svg"
+                alt="Delete Section"
+                class="w-5 h-5 cursor-pointer"
+                role="button"
+                tabindex="0"
+              />
+            </div>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                *ngIf="!checkIsSectionFinalised(section.value)"
+                (click)="acceptAllMcqList(section.key)"
+                [disabled]="checkIfSectionInvalid(section.key)"
+                class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+              >
+                Accept All
+              </button>
+              <button
+                type="button"
+                *ngIf="
+                  !checkIsSectionFinalised(section.value) ||
+                  checkIsSectionRegeneratable(section.value)
+                "
+                (click)="replaceAll(section.key)"
+                [disabled]="checkIfSectionInvalid(section.key)"
+                class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+              >
+                Regenerate
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="mt-5 flex flex-col gap-4"
+            *ngFor="
+              let question of section.value | keyvalue;
+              index as idx;
+              trackBy: trackByQuestion
+            "
+          >
+            <div
+              class="px-5 flex flex-col gap-1 py-3 rounded-lg shadow-md border border-gray-200"
+            >
+              <div class="flex gap-2 justify-between items-center">
+                <p-floatlabel variant="on">
+                  <input
+                    [formControl]="
+                      getQuestionControl(section.key, question.key)
+                    "
+                    (input)="
+                      onWeightageChange(section.key, question.key, $event)
+                    "
+                    pInputText
+                    id="weightage-{{ section.key }}-{{ question.key }}"
+                    name="weightage_{{ section.key }}_{{ question.key }}"
+                    type="number"
+                    autocomplete="off"
+                  />
+                  <label for="weightage-{{ section.key }}-{{ question.key }}"
+                    >Weightage</label
+                  >
+                </p-floatlabel>
+
+                <div class="flex gap-2">
+                  {{ question.value.mcqQuestionId }}
+                  <button
+                    *ngIf="
+                      !(finalisedQuestionsSet$ | async)?.has(
+                        question.value.mcqQuestionId
+                      )
+                    "
+                    type="button"
+                    [disabled]="isQuestionInvalid(section.key, question.key)"
+                    (click)="acceptOneMcq(question.value, section.key)"
+                    class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    *ngIf="
+                      !(finalisedQuestionsSet$ | async)?.has(
+                        question.value.mcqQuestionId
+                      ) ||
+                      (regenerateIds$ | async)?.has(
+                        question.value.mcqQuestionId
+                      )
+                    "
+                    type="button"
+                    (click)="replaceMcqQuestion(section.key, question.key)"
+                    [disabled]="isQuestionInvalid(section.key, question.key)"
+                    class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                  >
+                    Regenerate
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-2">
+                  <h1 class="font-bold text-lg">
+                    {{ idx + 1 }}. {{ question.value.question }}
+                  </h1>
+                  <img
+                    src="/svgs/DeleteIcon.svg"
+                    alt="Delete Question"
+                    (click)="deleteMcqQuestion(section.key, question.key)"
+                    class="w-5 h-5 cursor-pointer"
+                    role="button"
+                    tabindex="0"
+                  />
+                </div>
+                <div class="flex flex-col gap-1 pl-2 font-medium">
+                  <h2>A. {{ question.value.option1 }}</h2>
+                  <h2>B. {{ question.value.option2 }}</h2>
+                  <h2>C. {{ question.value.option3 }}</h2>
+                  <h2>D. {{ question.value.option4 }}</h2>
+                </div>
+                <div
+                  class="w-fit font-semibold px-4 py-2 border-l-3 bg-green-50 text-green-500 border-green-500"
+                >
+                  Answer: {{ question.value.answerKey }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <div *ngIf="currentSection === 'Coding'">
+      <form
+        id="coding-generator-form"
+        class="mt-2"
+        [formGroup]="codeQuestionsGeneratorForm"
+        (ngSubmit)="AddQuestionPreferences()"
+      >
+        <div class="py-3 text-xl font-bold">Coding</div>
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select
+                formControlName="difficulty"
+                inputId="coding-difficulty-select"
+                name="codingDifficulty"
+                [options]="difficultyOptions"
+                class="w-full"
+              />
+              <label for="coding-difficulty-select">Difficulty</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+              <input
+                formControlName="count"
+                pInputText
+                id="coding-count-input"
+                name="codingCount"
+                type="number"
+                autocomplete="off"
+              />
+              <label for="coding-count-input">Count</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+              <input
+                formControlName="marks"
+                pInputText
+                id="coding-marks-input"
+                name="codingMarks"
+                type="number"
+                autocomplete="off"
+              />
+              <label for="coding-marks-input">Marks</label>
+            </p-floatlabel>
+          </div>
+          <button
+            [disabled]="codeQuestionsGeneratorForm.invalid"
+            class="px-2 py-1 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+            type="submit"
+          >
+            Generate Preferences
+          </button>
+        </div>
+      </form>
+
+      <form id="coding-preferences-form" [formGroup]="preferences">
+        <div
+          *ngIf="PreferencesArray.controls.length"
+          class="flex items-start justify-between"
+        >
+          <div class="mt-2 flex flex-col gap-3" formArrayName="choices">
+            <div
+              *ngFor="let prefer of PreferencesArray.controls; let idx = index"
+              [formGroupName]="idx"
+              class="flex gap-3 items-center"
+            >
+              <label for="preference-{{ idx }}-select" class="block mb-2"
+                >Q{{ idx + 1 }} Preference</label
+              >
+              <p-floatlabel class="w-full md:w-56" variant="on">
+                <p-select
+                  formControlName="preferredChoice"
+                  inputId="preference-{{ idx }}-select"
+                  name="preference_{{ idx }}"
+                  [options]="difficultyOptions"
+                  class="w-full"
+                />
+                <label for="preference-{{ idx }}-select">Difficulty</label>
+              </p-floatlabel>
+              <img
+                src="/svgs/DeleteIcon.svg"
+                alt="Remove Preference"
+                (click)="removeField(idx)"
+                class="w-5 h-5 cursor-pointer"
+                role="button"
+                tabindex="0"
+              />
+            </div>
+          </div>
+          <button
+            [disabled]="preferences.invalid"
+            class="px-2 py-1 mt-2 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+            type="submit"
+          >
+            Generate Questions
+          </button>
+        </div>
+      </form>
+
+      <section
+        class="flex flex-col gap-2 pt-3"
+        *ngIf="codingQuestions$ | async as codeQues"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex gap-2 items-center">
+            <h1 class="font-semibold text-lg">Questions</h1>
+            <img
+              src="/svgs/DeleteIcon.svg"
+              (click)="deleteCodingSection()"
+              alt="Delete Coding Section"
+              class="w-5 h-5 cursor-pointer"
+              role="button"
+              tabindex="0"
+            />
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              *ngIf="!checkIsCodingSectionFinalised(codeQues)"
+              (click)="acceptAllCodingquestions(codeQues)"
+              [disabled]="checkIfCodingSectionInvalid()"
+              class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+            >
+              Accept All
+            </button>
+            <button
+              type="button"
+              *ngIf="
+                !checkIsCodingSectionFinalised(codeQues) ||
+                checkIsCodingSectionRegeneratable(codeQues)
+              "
+              (click)="replaceCodingSection()"
+              [disabled]="checkIfCodingSectionInvalid()"
+              class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+            >
+              Regenerate
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngFor="
+            let code of codeQues | keyvalue;
+            index as i;
+            trackBy: trackByCodingQuestion
+          "
+        >
+          <div *ngIf="code.value as codingQuestion">
+            <app-toggle-section
+              [headingText]="constructHeader(codingQuestion.questionName)"
+              [showSection]="constructShowSectionCondition(i)"
+            >
+              <div class="flex flex-col gap-2">
+                <div class="flex gap-2 justify-between items-center">
+                  <div class="flex gap-2 items-center">
+                    <p-floatlabel variant="on">
+                      <input
+                        [formControl]="getCodingQuestionControl(code.key)"
+                        (input)="onCodingWeightageChange(code.key, $event)"
+                        pInputText
+                        id="coding-weightage-{{ code.key }}"
+                        name="coding_weightage_{{ code.key }}"
+                        type="number"
+                        autocomplete="off"
+                      />
+                      <label for="coding-weightage-{{ code.key }}"
+                        >Weightage</label
+                      >
+                    </p-floatlabel>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <button
+                      *ngIf="
+                        !(finalisedQuestionsSet$ | async)?.has(
+                          codingQuestion.codeQuestionId
+                        )
+                      "
+                      (click)="acceptCodingQuestion(codingQuestion)"
+                      type="button"
+                      [disabled]="isCodingQuestionInvalid(code.key)"
+                      class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      *ngIf="
+                        !(finalisedQuestionsSet$ | async)?.has(
+                          codingQuestion.codeQuestionId
+                        ) ||
+                        (regenerateIds$ | async)?.has(
+                          codingQuestion.codeQuestionId
+                        )
+                      "
+                      type="button"
+                      (click)="replaceCodequestion(code.key)"
+                      [disabled]="isCodingQuestionInvalid(code.key)"
+                      class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+                    >
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+                <div class="flex gap-1 items-center">
+                  <h1 class="font-semibold text-xl">Description</h1>
+                  <img
+                    (click)="deleteCodeQues(code.key)"
+                    src="/svgs/DeleteIcon.svg"
+                    alt="Delete Coding Question"
+                    class="w-5 h-5 cursor-pointer"
+                    role="button"
+                    tabindex="0"
+                  />
+                </div>
+
+                <h2>{{ codingQuestion.description }}</h2>
+
+                <div
+                  *ngFor="
+                    let testcase of codingQuestion.testcases;
+                    index as idx
+                  "
+                  class="pt-3"
+                >
+                  <div>Example {{ idx + 1 }}:</div>
+                  <div
+                    *ngFor="let inputValue of testcase.inputValues; index as i"
+                  >
+                    {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+                  </div>
+                  {{ testcase.explanation }}
+                </div>
+
+                <div
+                  *ngFor="let testcase of codingQuestion.testcases; index as i"
+                >
+                  <h1 class="font-semibold text-lg mt-1 text-zinc-500">
+                    TestCase - {{ i + 1 }}
+                  </h1>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="font-medium">Input:</div>
+                      <div class="flex flex-col gap-2 w-fit">
+                        <code
+                          class="bg-black text-white px-2 py-1 rounded"
+                          *ngFor="
+                            let inputValue of testcase.inputValues;
+                            index as i
+                          "
+                        >
+                          {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+                        </code>
+                      </div>
+                      <div class="font-medium">Output:</div>
+                      <code class="bg-black text-white px-2 py-1 rounded">
+                        {{ testcase.expectedOutput }}
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </app-toggle-section>
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="flex flex-col gap-2" *ngIf="currentSection==='Coding'">
-        <h3>Coding Questions</h3>
-        <div  *ngFor="let q of coding;let i = index;">
-             <app-toggle-section [headingText]="constructHeading(q.questionName)" [showSection]="false">
-        <div class=" mt-2 mb-2 flex justify-between  p-3">
-        <p >Question - {{ i + 1 }}</p> 
-        <p>{{q.difficulty}}</p>
-        </div>
-        <div class="p-2">
-        <p>{{q.description}}</p>
-        <p>input Paramter - {{q.inputParams}}</p>
-        <p>Input Type - {{q.inputType}}</p>
-        <p>Output Type - {{q.outputType}}</p>
-        </div><br>
-        <h3 class="p-2">Test Cases</h3>
-        <div class="p-2" *ngFor="let test of q.testcases;let i = index;">
-        <p class=" mt-2 w-fit">TestCase - {{ i + 1 }}</p> 
-        <p>Input :-</p>
-        <p class="bg-black pl-2 w-50 text-white">{{test.inputValues}}</p>
-        <p>Output :-</p>
-        <p class="bg-black pl-2 w-50 text-white">{{test.expectedOutput}}</p>
-        </div>
-        </app-toggle-section>
-        </div>
-        </div>
+  </div>
+
+  <div
+    footer
+    class="border-t px-5 py-2 flex justify-between items-center border-t-gray-200"
+  >
+    <div class="font-semibold text-lg">
+      Total Marks: {{ totalMcqMarks + totalcodingMarks }}
     </div>
-</div>
+    <div class="flex gap-3">
+      <button
+        type="button"
+        class="py-1 h-fit px-3 text-blue-500 outline-none flex gap-2 items-center justify-center font-medium cursor-pointer border border-blue-500 text-lg rounded-sm"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="py-1 h-fit text-white px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</app-dynamic-layout>

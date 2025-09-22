@@ -1,7 +1,6 @@
 <app-dynamic-layout>
   <app-admin-header header heading="Create Contest"></app-admin-header>
   <div main class="p-5">
-    <!-- Replace the existing contest details form with this reactive form version -->
     <form
       id="contest-details-form"
       class="py-5 grid grid-cols-3 grid-rows-2 gap-6"
@@ -164,7 +163,6 @@
             <div class="flex items-center gap-2">
               <div class="font-bold text-xl">{{ section.key }}</div>
               <img
-                *ngIf="!checkIsSectionFinalised(section.value)"
                 (click)="deleteMcqSection(section.key)"
                 src="/svgs/DeleteIcon.svg"
                 alt="Delete Section"
@@ -259,11 +257,6 @@
                     {{ idx + 1 }}. {{ question.value.question }}
                   </h1>
                   <img
-                    *ngIf="
-                      !(finalisedQuestionsSet$ | async)?.has(
-                        question.value.mcqQuestionId
-                      )
-                    "
                     src="/svgs/DeleteIcon.svg"
                     alt="Delete Question"
                     (click)="deleteMcqQuestion(section.key, question.key)"
@@ -297,7 +290,7 @@
         [formGroup]="codeQuestionsGeneratorForm"
         (ngSubmit)="AddQuestionPreferences()"
       >
-        <div class="text-xl font-bold">Coding</div>
+        <div class="py-3 text-xl font-bold">Coding</div>
         <div class="flex items-center justify-between">
           <div class="flex gap-2">
             <p-floatlabel class="w-full md:w-56" variant="on">
@@ -397,7 +390,6 @@
           <div class="flex gap-2 items-center">
             <h1 class="font-semibold text-lg">Questions</h1>
             <img
-              *ngIf="!checkIsCodingSectionFinalised(codeQues)"
               src="/svgs/DeleteIcon.svg"
               (click)="deleteCodingSection()"
               alt="Delete Coding Section"
@@ -488,11 +480,6 @@
                 <div class="flex gap-1 items-center">
                   <h1 class="font-semibold text-xl">Description</h1>
                   <img
-                    *ngIf="
-                      !(finalisedQuestionsSet$ | async)?.has(
-                        codingQuestion.codeQuestionId
-                      )
-                    "
                     (click)="deleteCodeQues(code.key)"
                     src="/svgs/DeleteIcon.svg"
                     alt="Delete Coding Question"

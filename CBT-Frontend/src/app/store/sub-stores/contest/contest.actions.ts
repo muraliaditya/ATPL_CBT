@@ -76,6 +76,11 @@ export const AddCodingQuestions = createAction(
 );
 
 export const changeCodeWeightage = createAction(
-  '[Contest] chnageCodeWeightage',
+  '[Contest] changeCodeWeightage',
   props<{ codingQuestionId: number; weightage: number }>()
+);
+
+export const acceptIdsIntoRegenerateIds = createAction(
+  '[Contest] regenerateIds',
+  props<{ Ids: string[] }>()
 );

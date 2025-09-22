@@ -1,8 +1,36 @@
 <div class="w-[200px] shadow-lg h-full">
   <ul class="flex flex-col gap-4 text-lg pt-5 px-2 font-semibold">
-    <li>Manage Contests</li>
-    <li>Manage Requests</li>
-    <li>MCQ Questions</li>
-    <li>Coding Questions</li>
+    <li
+      class="px-3 py-1 cursor-pointer border-2 border-white"
+      routerLink="/admin/contest"
+      routerLinkActive="!border-blue-500 bg-blue-50  text-blue-500 rounded-sm"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      Manage Contests
+    </li>
+    <li
+      class="px-3 py-1 cursor-pointer border-2 border-white"
+      routerLink="/admin/requests"
+      routerLinkActive="!border-blue-500 bg-blue-50  text-blue-500 rounded-sm"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      Manage Requests
+    </li>
+    <li
+      class="px-3 py-1 cursor-pointer border-2 border-white"
+      routerLink="/admin/mcqs"
+      routerLinkActive="!border-blue-500 bg-blue-50  text-blue-500 rounded-sm"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      MCQ Questions
+    </li>
+    <li
+      class="px-3 py-1 cursor-pointer border-2 border-white"
+      routerLink="/admin/coding"
+      routerLinkActive="!border-blue-500 bg-blue-50  text-blue-500 rounded-sm"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      Coding Questions
+    </li>
   </ul>
 </div>

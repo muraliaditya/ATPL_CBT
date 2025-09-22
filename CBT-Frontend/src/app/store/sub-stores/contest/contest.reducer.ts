@@ -9,6 +9,7 @@ import {
   AddCodingQuestions,
   changeMcqWeightage,
   changeCodeWeightage,
+  acceptIdsIntoRegenerateIds,
 } from './contest.actions';
 import {
   AddMcqSection,
@@ -30,16 +31,13 @@ export const initialContestState: CreateContestQuestions = {
   finalisedcodingQuestions: [],
   finalisedMcqQuestions: {},
   finalisedQuestionsSet: new Set(),
+  regenerateOnceListIds: new Set(),
 };
 
 export const contestReducer = createReducer(
   initialContestState,
 
   on(changeMcqWeightage, (state, { section, prevMcqId, weightage }) => {
-    console.log('changing');
-    console.log(section);
-    console.log(prevMcqId);
-    console.log(weightage);
     let isChanged: boolean = false;
     let data = {
       ...state.tempMcqQuestions,
@@ -145,6 +143,22 @@ export const contestReducer = createReducer(
         ...state.tempMcqQuestions[section],
       },
     };
+    let finalisedMcqs = { ...state.finalisedMcqQuestions };
+    let finalisedQuesSet = new Set(state.finalisedQuestionsSet);
+
+    if (!finalisedMcqs[section]) {
+      finalisedMcqs[section] = [];
+    } else {
+      finalisedMcqs[section] = [...finalisedMcqs[section]];
+    }
+    let key = data[section][mcqQuestionId].mcqQuestionId;
+
+    if (finalisedQuesSet.has(key)) {
+      finalisedMcqs[section] = [...finalisedMcqs[section]].filter(
+        (ques) => ques.mcqQuestionId !== key
+      );
+      finalisedQuesSet.delete(key);
+    }
 
     if (data[section] && data[section][mcqQuestionId]) {
       delete data[section][mcqQuestionId];
@@ -152,6 +166,8 @@ export const contestReducer = createReducer(
     return {
       ...state,
       tempMcqQuestions: data,
+      finalisedMcqQuestions: finalisedMcqs,
+      finalisedQuestionsSet: finalisedQuesSet,
     };
   }),
 
@@ -162,12 +178,31 @@ export const contestReducer = createReducer(
         ...state.tempMcqQuestions[section],
       },
     };
+    let finalisedMcqs = { ...state.finalisedMcqQuestions };
+    let finalisedQuesSet = new Set(state.finalisedQuestionsSet);
+
+    if (!finalisedMcqs[section]) {
+      finalisedMcqs[section] = [];
+    } else {
+      finalisedMcqs[section] = [...finalisedMcqs[section]];
+    }
+    let regenerateIds = new Set(state.regenerateOnceListIds);
+    let key = data[section][prevMcqId].mcqQuestionId;
+    if (regenerateIds.has(key) && finalisedQuesSet.has(key)) {
+      finalisedQuesSet.delete(key);
+      finalisedMcqs[section] = [...finalisedMcqs[section]].filter(
+        (ques) => ques.mcqQuestionId !== key
+      );
+    }
     if (data[section] && data[section][prevMcqId]) {
       data[section][prevMcqId] = mcq;
     }
     return {
       ...state,
       tempMcqQuestions: data,
+      finalisedQuestionsSet: finalisedQuesSet,
+      finalisedMcqQuestions: finalisedMcqs,
+      regenerateOnceListIds: regenerateIds,
     };
   }),
 
@@ -237,11 +272,26 @@ export const contestReducer = createReducer(
         ...state.tempMcqQuestions[section],
       },
     };
+    let finalisedQuesSet = new Set(state.finalisedQuestionsSet);
     let maxQuestionId = 0;
     let finalisedMcqs = {
       ...state.finalisedMcqQuestions,
+      [section]: [...state.finalisedMcqQuestions[section]],
     };
+    let regenerateIds = new Set(state.regenerateOnceListIds);
+
+    let key: string;
     if (finalisedMcqs[section]) {
+      for (let ques of finalisedMcqs[section]) {
+        key = ques.mcqQuestionId;
+        if (regenerateIds.has(key) && finalisedQuesSet.has(key)) {
+          finalisedQuesSet.delete(key);
+          finalisedMcqs[section] = [...finalisedMcqs[section]].filter(
+            (ques) => ques.mcqQuestionId !== key
+          );
+          regenerateIds.delete(key);
+        }
+      }
       delete finalisedMcqs[section];
     }
 
@@ -266,6 +316,8 @@ export const contestReducer = createReducer(
       tempMcqQuestions: data,
       finalisedQuestions: finalisedQuestionsIds,
       finalisedMcqQuestions: finalisedMcqs,
+      finalisedQuestionsSet: finalisedQuesSet,
+      regenerateOnceListIds: regenerateIds,
     };
   }),
 
@@ -318,6 +370,18 @@ export const contestReducer = createReducer(
 
   on(ReplaceCodingQuestion, (state, { codeQuestion, prevCodeId }) => {
     let codingQuesData = { ...state.tempcodingQuestions };
+    let finalisedQuesSet = new Set(state.finalisedQuestionsSet);
+    let finalcodingquestions = [...state.finalisedcodingQuestions];
+    let regenerateIds = new Set(state.regenerateOnceListIds);
+    let key = codingQuesData[prevCodeId].codeQuestionId;
+    if (regenerateIds.has(key)) {
+      regenerateIds.delete(key);
+      finalcodingquestions = finalcodingquestions.filter(
+        (ques) => ques.codeQuestionId !== key
+      );
+      finalisedQuesSet.delete(key);
+    }
+
     if (codingQuesData[Number(prevCodeId)]) {
       codingQuesData[Number(prevCodeId)] = codeQuestion;
     }
@@ -325,6 +389,9 @@ export const contestReducer = createReducer(
     return {
       ...state,
       tempcodingQuestions: codingQuesData,
+      regenerateOnceListIds: regenerateIds,
+      finalisedcodingQuestions: finalcodingquestions,
+      finalisedQuestionsSet: finalisedQuesSet,
     };
   }),
 
@@ -333,11 +400,25 @@ export const contestReducer = createReducer(
       ...state.tempcodingQuestions,
       [prevCodeId]: state.tempcodingQuestions[prevCodeId],
     };
+    let finalQuesData = new Set(state.finalisedQuestionsSet);
+    let finalisedcodeQuestions = [...state.finalisedcodingQuestions];
+    let key = codingQuesData[prevCodeId].codeQuestionId;
     //console.log(prevCodeId);
+    if (finalQuesData.has(key)) {
+      finalisedcodeQuestions = finalisedcodeQuestions.filter(
+        (ques) => ques.codeQuestionId !== key
+      );
+      finalQuesData.delete(key);
+    }
     if (codingQuesData[Number(prevCodeId)]) {
       delete codingQuesData[Number(prevCodeId)];
     }
-    return { ...state, tempcodingQuestions: codingQuesData };
+    return {
+      ...state,
+      tempcodingQuestions: codingQuesData,
+      finalisedcodingQuestions: finalisedcodeQuestions,
+      finalisedQuestionsSet: finalQuesData,
+    };
   }),
 
   on(AcceptAllCodingQuestions, (state, { codeQuestions }) => {
@@ -361,6 +442,7 @@ export const contestReducer = createReducer(
     let codingQuesData: Record<number, ContestCodingQuestion> = {};
     let maxQuestionId = 0;
     let finalisedQuesSet = new Set(state.finalisedQuestionsSet);
+
     //console.log(finalisedQuesSet);
 
     let codingFinalQuestionsIds = [...state.finalisedcodingQuestions].map(
@@ -382,6 +464,7 @@ export const contestReducer = createReducer(
       finalisedQuestionsSet: finalisedQuesSet,
       tempcodingQuestions: codingQuesData,
       finalisedcodingQuestions: [],
+      regenerateOnceListIds: new Set<string>(),
     };
   }),
   on(DeleteCodingSection, (state) => {
@@ -402,6 +485,15 @@ export const contestReducer = createReducer(
       finalisedcodingQuestions: [],
     };
   }),
+
+  on(acceptIdsIntoRegenerateIds, (state, { Ids }) => {
+    let regenerateIds = new Set(state.regenerateOnceListIds);
+    for (let id of Ids) {
+      regenerateIds.add(id);
+    }
+    return { ...state, regenerateOnceListIds: regenerateIds };
+  }),
+
   on(AddCodingQuestions, (state, { codeQuestions }) => {
     //console.log(codeQuestions);
     let maxQuestionId = 0;
