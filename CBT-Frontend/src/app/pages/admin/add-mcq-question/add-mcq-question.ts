@@ -4,10 +4,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
 
 @Component({
   selector: 'app-add-mcq-question',
-  imports: [FormsModule,Select ,InputTextModule,FloatLabelModule,CommonModule ],
+  imports: [FormsModule, Select, InputTextModule, FloatLabelModule, CommonModule, DynamicLayout],
   templateUrl: './add-mcq-question.html',
   styleUrl: './add-mcq-question.css'
 })

@@ -61,3 +61,10 @@ export interface submissions{
    questionType :  string ;
    questionId : string ;
 }
+
+export interface codingQuestions{
+  
+      questionId: string;
+      questionName: string;
+      difficulty: string;
+}

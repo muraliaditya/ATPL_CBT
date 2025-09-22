@@ -6,10 +6,12 @@ import { ToggleSection } from '../../../components/UI/toggle-section/toggle-sect
 import { CodeQuestions } from '../../../models/admin/admin';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
+import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 
 @Component({
   selector: 'app-edit-contest',
-  imports: [ InputTextModule,ToggleSwitch,FloatLabelModule,FormsModule,CommonModule,ToggleSection],
+  imports: [DynamicLayout,AdminHeader, InputTextModule,ToggleSwitch,FloatLabelModule,FormsModule,CommonModule,ToggleSection],
   templateUrl: './edit-contest.html',
   styleUrl: './edit-contest.css'
 })

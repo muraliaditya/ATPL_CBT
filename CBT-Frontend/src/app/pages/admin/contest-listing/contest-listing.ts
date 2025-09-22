@@ -60,11 +60,12 @@ export class ContestListing {
   }
 
   onView(contest: Contest) {
+    alert(`View ${contest.id}`);
     this.openRow = null;
   }
 
   onEdit(contest: Contest) {
-    alert(`Editing ${contest.id}`);
+    alert(`Edit ${contest.id}`);
     this.openRow = null;
   }
 
@@ -73,6 +74,9 @@ export class ContestListing {
       this.contests = this.contests.filter((c) => c.id !== contest.id);
     }
     this.openRow = null;
+  }
+  result(){
+    alert('result');
   }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {

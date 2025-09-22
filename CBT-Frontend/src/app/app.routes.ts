@@ -19,6 +19,8 @@ import { DashboardEditmcq } from './pages/admin/dashboard-editmcq/dashboard-edit
 import { DashboardViewmcq } from './pages/admin/dashboard-viewmcq/dashboard-viewmcq';
 import { DeveloperLogin } from './pages/developer/developer-login/developer-login';
 import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
+import { CodeListing } from './pages/admin/code-listing/code-listing';
+import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 export const routes: Routes = [
   {
     path: '',
@@ -89,13 +91,19 @@ export const routes: Routes = [
         path: 'Request-McqView/:id',
         component: DashboardViewmcq ,
       },
+      {
+        path:'Coding-Listing',
+        component:CodeListing,
+      }
     ],
   },
   {
-    path:'developer',component:DeveloperLogin,
-    children:[
+    path: 'developer',
+    component: DeveloperMainSection,
+    children: [
       {
-        path:'developer-dashboard',component:DeveloperDashboard,
+        path: 'developer-dashboard',
+        component: DeveloperDashboard,
       },
     ],
   },
