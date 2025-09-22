@@ -1,0 +1,35 @@
+<app-dynamic-layout>
+    <div main class="p-5">
+        <p class="p-2 text-left bg-blue-100 w-50 mb-2">Coding Questions</p>
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+    <div class="flex gap-3">
+    <p-floatlabel variant="on">
+    <input class="flex-auto w-90" pInputText id="on_label" [(ngModel)]="sort" autocomplete="off" />
+    <label for="on_label">Question</label>
+    </p-floatlabel>
+    <button (click)="onSearch()" class=" bg-blue-500 text-white rounded-lg px-3">Search</button>
+    </div>
+    <button  class="bg-blue-500 text-white rounded-lg px-3 py-1">Add Question</button>
+    </div> 
+    <div  class="flex flex-col gap-2">
+    <div  *ngFor="let q of Codes; let i = index;" class="p-2 border border-gray-200 rounded-lg shadow-md">
+    <div class="flex flex-1 justify-between items-center ">
+    <p class="w-50"><b>{{ i + 1 }}.
+         {{q.questionName}}</b></p>
+    <p><span class="px-3 py-1 rounded-full text-sm font-medium"
+              [ngClass]="
+                q.difficulty === 'Easy'
+                  ? 'bg-green-100 text-green-600'
+                  : ((q.difficulty==='Medium')?'bg-orange-100 text-orange-600':'bg-red-200 text-red-600')
+             ">{{ q.difficulty }}</span> </p>
+    <div class="flex gap-2">
+    <button (click)="onEdit(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/Edit.svg" alt="Back" class="invert w-5 h-5"><span>Edit</span></button>
+    <button (click)="onDelete(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class="invert w-5 h-5"><span>Delete</span></button>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+</app-dynamic-layout>

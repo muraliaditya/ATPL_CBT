@@ -41,6 +41,8 @@
           class="w-full"
           iconDisplay="input"
           [showTime]="true"
+          [minDate]="today"
+          (onSelect)="onStartTimeChange($event)"
           hourFormat="12"
         ></p-datepicker>
         <label for="start-time-picker" class="font-bold block mb-2"
@@ -55,6 +57,7 @@
           inputId="end-time-picker"
           showIcon
           iconDisplay="input"
+          [minDate]="minEndDate"
           [showTime]="true"
           hourFormat="12"
         ></p-datepicker>
@@ -136,15 +139,14 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-              <input
+              <p-select
                 formControlName="marks"
-                pInputText
-                id="mcq-marks-input"
+                inputId="mcq-marks-select"
                 name="mcqMarks"
-                type="number"
-                autocomplete="off"
+                [options]="weightageOptions"
+                class="w-56"
               />
-              <label for="mcq-marks-input">Marks</label>
+              <label for="mcq-marks-select">Marks</label>
             </p-floatlabel>
           </div>
           <button
@@ -206,18 +208,17 @@
             >
               <div class="flex gap-2 justify-between items-center">
                 <p-floatlabel variant="on">
-                  <input
+                  <p-select
                     [formControl]="
                       getQuestionControl(section.key, question.key)
                     "
-                    (input)="
+                    (onChange)="
                       onWeightageChange(section.key, question.key, $event)
                     "
-                    pInputText
-                    id="weightage-{{ section.key }}-{{ question.key }}"
+                    inputId="weightage-{{ section.key }}-{{ question.key }}"
                     name="weightage_{{ section.key }}_{{ question.key }}"
-                    type="number"
-                    autocomplete="off"
+                    [options]="weightageOptions"
+                    class="w-54"
                   />
                   <label for="weightage-{{ section.key }}-{{ question.key }}"
                     >Weightage</label

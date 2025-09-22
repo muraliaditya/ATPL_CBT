@@ -7,10 +7,10 @@ import { data } from '../../../models/admin/admin';
 import { InputText } from 'primeng/inputtext';
 import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 import { ActivatedRoute } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
 @Component({
   selector: 'app-dashboard-viewmcq',
-  imports: [InputText, FloatLabel, Select, FormsModule, CommonModule, RouterLink, AdminHeader],
+  imports: [DynamicLayout,InputText, FloatLabel, Select, FormsModule, CommonModule, AdminHeader, DynamicLayout],
   templateUrl: './dashboard-viewmcq.html',
   styleUrl: './dashboard-viewmcq.css'
 })

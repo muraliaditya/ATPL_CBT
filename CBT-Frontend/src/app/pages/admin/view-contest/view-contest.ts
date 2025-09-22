@@ -7,6 +7,7 @@ import { Testcase } from '../../../models/admin/admin';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
 import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 
 @Component({
   selector: 'app-view-contest',
@@ -15,7 +16,7 @@ import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
     FormsModule,
     CommonModule,
     ToggleSection,
-    TestcaseFilterPipe,
+    TestcaseFilterPipe,DynamicLayout
   ],
   templateUrl: './view-contest.html',
   styleUrl: './view-contest.css',

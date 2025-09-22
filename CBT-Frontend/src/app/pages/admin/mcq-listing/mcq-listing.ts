@@ -6,9 +6,10 @@ import { Select } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { mcqSections } from '../../../models/admin/admin';
 import { RouterLink } from '@angular/router';
+import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
 @Component({
   selector: 'app-mcq-listing',
-  imports: [CommonModule, Select, InputTextModule, FloatLabelModule, FormsModule, RouterLink],
+  imports: [DynamicLayout,CommonModule, Select, InputTextModule, FloatLabelModule, FormsModule, RouterLink, DynamicLayout],
   templateUrl: './mcq-listing.html',
   styleUrl: './mcq-listing.css'
 })

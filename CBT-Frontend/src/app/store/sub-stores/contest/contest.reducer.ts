@@ -78,10 +78,7 @@ export const contestReducer = createReducer(
     };
   }),
   on(AddMcqSection, (state, { mcqs, section }) => {
-    let marks = 31;
     let data = { ...state.tempMcqQuestions };
-    let sectionLength = mcqs.length;
-    let marksDistribution: number[] = distributeMarks(marks, sectionLength);
 
     if (!data[section]) {
       data[section] = {};
@@ -96,7 +93,7 @@ export const contestReducer = createReducer(
 
         data[section][maxQuestionId] = {
           ...mcq,
-          weightage: marksDistribution[index],
+          weightage: 2,
         };
       }
     }
@@ -421,16 +418,17 @@ export const contestReducer = createReducer(
     };
   }),
 
-  on(AcceptAllCodingQuestions, (state, { codeQuestions }) => {
-    //console.log(codeQuestions);
-    let finalQuesData = new Set(state.finalisedQuestionsSet);
-    let finalisedcodeQuestions = [...state.finalisedcodingQuestions];
-    for (let question of codeQuestions) {
+  on(AcceptAllCodingQuestions, (state) => {
+    const tempCodingQuestions = state.tempcodingQuestions;
+    const finalQuesData = new Set(state.finalisedQuestionsSet);
+    const finalisedcodeQuestions = [...state.finalisedcodingQuestions];
+
+    Object.values(tempCodingQuestions).forEach((question) => {
       if (!finalQuesData.has(question.codeQuestionId)) {
         finalQuesData.add(question.codeQuestionId);
         finalisedcodeQuestions.push(question);
       }
-    }
+    });
 
     return {
       ...state,
@@ -438,6 +436,7 @@ export const contestReducer = createReducer(
       finalisedQuestionsSet: finalQuesData,
     };
   }),
+
   on(ReplaceAllCodingquestions, (state, { codeQuestions }) => {
     let codingQuesData: Record<number, ContestCodingQuestion> = {};
     let maxQuestionId = 0;

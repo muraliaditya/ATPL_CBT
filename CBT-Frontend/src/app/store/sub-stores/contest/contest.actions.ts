@@ -59,8 +59,7 @@ export const ReplaceCodingQuestion = createAction(
 );
 
 export const AcceptAllCodingQuestions = createAction(
-  '[Contest] Accept All Coding Ques',
-  props<{ codeQuestions: ContestCodingQuestion[] }>()
+  '[Contest] Accept All Coding Ques'
 );
 
 export const ReplaceAllCodingquestions = createAction(

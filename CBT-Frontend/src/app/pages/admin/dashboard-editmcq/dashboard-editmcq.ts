@@ -8,9 +8,10 @@ import { InputText } from 'primeng/inputtext';
 import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 @Component({
   selector: 'app-dashboard-editmcq',
-  imports: [InputText,AdminHeader,FloatLabel,Select,FormsModule,CommonModule],
+  imports: [DynamicLayout,InputText,AdminHeader,FloatLabel,Select,FormsModule,CommonModule],
   templateUrl: './dashboard-editmcq.html',
   styleUrl: './dashboard-editmcq.css'
 })

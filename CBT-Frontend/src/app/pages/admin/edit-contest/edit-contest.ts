@@ -47,6 +47,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ContestTestcase } from '../../../models/admin/contest';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
+import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 
 @Component({
   selector: 'app-edit-contest',
@@ -62,6 +63,7 @@ import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-lay
     DatePicker,
     ToggleSection,
     DynamicLayout,
+    TestcaseFilterPipe,
   ],
   templateUrl: './edit-contest.html',
   styleUrl: './edit-contest.css',
@@ -70,8 +72,12 @@ export class EditContest {
   codeQuestionsGeneratorForm: FormGroup;
   codingWeightageForm: FormGroup;
   totalMarks: number = 0;
+  minEndDate: Date = new Date();
+
   totalMcqMarks: number = 0;
   totalcodingMarks: number = 0;
+  today: Date = new Date();
+
   mcqQuestionGenerateForm: FormGroup;
 
   eligibilityOptions: string[] = [
@@ -146,7 +152,7 @@ export class EditContest {
     this.mcqQuestionGenerateForm = this.fb.group({
       mcqSection: ['', Validators.required],
       count: ['', [Validators.required, Validators.min(1)]],
-      marks: ['', [Validators.required, Validators.min(10)]],
+      marks: ['', [Validators.required]],
     });
     this.preferences = this.fb.group({
       choices: this.fb.array([]),
@@ -156,6 +162,15 @@ export class EditContest {
     );
   }
 
+  filterTestCase(testCase: ContestTestcase): boolean {
+    if (!testCase.explanation) {
+      return false;
+    }
+    if (testCase.explanation.length && testCase.testcaseType === 'PUBLIC') {
+      return true;
+    }
+    return false;
+  }
   checkIsSectionRegeneratable(
     sectionData: Record<number, ContestMCQQuestion>
   ): boolean {
@@ -199,6 +214,14 @@ export class EditContest {
   currentSection: 'Mcqs' | 'Coding' = 'Mcqs';
   changeSection(value: 'Mcqs' | 'Coding') {
     this.currentSection = value;
+  }
+
+  onStartTimeChange(startTime: Date) {
+    if (startTime) {
+      this.minEndDate = new Date(startTime);
+    } else {
+      this.minEndDate = new Date(this.today);
+    }
   }
 
   getCodingQuestionControl(questionKey: string): FormControl {
@@ -274,11 +297,7 @@ export class EditContest {
   acceptAllCodingquestions(codes: Record<number, ContestCodingQuestion>) {
     const ques = [...Object.keys(codes)].map((id) => codes[Number(id)]);
     console.log(ques);
-    this.store.dispatch(
-      AcceptAllCodingQuestions({
-        codeQuestions: ques,
-      })
-    );
+    this.store.dispatch(AcceptAllCodingQuestions());
   }
   trackByCodingQuestion(index: number, item: any) {
     return `coding-${item.key}-${index}`;
@@ -542,9 +561,14 @@ export class EditContest {
 
     return control;
   }
-  onWeightageChange(sectionKey: string, questionKey: string, event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const value = Number(inputElement.value);
+  weightageOptions = [
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+  ];
+  onWeightageChange(sectionKey: string, questionKey: string, event: any) {
+    const value = Number(event.value);
 
     const control = this.getQuestionControl(sectionKey, questionKey);
 
@@ -588,6 +612,7 @@ export class EditContest {
     } else {
       this.totalcodingMarks = 0;
     }
+    console.log('coding Marks ', codingMarks);
   }
   ngOnInit(): void {
     this.finalisedMcqs$.subscribe((data) => {
@@ -798,18 +823,17 @@ export class EditContest {
     });
 
     this.store.dispatch(AddCodingQuestions({ codeQuestions: codingQuestions }));
+
     let codeIDs: string[] = codingQuestions.map((ques) => ques.codeQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: codeIDs }));
-    this.store.dispatch(
-      AcceptAllCodingQuestions({ codeQuestions: codingQuestions })
-    );
+
     this.store.dispatch(AddCodingQuestions({ codeQuestions: ques }));
-    this.store.dispatch(AcceptAllCodingQuestions({ codeQuestions: ques }));
     codeIDs = ques.map((ques) => ques.codeQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: codeIDs }));
-    this.store.dispatch(
-      AcceptAllCodingQuestions({ codeQuestions: codingQuestions })
-    );
+
+    this.store.dispatch(AcceptAllCodingQuestions());
+    this.store.dispatch(AcceptAllCodingQuestions());
+
     this.store.dispatch(AddMcqSection({ mcqs: mathMcqs, section: 'Aptitude' }));
     let mcqIDs: string[] = mathMcqs.map((ques) => ques.mcqQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: mcqIDs }));
