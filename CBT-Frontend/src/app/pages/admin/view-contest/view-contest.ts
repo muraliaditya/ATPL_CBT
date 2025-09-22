@@ -5,10 +5,18 @@ import { CommonModule } from '@angular/common';
 import { CodeQuestions } from '../../../models/admin/admin';
 import { Testcase } from '../../../models/admin/admin';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
+import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
+import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 
 @Component({
   selector: 'app-view-contest',
-  imports: [FormsModule, CommonModule, ToggleSection],
+  imports: [
+    AdminHeader,
+    FormsModule,
+    CommonModule,
+    ToggleSection,
+    TestcaseFilterPipe,
+  ],
   templateUrl: './view-contest.html',
   styleUrl: './view-contest.css',
 })
@@ -105,6 +113,15 @@ export class ViewContest {
       ],
     },
   };
+  filterTestCase(testCase: Testcase): boolean {
+    if (!testCase.explanation) {
+      return false;
+    }
+    if (testCase.explanation.length && testCase.testcaseType === 'PUBLIC') {
+      return true;
+    }
+    return false;
+  }
   coding: CodeQuestions[] = [
     {
       codeQuestionId: 'code001',
@@ -113,20 +130,20 @@ export class ViewContest {
       description:
         'Write a function that takes a string and returns it reversed.',
 
-      inputParams: ['str'],
+      inputParams: ['str', 'int'],
       inputType: ['string'],
       outputType: 'string',
       testcases: [
         {
           testcaseId: 'tc1',
-          inputValues: ['hello'],
+          inputValues: ['hello', '5'],
           expectedOutput: 'olleh',
           testcaseType: 'PUBLIC',
           explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
           testcaseId: 'tc2',
-          inputValues: ['world'],
+          inputValues: ['world', '6'],
           expectedOutput: 'dlrow',
           testcaseType: 'PUBLIC',
           explanation: ' The only possible triplet does not sum up to 0.',

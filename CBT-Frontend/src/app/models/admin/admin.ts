@@ -28,7 +28,7 @@ export interface Testcase {
   testcaseId: string;
   inputValues: string[];
   expectedOutput:string;
-  testcaseType: string;
+  testcaseType: 'PUBLIC' | 'PRIVATE';
   explanation: string;
 }
 
@@ -44,12 +44,20 @@ export interface mcqSections{
   section: string;
 }
 
-export interface qs{
-  Question:any;
-  ContestName:any;
-  value1:any;
-  value2:any;
-  value3:any;
-  value4:any;
-  Weightage:any;
+export interface data{
+  mcqQuestionId: string;
+  question: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  answerKey: string;
+  weightage: number;
+  section:string;
+}
+export interface submissions{
+   devId :  string ;
+   userName :  string ;
+   questionType :  string ;
+   questionId : string ;
 }

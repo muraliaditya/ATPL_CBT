@@ -7,9 +7,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import * as Prism from 'prismjs';
+import Prism from 'prismjs';
 
-// languages you need
 import 'prismjs/components/prism-c';
 import 'prismjs/components/prism-cpp';
 import 'prismjs/components/prism-java';

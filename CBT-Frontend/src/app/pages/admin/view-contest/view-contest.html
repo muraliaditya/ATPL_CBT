@@ -1,10 +1,6 @@
 
-<div class="flex shadow-lg  p-3 ">
-  <button (click)="goBack()"class="absolute flex items-center text-gray-600">
-  <img src="/svgs/Back.svg" alt="Back" class="w-5 h-5">
-</button>
-  <h2 class="font-semibold text-center text-lg w-full">View Contest</h2>
-</div>
+<div>
+<app-admin-header heading="View Contest"></app-admin-header>
 <div class="w-full p-9">
   <div class="pl-15 flex flex-col gap-4">
     <h1 class="text-sm text-gray-400">Contest #{{ contest.contest_id }}</h1>
@@ -37,9 +33,9 @@
       </div>
     </div>
     <div class="flex flex-col gap-2" *ngIf="currentSection==='Mcqs'">
-    <h3>MCQ Sections</h3>
+    <h3 class="font-bold">MCQ Section</h3>
     <div class="flex flex-col gap-2" *ngFor="let section of contest.mcqs.mcqSections">
-    <h4>{{ section.section }}</h4>
+    <h4 class="font-semibold">{{ section.section }}</h4>
     <div  *ngFor="let q of section.mcqQuestions; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <p><b>{{ i + 1 }}.</b> {{ q.question_text }}</p>
     <ul class="list-none">
@@ -67,6 +63,20 @@
         <p>Output Type - {{q.outputType}}</p>
         </div><br>
         <h3 class="p-2">Test Cases</h3>
+         <div
+              *ngFor="
+                let testcase of q.testcases
+                  | testcaseFilter : filterTestCase;
+                index as idx
+              "
+              class="pt-3"
+            >
+              <div>Example {{ idx + 1 }} :</div>
+              <div *ngFor="let inputValue of testcase.inputValues; index as i">
+                {{ q.inputParams[i] }} = {{ inputValue }}
+              </div>
+              {{ testcase.explanation }}
+            </div>
         <div class="p-2" *ngFor="let test of q.testcases;let i = index;">
         <p class=" mt-2 w-fit">TestCase - {{ i + 1 }}</p> 
         <p>Input :-</p>
@@ -80,3 +90,4 @@
     </div>
     </div>
         </div>
+</div>

@@ -21,16 +21,11 @@ export class EditMcq {
   value4='';
   Weightage='';
   questions: any[] = [];
-
-  addQuestion() {
-    this.questions.push({
-      question: '',
-      category: null,
-      options: ['', '', '', ''],
-      weightage: ''
-    });
-  }
-  removeQuestion(index: number) {
-    this.questions.splice(index, 1);
-  }
+  idx=0;
+save(){
+  console.log('saved',this.questions.push(this.ContestName,this.value1,this.value2,this.Weightage,this.Question,this.value3));
+}
+cancel(){
+  console.log('cnacelled');
+}
 }
