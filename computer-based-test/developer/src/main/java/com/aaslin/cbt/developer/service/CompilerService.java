@@ -25,10 +25,13 @@ public class CompilerService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * /compile-run → only public testcases, no DB save
-     */
+    
+     //compile-run,only public testcases, no DB save
+     
     public CompileRunResponseDto compileRun(String developerId, String questionId, String language, String code) {
+        // Validation before execution
+        validateCode(language, code);
+
         List<Testcases> testcases =
                 testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
                         questionId, Testcases.TestcaseType.PUBLIC);
@@ -69,10 +72,13 @@ public class CompilerService {
         return new CompileRunResponseDto("SUCCESS", null, passed, results);
     }
 
-    /**
-     * /submit → all testcases (public + private), save submission + results
-     */
+   
+      //submit  all testcases (public + private), save submission + results
+     
     public SubmitResponseDto submit(String developerId, String questionId, String languageId, String code) {
+        // Validation before execution
+        validateCode(languageId, code);
+
         List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionId(questionId);
 
         User user = userRepo.findById(developerId).orElseThrow();
@@ -152,6 +158,19 @@ public class CompilerService {
         submissionRepo.save(submission);
 
         return new SubmitResponseDto("SUCCESS", null, publicPassed, privatePassed, publicResults, privateResults);
+    }
+
+   
+    private void validateCode(String language, String code) {
+        if ("JAVA".equalsIgnoreCase(language)) {
+            if (!code.contains("public static void main")) {
+                throw new RuntimeException("Invalid Java code: Missing main method.");
+            }
+        } else if ("PYTHON".equalsIgnoreCase(language)) {
+            if (!(code.contains("if __name__ == \"__main__\":") || code.contains("input("))) {
+                throw new RuntimeException("Invalid Python code: Must include input() or __main__ entry point.");
+            }
+        }
     }
 
     private boolean compareOutput(String actual, String expectedJson) {

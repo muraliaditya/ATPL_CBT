@@ -25,5 +25,7 @@ public interface CodingQuestionRepository extends JpaRepository<CodingQuestions,
     Optional<CodingQuestions> findByCodingQuestionIdAndApprovalStatus(String codingQuestionId, CodingQuestions.ApprovalStatus status);
     
     Optional<CodingQuestions> findTopByOrderByCodingQuestionIdDesc();
+    
+    Long countByApprovalStatus(ApprovalStatus approvalStatus);
 }
 
