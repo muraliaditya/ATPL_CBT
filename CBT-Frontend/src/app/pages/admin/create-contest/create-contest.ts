@@ -24,8 +24,6 @@ import {
   changeMcqWeightage,
   changeCodeWeightage,
 } from '../../../store/sub-stores/contest/contest.actions';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
-
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { ToggleSection } from '../../../components/UI/toggle-section/toggle-section';
@@ -70,6 +68,10 @@ import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-lay
 export class CreateContest implements OnInit {
   codeQuestionsGeneratorForm: FormGroup;
   codingWeightageForm: FormGroup;
+
+  minEndDate: Date = new Date();
+  today: Date = new Date();
+
   totalMarks: number = 0;
   totalMcqMarks: number = 0;
   totalcodingMarks: number = 0;
@@ -87,6 +89,21 @@ export class CreateContest implements OnInit {
       return true;
     } else {
       return false;
+    }
+  }
+  // Add this property to your component class
+  weightageOptions = [
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+  ];
+
+  onStartTimeChange(startTime: Date) {
+    if (startTime) {
+      this.minEndDate = new Date(startTime);
+    } else {
+      this.minEndDate = new Date(this.today);
     }
   }
   constructHeader(value: string) {
@@ -151,7 +168,7 @@ export class CreateContest implements OnInit {
     this.mcqQuestionGenerateForm = this.fb.group({
       mcqSection: ['', Validators.required],
       count: ['', [Validators.required, Validators.min(1)]],
-      marks: ['', [Validators.required, Validators.min(10)]],
+      marks: ['', [Validators.required]],
     });
     this.preferences = this.fb.group({
       choices: this.fb.array([]),
@@ -257,11 +274,7 @@ export class CreateContest implements OnInit {
   acceptAllCodingquestions(codes: Record<number, ContestCodingQuestion>) {
     const ques = [...Object.keys(codes)].map((id) => codes[Number(id)]);
     console.log(ques);
-    this.store.dispatch(
-      AcceptAllCodingQuestions({
-        codeQuestions: ques,
-      })
-    );
+    this.store.dispatch(AcceptAllCodingQuestions());
   }
   trackByCodingQuestion(index: number, item: any) {
     return `coding-${item.key}-${index}`;
@@ -523,9 +536,8 @@ export class CreateContest implements OnInit {
 
     return control;
   }
-  onWeightageChange(sectionKey: string, questionKey: string, event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const value = Number(inputElement.value);
+  onWeightageChange(sectionKey: string, questionKey: string, event: any) {
+    const value = Number(event.value);
 
     const control = this.getQuestionControl(sectionKey, questionKey);
 
@@ -566,6 +578,8 @@ export class CreateContest implements OnInit {
     if (ques.length) {
       codingMarks = ques.reduce((sum, q) => sum + (q.weightage || 0), 0);
       this.totalcodingMarks = codingMarks;
+    } else {
+      this.totalcodingMarks = 0;
     }
   }
   ngOnInit(): void {

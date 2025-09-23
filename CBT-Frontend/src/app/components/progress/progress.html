@@ -10,7 +10,6 @@
       cx="50%"
       cy="50%"
     />
-
     <circle
       class="text-blue-500"
       stroke-width="8"
@@ -21,10 +20,9 @@
       cx="50%"
       cy="50%"
       [attr.stroke-dasharray]="2 * 3.14 * 42"
-      [attr.stroke-dashoffset]="2 * 3.14* 42 * (1 - percentage / 100)"
+      [attr.stroke-dashoffset]="2 * 3.14 * 42 * (1 - percentage / 100)"
     />
   </svg>
-
   <span class="absolute text-lg font-bold text-blue-600">
     {{ percentage }}%
   </span>

@@ -7,11 +7,11 @@
     </div>
     <div class="flex flex-col gap-3">
     <div  *ngFor="let q of questions; let i = index" class="flex flex-col gap-2 shadow-md p-2">
-    <div class="flex w-full gap-2">
-    <p-floatlabel variant="on">
-    <input class="flex-auto w-90" pInputText id="on_label" [(ngModel)]="q.question" autocomplete="off" />
-    <label for="on_label"> Question {{i+1}}</label>
-    </p-floatlabel>
+    <div class="flex w-full gap-10">
+    <p-floatLabel variant="on">
+    <textarea id="text" rows="1" [(ngModel)]="q.question" class="block w-full text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 h-[60px] w-[80px]">{{q.question}}</textarea>
+    <label for="text">Question</label>
+    </p-floatLabel>
     <p-floatlabel variant="on">
             <p-select [options]="category" [(ngModel)]="q.category" class="w-50 pt-0" />
         <label for="on_label">Category</label>
@@ -19,16 +19,18 @@
     <button (click)="removeQuestion(i)" class=" px-2 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class=" w-5 h-5"></button>
     </div>
     <div class="flex flex-col gap-2 w-45">
-        <div class="flex gap-47">
-        <input  pInputText [(ngModel)]="q.options[0]" type="text" pSize="small" placeholder="Option" />
+        <input  pInputText [(ngModel)]="q.options[0]" type="text" pSize="small" placeholder="Option1" />
+        <input pInputText [(ngModel)]="q.options[1]" type="text" pSize="small" placeholder="Option2" />
+        <input pInputText [(ngModel)]="q.options[2]" type="text" pSize="small" placeholder="Option3" />
+        <input pInputText [(ngModel)]="q.options[3]" type="text" pSize="small" placeholder="Option4" />
         <p-floatlabel variant="on">
         <input pInputText id="on_label" [(ngModel)]="q.weightage" autocomplete="off" />
         <label for="on_label">Weightage</label>
         </p-floatlabel>
-        </div>
-        <input pInputText [(ngModel)]="q.options[1]" type="text" pSize="small" placeholder="Option" />
-        <input pInputText [(ngModel)]="q.options[2]" type="text" pSize="small" placeholder="Option" />
-        <input pInputText [(ngModel)]="q.options[3]" type="text" pSize="small" placeholder="Option" />
+        <p-floatlabel variant="on">
+            <p-select [options]="answerkey" [(ngModel)]="q.answer" class="w-50 pt-0" />
+                <label for="on_label">Correct Answer</label>
+            </p-floatlabel>
     </div>
     </div>
     </div>

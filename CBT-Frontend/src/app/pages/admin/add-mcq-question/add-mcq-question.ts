@@ -15,6 +15,7 @@ import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 export class AddMcqQuestion {
  choice: string = '';
   category: string[] = ['Aptitude','Reasoning','Quantitative'];
+  answerkey:string[]=['A','B','C','D']
   Question='';
   ContestName='';
   value1='';
@@ -22,12 +23,14 @@ export class AddMcqQuestion {
   value3='';
   value4='';
   Weightage='';
+  answer='';
   questions: any[] = [
     {
-     question: '',
+      question: '',
       category: null,
       options: ['', '', '', ''],
       weightage: '',
+      answer:'',
     }
   ];
   idx=0;
@@ -37,6 +40,7 @@ export class AddMcqQuestion {
       category: null,
       options: ['', '', '', ''],
       weightage: '',
+      answer:'',
     });
   }
   removeQuestion(index: number) {

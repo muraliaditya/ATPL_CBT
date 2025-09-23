@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Navbar } from '../../../components/UI/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { CodingQuestions, McqQuestions } from '../../../models/test/questions';
 import { McqSection } from '../../../components/test-page/mcq-section/mcq-section';
@@ -10,7 +9,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-test-page',
-  imports: [Navbar, CommonModule, McqSection, CodeSection],
+  imports: [CommonModule, McqSection, CodeSection],
   templateUrl: './test-page.html',
   styleUrl: './test-page.css',
 })
