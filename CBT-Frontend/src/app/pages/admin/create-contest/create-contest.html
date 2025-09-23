@@ -1,7 +1,6 @@
 <app-dynamic-layout>
   <app-admin-header header heading="Create Contest"></app-admin-header>
   <div main class="p-5">
-    <!-- Replace the existing contest details form with this reactive form version -->
     <form
       id="contest-details-form"
       class="py-5 grid grid-cols-3 grid-rows-2 gap-6"
@@ -42,6 +41,8 @@
           class="w-full"
           iconDisplay="input"
           [showTime]="true"
+          [minDate]="today"
+          (onSelect)="onStartTimeChange($event)"
           hourFormat="12"
         ></p-datepicker>
         <label for="start-time-picker" class="font-bold block mb-2"
@@ -56,6 +57,7 @@
           inputId="end-time-picker"
           showIcon
           iconDisplay="input"
+          [minDate]="minEndDate"
           [showTime]="true"
           hourFormat="12"
         ></p-datepicker>
@@ -137,15 +139,14 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-              <input
+              <p-select
                 formControlName="marks"
-                pInputText
-                id="mcq-marks-input"
+                inputId="mcq-marks-select"
                 name="mcqMarks"
-                type="number"
-                autocomplete="off"
+                [options]="weightageOptions"
+                class="w-56"
               />
-              <label for="mcq-marks-input">Marks</label>
+              <label for="mcq-marks-select">Marks</label>
             </p-floatlabel>
           </div>
           <button
@@ -164,7 +165,6 @@
             <div class="flex items-center gap-2">
               <div class="font-bold text-xl">{{ section.key }}</div>
               <img
-                *ngIf="!checkIsSectionFinalised(section.value)"
                 (click)="deleteMcqSection(section.key)"
                 src="/svgs/DeleteIcon.svg"
                 alt="Delete Section"
@@ -208,18 +208,17 @@
             >
               <div class="flex gap-2 justify-between items-center">
                 <p-floatlabel variant="on">
-                  <input
+                  <p-select
                     [formControl]="
                       getQuestionControl(section.key, question.key)
                     "
-                    (input)="
+                    (onChange)="
                       onWeightageChange(section.key, question.key, $event)
                     "
-                    pInputText
-                    id="weightage-{{ section.key }}-{{ question.key }}"
+                    inputId="weightage-{{ section.key }}-{{ question.key }}"
                     name="weightage_{{ section.key }}_{{ question.key }}"
-                    type="number"
-                    autocomplete="off"
+                    [options]="weightageOptions"
+                    class="w-54"
                   />
                   <label for="weightage-{{ section.key }}-{{ question.key }}"
                     >Weightage</label
@@ -259,11 +258,6 @@
                     {{ idx + 1 }}. {{ question.value.question }}
                   </h1>
                   <img
-                    *ngIf="
-                      !(finalisedQuestionsSet$ | async)?.has(
-                        question.value.mcqQuestionId
-                      )
-                    "
                     src="/svgs/DeleteIcon.svg"
                     alt="Delete Question"
                     (click)="deleteMcqQuestion(section.key, question.key)"
@@ -297,7 +291,7 @@
         [formGroup]="codeQuestionsGeneratorForm"
         (ngSubmit)="AddQuestionPreferences()"
       >
-        <div class="text-xl font-bold">Coding</div>
+        <div class="py-3 text-xl font-bold">Coding</div>
         <div class="flex items-center justify-between">
           <div class="flex gap-2">
             <p-floatlabel class="w-full md:w-56" variant="on">
@@ -397,7 +391,6 @@
           <div class="flex gap-2 items-center">
             <h1 class="font-semibold text-lg">Questions</h1>
             <img
-              *ngIf="!checkIsCodingSectionFinalised(codeQues)"
               src="/svgs/DeleteIcon.svg"
               (click)="deleteCodingSection()"
               alt="Delete Coding Section"
@@ -488,11 +481,6 @@
                 <div class="flex gap-1 items-center">
                   <h1 class="font-semibold text-xl">Description</h1>
                   <img
-                    *ngIf="
-                      !(finalisedQuestionsSet$ | async)?.has(
-                        codingQuestion.codeQuestionId
-                      )
-                    "
                     (click)="deleteCodeQues(code.key)"
                     src="/svgs/DeleteIcon.svg"
                     alt="Delete Coding Question"

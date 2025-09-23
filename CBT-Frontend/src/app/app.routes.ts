@@ -138,6 +138,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path:'developer-dashboard',component:DeveloperDashboard,
-  }
+    path: 'developer-dashboard',
+    component: DeveloperDashboard,
+  },
 ];

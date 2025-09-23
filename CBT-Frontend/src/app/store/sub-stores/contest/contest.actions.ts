@@ -59,8 +59,7 @@ export const ReplaceCodingQuestion = createAction(
 );
 
 export const AcceptAllCodingQuestions = createAction(
-  '[Contest] Accept All Coding Ques',
-  props<{ codeQuestions: ContestCodingQuestion[] }>()
+  '[Contest] Accept All Coding Ques'
 );
 
 export const ReplaceAllCodingquestions = createAction(
@@ -76,6 +75,11 @@ export const AddCodingQuestions = createAction(
 );
 
 export const changeCodeWeightage = createAction(
-  '[Contest] chnageCodeWeightage',
+  '[Contest] changeCodeWeightage',
   props<{ codingQuestionId: number; weightage: number }>()
+);
+
+export const acceptIdsIntoRegenerateIds = createAction(
+  '[Contest] regenerateIds',
+  props<{ Ids: string[] }>()
 );
