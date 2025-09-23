@@ -8,8 +8,8 @@ import { Component,Input } from '@angular/core';
 export class Progress {
   @Input() solved: number = 0;
   @Input() total: number = 1;
-   radius = 42;
-  circumference = 2 * Math.PI * this.radius;
+   radius = 12;
+  circumference = 2 * 3.14 * this.radius;
   get percentage(): number {
     return Math.round((this.solved / this.total) * 100);
   }

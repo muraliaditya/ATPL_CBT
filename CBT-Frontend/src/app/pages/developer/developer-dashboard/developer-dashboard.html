@@ -1,5 +1,5 @@
 <app-dynamic-layout>
-    <div main class="p-9 flex flex-col gap-5">
+    <div main class="p-9 flex flex-col gap-3">
         <div>
             <p class="font-bold mb-2">Recently Added</p>
             <div class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md">
@@ -19,10 +19,9 @@
             <div class="flex animate-scroll gap-20 w-max">
             <div  *ngFor="let developer of developerstatus; let i = index;" class="px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit">
             <div class="flex flex-col gap-1 px-5 w-max text-center">
-            <p><b>{{developer.devId}}</b></p>
-            <p>Solved</p>
-            <p><app-progress [solved]="40" [total]="80"></app-progress>
-{{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
+            <p class="flex flex-row gap-2"><img class="h-6 w-6 " src="/svgs/Avatar.svg" alt="avatar" /><b>{{developer.devId}}</b></p>
+            <p><app-progress class=" gap-1 tex-center w-max" [solved]=developer.solvedQuestionsCount [total]=totalQuestions></app-progress>
+            <p>Solved  {{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
             </div>   
             </div>
         </div>
