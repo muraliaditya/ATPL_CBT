@@ -19,8 +19,6 @@ import { DashboardEditmcq } from './pages/admin/dashboard-editmcq/dashboard-edit
 import { DashboardViewmcq } from './pages/admin/dashboard-viewmcq/dashboard-viewmcq';
 import { DeveloperLogin } from './pages/developer/developer-login/developer-login';
 import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
-import { CodeListing } from './pages/admin/code-listing/code-listing';
-import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 export const routes: Routes = [
   {
     path: '',
@@ -47,59 +45,90 @@ export const routes: Routes = [
     component: AdminMainSection,
     children: [
       {
-        path: 'view-result/:id',
-        component: ViewResult,
+        path: '',
+        redirectTo: 'contest/manage-contestsList',
+        pathMatch: 'full',
       },
       {
-        path: 'view-contest/:id',
-        component: ViewContest,
+        path: 'contest',
+        children: [
+          {
+            path: '',
+            redirectTo: 'manage-contestsList',
+            pathMatch: 'full',
+          },
+          {
+            path: 'view-result/:id',
+            component: ViewResult,
+          },
+          {
+            path: 'view-contest/:id',
+            component: ViewContest,
+          },
+          {
+            path: 'manage-contestsList',
+            component: ContestListing,
+          },
+          {
+            path: 'view-response/:id',
+            component: ViewParticipantResponse,
+          },
+          {
+            path: 'create-contest',
+            component: CreateContest,
+          },
+          { path: 'edit-contest', component: EditContest },
+        ],
       },
       {
-        path: 'manage-contestsList',
-        component: ContestListing,
+        path: 'requests',
+        children: [
+          {
+            path: '',
+            redirectTo: 'Request-Dashboard',
+            pathMatch: 'full',
+          },
+          {
+            path: 'Request-Dashboard',
+            component: RequestDashboard,
+          },
+          {
+            path: 'Request-McqEdit/:id',
+            component: DashboardEditmcq,
+          },
+          {
+            path: 'Request-McqView/:id',
+            component: DashboardViewmcq,
+          },
+        ],
       },
       {
-        path: 'view-response/:id',
-        component: ViewParticipantResponse,
+        path: 'mcqs',
+        children: [
+          {
+            path: '',
+            redirectTo: 'View-MCQListing',
+            pathMatch: 'full',
+          },
+          {
+            path: 'View-MCQListing',
+            component: MCQListing,
+          },
+          {
+            path: 'Add-McqQuestions',
+            component: AddMcqQuestion,
+          },
+          {
+            path: 'Edit-Mcq/:id',
+            component: EditMcq,
+          },
+        ],
       },
-      {
-        path: 'create-contest',
-        component: CreateContest,
-      },
-      { path: 'edit-contest', component: EditContest },
-      {
-        path: 'View-MCQListing',
-        component: MCQListing,
-      },
-      {
-        path: 'Add-McqQuestions',
-        component: AddMcqQuestion,
-      },
-      {
-        path: 'Edit-Mcq/:id',
-        component: EditMcq,
-      },
-      {
-        path: 'Request-Dashboard',
-        component: RequestDashboard,
-      },
-      {
-        path: 'Request-McqEdit/:id',
-        component: DashboardEditmcq,
-      },
-      {
-        path: 'Request-McqView/:id',
-        component: DashboardViewmcq ,
-      },
-      {
-        path:'Coding-Listing',
-        component:CodeListing,
-      }
     ],
   },
   {
     path: 'developer',
-    component: DeveloperMainSection,
+    component: DeveloperLogin,
     children: [
       {
         path: 'developer-dashboard',
@@ -108,6 +137,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path:'developer-dashboard',component:DeveloperDashboard,
-  }
+    path: 'developer-dashboard',
+    component: DeveloperDashboard,
+  },
 ];
