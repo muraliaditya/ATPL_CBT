@@ -19,7 +19,7 @@
             <div class="flex animate-scroll-right gap-20 w-max">
             <div  *ngFor="let developer of developerstatus; let i = index;" class="px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit">
             <div class="flex flex-col gap-1 px-5 w-max text-center">
-            <p><b>{{developer.devId}}</b></p>
+            <p class="flex flex-row gap-2"><img class="h-5 w-5" src="/svgs/Avatar.svg"><b> {{developer.devId}}</b></p>
             <p>Solved {{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
             <p><app-progress [solved]=developer.solvedQuestionsCount [total]=totalQuestions></app-progress>
             </div>   

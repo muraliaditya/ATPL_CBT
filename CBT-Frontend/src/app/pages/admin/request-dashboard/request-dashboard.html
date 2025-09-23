@@ -20,7 +20,7 @@
                 <td class="px-4 py-3">{{p.userName}}</td>
                 <td class="px-4 py-3">{{p.questionType}}</td>
                 <td class="px-4 py-3 relative justify-center flex  gap-7" >
-                    <button class="bg-blue-300 text-white px-5 py-2 rounded-md text-center "  [routerLink]="['/admin/Request-McqView', p.questionId]">View</button>
+                    <button class="bg-blue-300 text-white px-5 py-2 rounded-md text-center "  [routerLink]="['/requests/Request-McqView/:id', p.questionId]">View</button>
                     <button class="bg-blue-500 text-white px-5 py-2 rounded-md text-center"  (click)="onApproval(p)">Approve</button>
                     <button class="bg-red-500 text-white px-5 py-2 rounded-md text-center " (click)="onDelete(p)">Delete</button>
                 </td>
