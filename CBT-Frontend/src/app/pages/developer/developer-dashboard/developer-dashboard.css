@@ -1,4 +1,4 @@
-@keyframes infinite-scroll {
+/* @keyframes infinite-scroll {
   from {
     transform: translateX(0);
   }
@@ -27,10 +27,34 @@
 }
 
 @keyframes loop {
+    0% {transform: translateX(0%);}
+    100% {transform: translateX(-100%);}
+} */
+
+@keyframes scroll {
   0% {
-    transform: translateX(0%);
+    transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
+}
+
+.animate-scroll {
+  display: flex;
+  animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-scroll-right {
+  display: flex;
+  animation: scroll-right 20s linear infinite;
 }

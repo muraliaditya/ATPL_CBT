@@ -7,11 +7,11 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 import { recentquestion } from '../../../models/developer/developer';
 import { devSummary } from '../../../models/developer/developer';
-import { CarouselModule } from 'primeng/carousel';
+import { Progress } from '../../../components/progress/progress';
 @Component({
   selector: 'app-developer-dashboard',
   imports: [
-    CarouselModule,
+    Progress,
     CommonModule,
     InputText,
     FloatLabel,
@@ -22,15 +22,10 @@ import { CarouselModule } from 'primeng/carousel';
   styleUrl: './developer-dashboard.css',
 })
 export class DeveloperDashboard {
-  images: string[] = [
-    '/images/test.png',
-    '/images/test.png',
-    '/images/test.png',
-    'images/test.png',
-  ];
-
+  solved = '';
+  total = '';
   sort = '';
-  recentAddedQuestions: recentquestion[] = [
+  RecentAdd: recentquestion[] = [
     {
       codingQuestionId: 'code_001',
       questionName: 'Add Two Numbers',
@@ -55,7 +50,44 @@ export class DeveloperDashboard {
       adminId: 'admin_123',
       adminName: 'John Smith',
     },
+    {
+      codingQuestionId: 'code_003',
+      questionName: 'Merge Two Sorted Arrays',
+      adminId: 'admin_789',
+      adminName: 'Mike Wilson',
+    },
+    {
+      codingQuestionId: 'code_004',
+      questionName: 'Find Maximum Element',
+      adminId: 'admin_123',
+      adminName: 'John Smith',
+    },
+    {
+      codingQuestionId: 'code_003',
+      questionName: 'Merge Two Sorted Arrays',
+      adminId: 'admin_789',
+      adminName: 'Mike Wilson',
+    },
+    {
+      codingQuestionId: 'code_004',
+      questionName: 'Find Maximum Element',
+      adminId: 'admin_123',
+      adminName: 'John Smith',
+    },
+    {
+      codingQuestionId: 'code_003',
+      questionName: 'Merge Two Sorted Arrays',
+      adminId: 'admin_789',
+      adminName: 'Mike Wilson',
+    },
+    {
+      codingQuestionId: 'code_004',
+      questionName: 'Find Maximum Element',
+      adminId: 'admin_123',
+      adminName: 'John Smith',
+    },
   ];
+  'pageNo': 1;
   Codes: codingQuestions[] = [
     {
       questionId: 'code_001',
@@ -84,6 +116,31 @@ export class DeveloperDashboard {
     },
   ];
   developerstatus: devSummary[] = [
+    {
+      devId: '#DEV-0441',
+      devName: 'John Doe',
+      solvedQuestionsCount: 45,
+    },
+    {
+      devId: '#DEV-0442',
+      devName: 'Jane Smith',
+      solvedQuestionsCount: 38,
+    },
+    {
+      devId: '#DEV-0443',
+      devName: 'Mike Johnson',
+      solvedQuestionsCount: 52,
+    },
+    {
+      devId: '#DEV-0444',
+      devName: 'Sarah Wilson',
+      solvedQuestionsCount: 29,
+    },
+    {
+      devId: '#DEV-0445',
+      devName: 'Alex Brown',
+      solvedQuestionsCount: 41,
+    },
     {
       devId: '#DEV-0441',
       devName: 'John Doe',
