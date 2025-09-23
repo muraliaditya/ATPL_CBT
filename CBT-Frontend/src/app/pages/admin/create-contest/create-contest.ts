@@ -91,7 +91,7 @@ export class CreateContest implements OnInit {
       return false;
     }
   }
-  // Add this property to your component class
+
   weightageOptions = [
     { label: '2', value: 2 },
     { label: '3', value: 3 },

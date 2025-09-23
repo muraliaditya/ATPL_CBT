@@ -4,7 +4,7 @@
       <h1 class="text-3xl font-bold">Contest Results</h1>
       <h1 class="text-2xl font-bold text-zinc-400">#{{ currentContestId }}</h1>
 
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-6 justify-between">
         <div class="flex gap-5 items-center">
           <p-floatlabel variant="on">
             <input
@@ -39,40 +39,29 @@
             />
             <label for="TotalMarks">Total Marks</label>
           </p-floatlabel>
+          <button
+            type="button"
+            [disabled]="disableFilterButton()"
+            (click)="filterData()"
+            class="py-1 text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
+          >
+            Filter
+          </button>
         </div>
 
-        <button
-          type="button"
-          [disabled]="disableFilterButton()"
-          (click)="filterData()"
-          class="py-1 text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
-        >
-          Filter
-        </button>
-      </div>
-      <div class="flex gap-4">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="username"
-            type="text"
-            [(ngModel)]="userSearch"
-            autocomplete="off"
-            required
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select
+            [options]="sortOptions"
+            [(ngModel)]="sortBy"
+            (ngModelChange)="onSortMethodChange($event)"
+            class="w-56 pt-0"
           />
-          <label for="username">username</label>
+          <label for="on_label">Sort By</label>
         </p-floatlabel>
-        <button
-          type="button"
-          (click)="userNameSearch()"
-          [disabled]="!userSearch.length"
-          class="py-1 w-fit text-white px-6 flex gap-2 items-center justify-center bg-blue-500 text-lg disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-md text-center"
-        >
-          Search
-        </button>
       </div>
+
       <div
-        class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden"
+        class="bg-white rounded-xl mt-5 shadow-sm border border-slate-100 overflow-hidden"
       >
         <div class="overflow-x-auto">
           <table class="w-full min-w-full">

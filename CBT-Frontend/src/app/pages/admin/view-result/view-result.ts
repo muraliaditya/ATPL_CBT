@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-view-result',
@@ -14,6 +15,7 @@ import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-lay
     FormsModule,
     ReactiveFormsModule,
     FloatLabel,
+    Select,
     InputTextModule,
     CommonModule,
     DynamicLayout,
@@ -29,6 +31,7 @@ export class ViewResult implements OnInit {
   TotalMarks: number | '' = '';
   userSearch: string = '';
   priority: string[] = [];
+  sortBy: string = '';
 
   boldColumns: string[] = [];
 
@@ -41,52 +44,56 @@ export class ViewResult implements OnInit {
       (this.TotalMarks !== '' && this.TotalMarks > 0)
     );
   }
+  onSortMethodChange(value: Event) {
+    this.filterData();
+  }
+
   constructor(private route: ActivatedRoute, private router: Router) {}
   resultsData: Participants[] = [];
   originalData: Participants[] = [];
+  sortOptions: string[] = ['Total Marks', 'Coding Marks', 'Mcq Marks'];
 
   priorityStudent: string[] = [
     'participantId',
     'userName',
-    'college',
-    'percentage',
-    'collegeRegdNo',
     'codingMarks',
     'mcqMarks',
     'totalMarks',
+    'college',
+    'percentage',
+    'collegeRegdNo',
   ];
   boldStudentColumns = ['participantId', 'collegeRegdNo', 'college'];
   headersStudent: string[] = [
     'ParticipantId',
     'Participant',
-
-    'College',
-    'Percentage',
-    'CollegeRegdNo',
     'CodingMarks',
     'McqMarks',
     'TotalMarks',
+    'College',
+    'Percentage',
+    'CollegeRegdNo',
   ];
 
   priorityExp: string[] = [
     'participantId',
     'userName',
-    'company',
-    'overallExperience',
-    'designation',
     'codingMarks',
     'mcqMarks',
     'totalMarks',
+    'company',
+    'overallExperience',
+    'designation',
   ];
   headersExp = [
     'ParticipantId',
     'Participant',
-    'Company',
-    'Overall Experience',
-    'Designation',
     'CodingMarks',
     'McqMarks',
     'TotalMarks',
+    'Company',
+    'Overall Experience',
+    'Designation',
   ];
   boldExpColumns = ['participantId', 'company', 'designation'];
   experiencedData: Participants[] = [
@@ -203,11 +210,22 @@ export class ViewResult implements OnInit {
     if (!isNaN(totalMarks) && totalMarks > 0) {
       filters['totalMarks'] = (value: number) => value >= totalMarks;
     }
-    this.resultsData = [...this.originalData].filter((participant) =>
+    let results: Participants[] = [];
+    results = [...this.originalData].filter((participant) =>
       Object.entries(filters).every(([key, condition]) => {
         return condition(participant[key]);
       })
     );
+    // sortOptions: string[] = ['Total Marks', 'Coding Marks', 'Mcq Marks'];
+
+    if (this.sortBy === 'Total Marks') {
+      results.sort((a, b) => b.totalMarks - a.totalMarks);
+    } else if (this.sortBy === 'Coding Marks') {
+      results.sort((a, b) => b.codingMarks - a.codingMarks);
+    } else if (this.sortBy === 'Mcq Marks') {
+      results.sort((a, b) => b.mcqMarks - b.mcqMarks);
+    }
+    this.resultsData = results;
   }
   goToParticipantResponse(submissionId: string) {
     this.router.navigate(['/admin/view-response', submissionId]);
