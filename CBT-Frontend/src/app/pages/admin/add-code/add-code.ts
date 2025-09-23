@@ -11,21 +11,52 @@ import { InputText } from "primeng/inputtext";
   styleUrl: './add-code.css'
 })
 export class AddCode {
-  input1='';
-  input2='';
-  outputf='';
-output='';
+saved: boolean = false; 
+showForm: boolean = false;
 question='';
+output='';
 weightage='';
-count='';
+count:number=0;
 testtype=['Private','Public'];
 types=['string','int','boolean'];
 codingquestion: any[]=[];
+onsave() {
+  this.saved = true;
+}
+oncancel() {
+  this.showForm = false;
+  this.inputs = [];
+  this.count = 0;
+}
 inputs:any[]=[];
 ongenerate(){
+  this.inputs=[];
+  for(let i = 0; i < this.count; i++)
   this.inputs.push({
     type:null,
     parameter:'',
 })
+this.saved = false;
+  this.showForm = true;
+}
+Inputform:any[]=[{
+  input1:'',
+    input2:'',
+    input3:'',
+    testtype:null,
+    description:'',
+}];
+add(){
+  this.Inputform.push({
+    input1:'',
+    input2:'',
+    input3:'',
+    testtype:null,
+    description:'',
+})
+}
+del(index:number){
+  this.Inputform.splice(index, 1);
+  console.log('ok');
 }
 }

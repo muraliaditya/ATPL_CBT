@@ -21,6 +21,7 @@ import { DeveloperLogin } from './pages/developer/developer-login/developer-logi
 import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
 import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 import { CodeListing } from './pages/admin/code-listing/code-listing';
+import { AddCode } from './pages/admin/add-code/add-code';
 export const routes: Routes = [
   {
     path: '',
@@ -81,6 +82,7 @@ export const routes: Routes = [
           },
           { path: 'edit-contest', component: EditContest },
           { path: 'code-listing', component: CodeListing },
+          {path:'add-code',component:AddCode},
         ],
       },
       {

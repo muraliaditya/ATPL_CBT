@@ -1,22 +1,26 @@
-<div>
-<textarea id="chat" rows="1" class="block w-full  text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 " placeholder="Question">{{question}}</textarea>
+<div class="flex flex-col gap-2 p-5">
+<textarea id="chat" rows="2" class="block w-full  text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 " placeholder="Question">{{question}}</textarea>
 <p-floatlabel variant="on">
         <input pInputText id="on_label" [(ngModel)]="weightage" autocomplete="off" />
         <label for="on_label">Weightage</label>
 </p-floatlabel>
 <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
 <textarea id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Description.."></textarea>
-<h1>Test Cases</h1>
-<h2>Configure test cases</h2>
-<div class="flex gap-5">
+<h1><b>Test Cases</b></h1>
+<h2><b>Configure test cases</b></h2>
+<div class="flex flex-col gap-5">
+<div class="flex gap-2">
     <p-floatlabel variant="on">
         <input pInputText id="on_label" [(ngModel)]="count" autocomplete="off" />
         <label for="on_label">Input Count</label>
 </p-floatlabel>
-<button class="bg-blue-500 text-white px-2 text-center" (click)="ongenerate()">Generate</button>
-<div>
-<div *ngFor="let q of inputs;let i=index;">
-    <p>Input {{i}}</p> 
+<button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="ongenerate()">Generate</button>
+</div>
+<div *ngIf="showForm">
+<div  *ngFor="let q of inputs;let i=index;" class="flex flex-col gap-3">
+    <div class="flex gap-3">
+    <p>Input {{i+1}}</p>
+    <ng-container *ngIf="!saved; else savedView"> 
     <p-floatlabel variant="on">
             <p-select [options]="types" [(ngModel)]="q.type" class="w-50 pt-0" />
                 <label for="on_label">Input Type</label>
@@ -25,35 +29,51 @@
         <input pInputText id="on_label" [(ngModel)]="q.parameter" autocomplete="off" />
         <label for="on_label">Parameter Name</label>
     </p-floatlabel>
+    </ng-container>
+    <ng-template #savedView>
+        <p>Type: {{ q.type }}</p>
+        <p>Parameter: {{ q.parameter }}</p>
+        <p>Output: {{output}}</p>
+      </ng-template>
+    </div>
 </div>
-<p>Output</p>
+</div>
+<div class="flex align-center gap-2">
+<p class="align-center">Output</p>
 <p-floatlabel variant="on">
             <p-select [options]="types" [(ngModel)]="output" class="w-50 pt-0" />
                 <label for="on_label">Input Type</label>
     </p-floatlabel>
-    <div class="flex gap-4">
-    <button>Cancel</button> 
-    <button>Save</button>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-4">
+    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="oncancel()">Cancel</button> 
+    <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="onsave()">Save</button>
+    </div>
+    <div  *ngFor="let p of Inputform;let i=index;" class="flex flex-col gap-3">
+    <div class="flex gap-3"> 
     <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="input1" autocomplete="off" />
+        <input pInputText id="on_label" [(ngModel)]="p.input1" autocomplete="off" />
         <label for="on_label">Input 1</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="input1" autocomplete="off" />
+        <input pInputText id="on_label" [(ngModel)]="p.input2" autocomplete="off" />
         <label for="on_label">Input 2</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="input1" autocomplete="off" />
+        <input pInputText id="on_label" [(ngModel)]="p.input3" autocomplete="off" />
         <label for="on_label">Weightage</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-            <p-select [options]="types" [(ngModel)]="testtype" class="w-50 pt-0" />
+            <p-select [options]="types" [(ngModel)]="p.testtype" class="w-50 pt-0" />
                 <label for="on_label">TestCase Type</label>
     </p-floatlabel>
-    <button class="bg-blue-500 text-white">+ testcase</button>
+    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="add()">+</button>
+    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="del(i)">-</button>
     </div>
-</div>
+    <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="p.description" autocomplete="off" />
+        <label for="on_label">Description</label>
+    </p-floatlabel>
+    </div>
 </div>
 </div>
