@@ -20,6 +20,7 @@ import { DashboardViewmcq } from './pages/admin/dashboard-viewmcq/dashboard-view
 import { DeveloperLogin } from './pages/developer/developer-login/developer-login';
 import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
 import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
+import { CodeListing } from './pages/admin/code-listing/code-listing';
 export const routes: Routes = [
   {
     path: '',
@@ -79,6 +80,7 @@ export const routes: Routes = [
             component: CreateContest,
           },
           { path: 'edit-contest', component: EditContest },
+          { path: 'code-listing', component: CodeListing },
         ],
       },
       {

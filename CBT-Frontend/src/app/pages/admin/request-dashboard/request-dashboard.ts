@@ -4,13 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { submissions } from '../../../models/admin/admin';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
-import { mcqSections } from '../../../models/admin/admin';
-import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
-import { data } from '../../../models/admin/admin';
 @Component({
   selector: 'app-request-dashboard',
-  imports: [InputTextModule, FloatLabel, FormsModule, CommonModule, RouterLink],
+  imports: [InputTextModule, FloatLabel, FormsModule, CommonModule],
   templateUrl: './request-dashboard.html',
   styleUrl: './request-dashboard.css'
 })
@@ -19,7 +16,9 @@ export class RequestDashboard {
   UserName='';
   constructor(private router: Router) { }
   p: any;
-    
+    onEdit(p: submissions){
+      this.router.navigate(['/admin/requests/Request-McqView',p.questionId ]);
+    }
   
     onApproval(p: submissions) {
        alert(`Approved ${p.devId}`);
@@ -69,15 +68,4 @@ export class RequestDashboard {
       "questionId": "mcq003"
     },
   ]
-  Mcq:data[]= [{
-      "mcqQuestionId": "mcq_12345",
-      "question": "What is the chemical symbol for gold?",
-      "option1": "AU",
-      "option2": "CU",
-      "option3": "AG", 
-      "option4": "FE",
-      "answerKey": "AU",
-      "weightage": 2,
-      "section":"Mcq",
-    }]
 }

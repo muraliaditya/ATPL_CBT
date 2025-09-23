@@ -15,6 +15,7 @@ import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-lay
 export class AddMcqQuestion {
  choice: string = '';
   category: string[] = ['Aptitude','Reasoning','Quantitative'];
+  answerkey:string[]=['A','B','C','D']
   Question='';
   ContestName='';
   value1='';
@@ -22,7 +23,16 @@ export class AddMcqQuestion {
   value3='';
   value4='';
   Weightage='';
-  questions: any[] = [];
+  answer='';
+  questions: any[] = [
+    {
+      question: '',
+      category: null,
+      options: ['', '', '', ''],
+      weightage: '',
+      answer:'',
+    }
+  ];
   idx=0;
   addQuestion() {
     this.questions.push({
@@ -30,6 +40,7 @@ export class AddMcqQuestion {
       category: null,
       options: ['', '', '', ''],
       weightage: '',
+      answer:'',
     });
   }
   removeQuestion(index: number) {
