@@ -5,16 +5,17 @@ import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
-
+import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
 @Component({
   selector: 'app-add-mcq-question',
-  imports: [FormsModule, Select, InputTextModule, FloatLabelModule, CommonModule, DynamicLayout],
+  imports: [AdminHeader,FormsModule, Select, InputTextModule, FloatLabelModule, CommonModule, DynamicLayout],
   templateUrl: './add-mcq-question.html',
   styleUrl: './add-mcq-question.css'
 })
 export class AddMcqQuestion {
  choice: string = '';
   category: string[] = ['Aptitude','Reasoning','Quantitative'];
+  answerkey:string[]=['A','B','C','D']
   Question='';
   ContestName='';
   value1='';
@@ -22,7 +23,16 @@ export class AddMcqQuestion {
   value3='';
   value4='';
   Weightage='';
-  questions: any[] = [];
+  answer='';
+  questions: any[] = [
+    {
+      question: '',
+      category: null,
+      options: ['', '', '', ''],
+      weightage: '',
+      answer:'',
+    }
+  ];
   idx=0;
   addQuestion() {
     this.questions.push({
@@ -30,6 +40,7 @@ export class AddMcqQuestion {
       category: null,
       options: ['', '', '', ''],
       weightage: '',
+      answer:'',
     });
   }
   removeQuestion(index: number) {

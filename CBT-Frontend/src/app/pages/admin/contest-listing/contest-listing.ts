@@ -36,18 +36,28 @@ export class ContestListing {
       id: '#CT-0443',
       name: 'Contest 1',
       status: 'ACTIVE',
+      startTime: '24 Jan 2025, 5:00pm',
+      endTime: '24 Jan 2025, 7:00pm',
+      duration: '120 min',
       eligibility: 'Preliminary',
     },
     {
       id: '#CT-0442',
       name: 'Contest 1',
       status: 'COMPLETED',
+      startTime: '24 Jan 2025, 5:00pm',
+      endTime: '24 Jan 2025, 7:00pm',
+      duration: '120 min',
       eligibility: 'Advanced',
     },
     {
       id: '#CT-0439',
       name: 'Contest 1',
       status: 'ACTIVE',
+      startTime: '24 Jan 2025, 5:00pm',
+      endTime: '24 Jan 2025, 7:00pm',
+      duration: '120 min',
+      eligibility: 'Preliminary',
     },
   ];
 

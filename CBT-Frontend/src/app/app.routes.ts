@@ -22,6 +22,7 @@ import { DeveloperDashboard } from './pages/developer/developer-dashboard/develo
 import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 import { CodeListing } from './pages/admin/code-listing/code-listing';
 import { AddCodingQuestion } from './components/admin/add-coding-question/add-coding-question';
+import { AddCode } from './pages/admin/add-code/add-code';
 export const routes: Routes = [
   {
     path: '',
@@ -81,6 +82,8 @@ export const routes: Routes = [
             component: CreateContest,
           },
           { path: 'edit-contest', component: EditContest },
+          { path: 'code-listing', component: CodeListing },
+          { path: 'add-code', component: AddCode },
         ],
       },
       {
@@ -137,6 +140,10 @@ export const routes: Routes = [
           {
             path: 'add-codingquestion',
             component: AddCodingQuestion,
+          },
+          {
+            path: 'add-code',
+            component: AddCode,
           },
         ],
       },

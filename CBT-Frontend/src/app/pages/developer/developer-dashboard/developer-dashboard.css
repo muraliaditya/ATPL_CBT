@@ -1,12 +1,6 @@
-/* @keyframes infinite-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
 
+<<<<<<< HEAD
+=======
 .scroll-left {
   animation: infinite-scroll 7s linear infinite;
   white-space: nowrap;
@@ -30,6 +24,7 @@
     0% {transform: translateX(0%);}
     100% {transform: translateX(-100%);}
 } */
+>>>>>>> 1908d49bd69bf8a175f7a877c5449ae2d8da8134
 
 @keyframes scroll {
   0% {

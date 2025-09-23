@@ -1,15 +1,10 @@
 <app-dynamic-layout>
-  <div main class="p-9 flex flex-col gap-5">
-    <div>
-      <p class="font-bold mb-2">Recently Added</p>
-      <div
-        class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md"
-      >
-        <div class="flex animate-scroll gap-20 w-max">
-          <div
-            *ngFor="let code of RecentAdd; let i = index"
-            class="scroll-left gap-10 px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit"
-          >
+    <div main class="p-9 flex flex-col gap-3">
+        <div>
+            <p class="font-bold mb-2">Recently Added</p>
+            <div class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md">
+            <div class="flex animate-scroll gap-20 w-max">
+                <div  *ngFor="let code of RecentAdd; let i = index;" class="scroll-left gap-10 px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit">
             <div class="flex flex-col gap-1 text-center w-max">
               <p>
                 <b>{{ code.questionName }}</b>
@@ -18,14 +13,55 @@
             </div>
           </div>
         </div>
-      </div>
+        </div>
+        </div>
+        <div>
+            <p class="font-bold mb-2">Top Devs</p>
+            <div class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md">
+            <div class="flex animate-scroll gap-20 w-max">
+            <div  *ngFor="let developer of developerstatus; let i = index;" class="px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit">
+            <div class="flex flex-col gap-1 px-5 w-max text-center">
+            <p class="flex flex-row gap-2"><img class="h-6 w-6 " src="/svgs/Avatar.svg" alt="avatar" /><b>{{developer.devId}}</b></p>
+            <p><app-progress class=" gap-1 tex-center w-max" [solved]=developer.solvedQuestionsCount [total]=totalQuestions></app-progress>
+            <p>Solved  {{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
+            </div>   
+            </div>
+        </div>
+        </div>
+        </div>
+        <div>
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+            <div class="flex gap-3">
+            <p-floatlabel variant="on">
+            <input class="flex-auto w-90" pInputText id="on_label" [(ngModel)]="sort" autocomplete="off" />
+            <label for="on_label">Search Question</label>
+            </p-floatlabel>
+            <button  class="bg-blue-500 text-white rounded-lg px-3 py-1">Search</button>
+            </div>
+            </div> 
+            <div  class="flex flex-col gap-2">
+            <div  *ngFor="let q of Codes; let i = index;" class="p-2 border border-gray-200 rounded-lg shadow-md">
+            <div class="flex flex-1 gap-100  ">
+                <p class="w-50"><b>{{ i + 1 }}. {{q.questionName}}</b></p>
+                <p><span class="px-3 py-1 rounded-full text-sm font-medium"
+                    [ngClass]="
+                        q.difficulty === 'Easy'
+                        ? 'bg-green-100 text-green-600'
+                        : ((q.difficulty==='Medium')?'bg-orange-100 text-orange-600':'bg-red-200 text-red-600')
+                    ">{{ q.difficulty }}</span> </p>
+            </div>
+            </div>
+            </div>
+        </div>
+        </div>
     </div>
     <div>
       <p class="font-bold mb-2">Top Devs</p>
       <div
         class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md"
       >
-        <div class="flex animate-scroll-right gap-20 w-max">
+        <div class="flex gap-20 w-max">
           <div
             *ngFor="let developer of developerstatus; let i = index"
             class="px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit"
@@ -94,7 +130,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
   </div>
+</div>
 </app-dynamic-layout>
