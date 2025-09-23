@@ -18,12 +18,10 @@ public class Testcases {
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
     private CodingQuestions codingQuestion;
-
-    @Lob
+  
     @Column(name = "input_values", columnDefinition = "JSON")
     private String inputValues; 
 
-    @Lob
     @Column(name = "expected_output", columnDefinition = "JSON")
     private String expectedOutput; 
 
@@ -31,8 +29,11 @@ public class Testcases {
     @Column(name = "testcase_type", length = 20)
     private TestcaseType testcaseType;
 
-    @Column(name = "weightage")
+    @Column(name = "weightage",nullable = false)
     private Integer weightage;
+    
+    @Column(name = "description",columnDefinition = "TEXT")
+    private String description;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -47,7 +48,7 @@ public class Testcases {
     @ManyToOne
     @JoinColumn(name = "updated_by")
     private User updatedBy;
-
+    
     @OneToMany(mappedBy = "testcase")
     private List<TestcaseResult> testcaseResults;
 

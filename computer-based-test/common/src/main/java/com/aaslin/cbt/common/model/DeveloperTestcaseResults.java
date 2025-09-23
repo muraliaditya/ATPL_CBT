@@ -32,8 +32,8 @@ public class DeveloperTestcaseResults {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-}
 
-enum DeveloperTestcaseStatus {
-    PASSED, FAILED, TIMEOUT, MEMORY_LIMIT_EXCEEDED
+    public enum DeveloperTestcaseStatus {
+    	PASSED, FAILED, TIMEOUT, MEMORY_LIMIT_EXCEEDED
+  }
 }

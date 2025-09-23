@@ -11,8 +11,10 @@ public class SubmissionResponse {
 
 	private String codeStatus;
 	private String message;
+	private String code;
 	public Integer publicTestcasePassed;
 	public Integer privateTestcasePassed;
+	private Integer score;
 	private List<TestcaseResultResponse> publicTestcaseResults;
 	private List<TestcaseResultResponse> privateTestcaseResults;
 }

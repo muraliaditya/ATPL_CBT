@@ -50,6 +50,9 @@ public class McqQuestions {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name="is_active")
+    private boolean deleted=false;
 
     @Column(name = "weightage")
     private Integer weightage = 1;

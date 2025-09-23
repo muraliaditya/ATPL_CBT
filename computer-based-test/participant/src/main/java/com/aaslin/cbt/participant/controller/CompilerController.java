@@ -9,16 +9,18 @@ import com.aaslin.cbt.participant.dto.CompileRunRequest;
 import com.aaslin.cbt.participant.dto.CompileRunResponse;
 import com.aaslin.cbt.participant.dto.SubmissionRequest;
 import com.aaslin.cbt.participant.dto.SubmissionResponse;
+import com.aaslin.cbt.participant.service.CodingSubmissionService;
 import com.aaslin.cbt.participant.service.CompilerService;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@RestController("participantCompilerController")
 @RequestMapping("/api/v1/coding")
 @RequiredArgsConstructor
 public class CompilerController {
 
 	private final CompilerService compilerService;
+	private final CodingSubmissionService submissionService;
 	
 	@PostMapping("/compile-run")
 	public CompileRunResponse compileRun(@RequestBody CompileRunRequest request) {
@@ -27,6 +29,8 @@ public class CompilerController {
 	
 	@PostMapping("/submission")
 	public SubmissionResponse submitCode(@RequestBody SubmissionRequest request) throws Exception {
-		return compilerService.submitCode(request);
+		SubmissionResponse response=compilerService.submitCode(request);
+		submissionService.saveSubmission(request, response);
+		return response;
 	}
 }

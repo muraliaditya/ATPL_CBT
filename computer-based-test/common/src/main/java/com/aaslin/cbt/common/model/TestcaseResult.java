@@ -30,9 +30,10 @@ public class TestcaseResult {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    
+    public enum TestcaseResultStatus {
+        PASSED, FAILED
+    }
 }
 
-enum TestcaseResultStatus {
-    PASSED, FAILED
-}
 

@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+#create non-root user
+RUN useradd -m -u 1000 developer || true
+USER developer
+
+#sandbox directory
+WORKDIR /home/developer
+RUN mkdir -p /home/developer/sandbox && chmod 700 /home/developer/sandbox
+
+#mount sandbox as volume
+VOLUME ["/home/developer/sandbox"]
+
+ENTRYPOINT ["/bin/sh","-c"]

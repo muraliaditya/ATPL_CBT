@@ -26,8 +26,8 @@ public class DeveloperCodingSubmissions {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "language_type")
-    private LanguageType languageType;
+    @JoinColumn(name = "language_type_id")
+    private LanguageType languageTypeId;
 
     @Column(columnDefinition = "TEXT")
     private String code;
@@ -51,8 +51,12 @@ public class DeveloperCodingSubmissions {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    private CodingSubmissionStatus status;
+    private DeveloperCodingSubmissionStatus codeStatus;
 
     @OneToMany(mappedBy = "developerCodingSubmission")
     private List<DeveloperTestcaseResults> developerTestcaseResults;
+
+    public enum DeveloperCodingSubmissionStatus {
+    	SOLVED, PARTIALLY_SOLVED, COMPILATION_ERROR, RUNTIME_ERROR, WRONG_ANSWER
+    }
 }

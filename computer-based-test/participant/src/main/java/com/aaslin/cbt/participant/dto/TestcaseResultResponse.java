@@ -15,6 +15,6 @@ public class TestcaseResultResponse {
 		private String expectedOutput; 
 		private String actualOutput;
 		private String status;
-		 private Integer weightage;
+		private int weightage;
 
 }

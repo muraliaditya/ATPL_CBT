@@ -27,7 +27,7 @@ public class CodingSubmission {
 
     @ManyToOne
     @JoinColumn(name = "language_type_id")
-    private LanguageType languageType;
+    private LanguageType languageTypeId;
 
     @Column(columnDefinition = "TEXT")
     private String code;
@@ -54,15 +54,16 @@ public class CodingSubmission {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    private CodingSubmissionStatus status;
+    private CodingSubmissionStatus codeStatus;
 
     @OneToMany(mappedBy = "codingSubmission")
     private List<TestcaseResult> testcaseResults;
+    
+   public enum CodingSubmissionStatus {
+        SOLVED, PARTIALLY_SOLVED, COMPILATION_ERROR, RUNTIME_ERROR, WRONG_ANSWER
+    }
 }
 
-enum CodingSubmissionStatus {
-    SOLVED, PARTIALLY_SOLVED, COMPILATION_ERROR, RUNTIME_ERROR, WRONG_ANSWER
-}
 
 
     

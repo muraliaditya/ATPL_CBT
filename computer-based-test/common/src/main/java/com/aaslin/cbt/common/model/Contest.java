@@ -1,4 +1,4 @@
-package com.aaslin.cbt.common.model;
+	package com.aaslin.cbt.common.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,6 +59,9 @@ public class Contest {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name="is_active")
+    private boolean deleted=false;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
@@ -76,7 +79,7 @@ public class Contest {
   public enum ContestStatus {
     ACTIVE, INACTIVE, COMPLETED
   }
-  
+
 }
 
 

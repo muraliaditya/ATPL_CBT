@@ -16,7 +16,7 @@ public class Designation {
     @Column(name = "designation_id", length = 50)
     private String designationId;
 
-    @Column(name = "designation_name", nullable = false,unique=true)
+    @Column(name = "designation_name", nullable = false)
     private String designationName;
 
     @OneToMany(mappedBy = "designation")

@@ -3,7 +3,6 @@ package com.aaslin.cbt.common.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
@@ -34,7 +33,7 @@ public class Participant {
     @Column(name = "college_regd_no")
     private String collegeRegdNo;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "designation_id")
     private Designation designation;
 
@@ -55,24 +54,16 @@ public class Participant {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @ManyToOne
+	@JoinColumn(name="contestId")
+	private Contest contest;
 
     @OneToMany(mappedBy = "participant")
     private List<ParticipantStatus> participantStatuses;
 
     @OneToMany(mappedBy = "participant")
     private List<Submission> submissions;
-    
-    @ManyToOne
-	@JoinColumn(name="contestId")
-	private Contest contest;
-    
-    @PrePersist
-    public void prePersist() {
-        if (this.participantId == null) {
-        	String currentId=String.format("PAR%03d",System.currentTimeMillis()%10000);
-           this.participantId=currentId;
-        }
-    }
 }
 
 

@@ -15,7 +15,7 @@ import com.aaslin.cbt.participant.repository.TestCaseRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service("ParticipantCompilerService")
 @RequiredArgsConstructor
 public class CompilerService {
 
@@ -59,32 +59,40 @@ public class CompilerService {
         List<TestcaseResultResponse> privateResults = new ArrayList<>();
         int publicPassed = 0;
         int privatePassed = 0;
+        int score=0;
 
         String savedFilePath = dockerExecutor.runAndSaveCode(
                 request.getParticipantId(), 
                 request.getQuestionId(), 
                 request.getLanguageType(), 
-                request.getCode(), 
-                "D:/codes"
+                request.getCode()
         );
 
-        for(Testcases tc : publicTestcases) {
-            String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
-            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
-            if(status.equals("PASSED")) publicPassed++;
-            publicResults.add(new TestcaseResultResponse(tc.getTestcaseId(), tc.getInputValues(), tc.getExpectedOutput(), actualOutput, status, tc.getWeightage()));
-        }
-
-        for(Testcases tc : privateTestcases) {
-        	 String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
-            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
-            if(status.equals("PASSED")) privatePassed++;
-            privateResults.add(new TestcaseResultResponse(tc.getTestcaseId(), null, null, null, status, tc.getWeightage()));
-        }
-
-        String overallStatus = (publicPassed == publicTestcases.size() && privatePassed == privateTestcases.size()) ? "SOLVED" : "PARTIALLY_SOLVED";
-        
-
-        return new SubmissionResponse(overallStatus, "Compiled and executed successfully", publicPassed, privatePassed, publicResults, privateResults);
-    }
-}
+	        for(Testcases tc : publicTestcases) {
+	            String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
+	            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
+	            if(status.equals("PASSED")) { 
+	            	
+	            	publicPassed++;
+	            	score+=tc.getWeightage();
+	            }
+	            publicResults.add(new TestcaseResultResponse(tc.getTestcaseId(), tc.getInputValues(), tc.getExpectedOutput(), actualOutput, status, tc.getWeightage()));
+	        }
+	
+	        for(Testcases tc : privateTestcases) {
+	        	 String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
+	            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
+	            if(status.equals("PASSED")) {
+	            	privatePassed++;
+	            	score+=tc.getWeightage();
+	            }
+	            privateResults.add(new TestcaseResultResponse(tc.getTestcaseId(), null, null, null, status, tc.getWeightage()));
+	        }
+	
+	        String overallStatus = (publicPassed == publicTestcases.size() && privatePassed == privateTestcases.size()) ? "SOLVED" : "PARTIALLY_SOLVED";
+	        
+	        
+	
+	        return new SubmissionResponse(overallStatus, "Compiled and executed successfully",request.getCode(), publicPassed, privatePassed, score, publicResults,privateResults);
+	    }
+	}

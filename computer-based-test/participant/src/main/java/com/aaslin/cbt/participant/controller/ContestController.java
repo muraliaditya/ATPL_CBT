@@ -9,7 +9,7 @@ import com.aaslin.cbt.participant.dto.ContestDetailsResponse;
 import com.aaslin.cbt.participant.dto.ContestEligibilityResponse;
 import com.aaslin.cbt.participant.service.ContestService;
 
-@RestController
+@RestController("participantContestController")
 @RequestMapping("/api/v1/contests")
 public class ContestController {
 

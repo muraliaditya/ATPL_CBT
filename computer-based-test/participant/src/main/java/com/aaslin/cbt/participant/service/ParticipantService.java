@@ -1,5 +1,6 @@
 package com.aaslin.cbt.participant.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.aaslin.cbt.participant.repository.CompanyRepository;
 import com.aaslin.cbt.participant.repository.ContestRepository;
 import com.aaslin.cbt.participant.repository.DesignationRepository;
 import com.aaslin.cbt.participant.repository.ParticipantRepository;
+import com.aaslin.cbt.participant.security.JwtUtil;
 
 @Service
 public class ParticipantService {
@@ -53,14 +55,22 @@ public class ParticipantService {
 	    Contest contest = contestRepo.findById(contestId)
 	            .orElseThrow(() -> new RuntimeException("Contest not found"));
 
-	    String category = request.getCategoryName().toLowerCase();
-	    Category categoryName=categoryRepo.findByCategoryName(category).orElseGet(()->{
-	    	Category newCategory =new Category();
-	    	newCategory.setCategoryName(category);
-	    	return categoryRepo.save(newCategory);
-	    });
+	    String categoryName = request.getCategoryName().toLowerCase();
+	    List<Category> categoryNames=categoryRepo.findByCategoryName(categoryName);
+	    Category category;
+        if(categoryNames.isEmpty()) {
+        	long count=categoryRepo.count()+1;
+        	String newId="CAT"+String.format("%03d", count);
+        	Category newCategory=new Category();
+        	newCategory.setCategoryId(newId);
+        	newCategory.setCategoryName(request.getCategoryName());
+        	category=categoryRepo.save(newCategory);
+        }
+        else {
+        	category=categoryNames.get(0);
+        }
 
-	    switch (category) {
+	    switch (categoryName) {
 	        case "student":
 	            if (request.getCollegeRegdNo() == null || request.getCollegeName() == null) {
 	                throw new RuntimeException("Missing student details");
@@ -76,7 +86,9 @@ public class ParticipantService {
 	    }
 
 	    Participant participant = new Participant();
-	    participant.setParticipantId(request.getParticipantId());
+	    long participant_count=participantRepo.count()+1;
+    	String newParticipantId="PAR"+String.format("%03d", participant_count);
+	    participant.setParticipantId(newParticipantId);
 	    participant.setName(request.getName());
 	    participant.setEmail(request.getEmail());
 	    participant.setCollegeRegdNo(request.getCollegeRegdNo());
@@ -89,25 +101,37 @@ public class ParticipantService {
 	    }
 
 	    if (request.getCurrentCompanyName() != null) {
-	        Company company = companyRepo.findBycurrentCompanyName(request.getCurrentCompanyName())
-	                .orElseGet(() -> {
-	                    Company newCompany = new Company();
-	                    long count=companyRepo.count()+1;
-	                    String newId="C"+String.format("%03d", count);
-	                    newCompany.setCompanyId(newId);
-	                    newCompany.setCurrentCompanyName(request.getCurrentCompanyName());
-	                    return companyRepo.save(newCompany);
-	                });
+	        List<Company> companies = companyRepo.findBycurrentCompanyName(request.getCurrentCompanyName());
+	        Company company;
+	        if(companies.isEmpty()) {
+	        	long count=companyRepo.count()+1;
+	        	String newId="COM"+String.format("%03d", count);
+	        	Company newCompany=new Company();
+	        	newCompany.setCompanyId(newId);
+	        	newCompany.setCurrentCompanyName(request.getCurrentCompanyName());
+	        	company=companyRepo.save(newCompany);
+	        }
+	        else {
+	        	company=companies.get(0);
+	        }
+	        
 	        participant.setCompany(company);
 	    }
 
 	    if (request.getCollegeName() != null) {
-	        College college = collegeRepo.findByCollegeName(request.getCollegeName())
-	                .orElseGet(() -> {
-	                    College newCollege = new College();
-	                    newCollege.setCollegeName(request.getCollegeName());
-	                    return collegeRepo.save(newCollege);
-	                });
+	    	List<College> colleges =collegeRepo.findByCollegeName(request.getCollegeName());
+	        College college;
+	        if(colleges.isEmpty()) {
+	        	long count=collegeRepo.count()+1;
+	        	String newId="COL"+String.format("%03d", count);
+	        	College newCollege=new College();
+	        	newCollege.setCollegeId(newId);
+	        	newCollege.setCollegeName(request.getCollegeName());
+	        	college=collegeRepo.save(newCollege);
+	        }
+	        else {
+	        	college=colleges.get(0);
+	        }
 	        participant.setCollege(college);
 	    }
 
@@ -115,9 +139,8 @@ public class ParticipantService {
 
 	    participant = participantRepo.save(participant);
 
-	    String accessToken = UUID.randomUUID().toString();
-
-	    return new ParticipantResponse(participant.getParticipantId(), accessToken);
+	    String token=JwtUtil.generateToken(participant.getParticipantId().toString(), contest.getContestId());
+	    return new ParticipantResponse(participant.getParticipantId(),token);
 	}
 	
 	

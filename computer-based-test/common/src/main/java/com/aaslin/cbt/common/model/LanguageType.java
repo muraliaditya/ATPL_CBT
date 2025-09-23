@@ -19,9 +19,9 @@ public class LanguageType {
     @Column(name = "language_type", nullable = false)
     private String languageType;
 
-    @OneToMany(mappedBy = "languageType")
+    @OneToMany(mappedBy = "languageTypeId")
     private List<CodingSubmission> codingSubmissions;
 
-    @OneToMany(mappedBy = "languageType")
+    @OneToMany(mappedBy = "languageTypeId")
     private List<DeveloperCodingSubmissions> developerCodingSubmissions;
 }

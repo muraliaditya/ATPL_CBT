@@ -12,7 +12,7 @@ import com.aaslin.cbt.participant.dto.SectionResponse;
 import com.aaslin.cbt.participant.dto.SubSectionResponse;
 import com.aaslin.cbt.participant.repository.ContestRepository;
 
-@Service
+@Service("ParticipantContestsService")
 public class ContestService {
 	
 	private final ContestRepository contestRepo;

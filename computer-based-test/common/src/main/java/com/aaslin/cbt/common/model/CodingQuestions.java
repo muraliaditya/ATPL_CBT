@@ -3,8 +3,11 @@ package com.aaslin.cbt.common.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "coding_questions_cbt")
@@ -37,14 +40,19 @@ public class CodingQuestions {
 
     @ManyToOne
     @JoinColumn(name = "created_by")
+    @JsonIgnore
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "approved_by")
+    @JsonIgnore
     private User approvedBy;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Column(name="method_name",nullable=false)
+    private String methodName;
 
     
     @Column(name = "java_boiler_code", columnDefinition = "TEXT",nullable=false)
@@ -54,8 +62,8 @@ public class CodingQuestions {
     @Column(name = "python_boiler_code", columnDefinition = "TEXT",nullable=false)
     private String pythonBoilerCode;
 
-    @Column(name = "execution_time_limit", precision = 10)
-    private Double executionTimeLimit;
+    @Column(name = "execution_time_limit", precision = 3,scale=2)
+    private BigDecimal executionTimeLimit;
 
     @Column(name = "memory_limit")
     private Long memoryLimit;
@@ -67,15 +75,20 @@ public class CodingQuestions {
     
     @Column(name = "input_params", columnDefinition = "JSON",nullable=false)
     private String inputParams; 
+    
+    @Column(name="is_active")
+    private Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
+    @JsonIgnore
     private User updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "codingQuestion")
+    @OneToMany(mappedBy = "codingQuestion",cascade=CascadeType.ALL,orphanRemoval=true)
+    @JsonIgnore
     private List<Testcases> testcases;
 
     public enum Difficulty { 

@@ -12,7 +12,7 @@ public class College {
     @Column(name = "college_id", length = 50)
     private String collegeId;
 
-    @Column(name = "college_name", nullable = false)
+    @Column(name = "college_name", unique=true,nullable = false)
     private String collegeName;
 
     @OneToMany(mappedBy = "college")
