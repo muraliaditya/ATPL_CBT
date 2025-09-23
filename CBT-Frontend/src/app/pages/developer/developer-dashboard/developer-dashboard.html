@@ -16,13 +16,12 @@
         <div>
             <p class="font-bold mb-2">Top Devs</p>
             <div class="flex flex-1 gap-10 overflow-hidden relative justify-around bg-blue-200 border border-gray-200 p-5 shadow-lg rounded-md">
-            <div class="flex animate-scroll gap-20 w-max">
+            <div class="flex animate-scroll-right gap-20 w-max">
             <div  *ngFor="let developer of developerstatus; let i = index;" class="px-4 py-6 border border-gray-200 bg-white rounded-lg shadow-md w-fit">
             <div class="flex flex-col gap-1 px-5 w-max text-center">
             <p><b>{{developer.devId}}</b></p>
-            <p>Solved</p>
-            <p><app-progress [solved]="40" [total]="80"></app-progress>
-{{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
+            <p>Solved {{developer.solvedQuestionsCount}}/{{totalQuestions}}</p>
+            <p><app-progress [solved]=developer.solvedQuestionsCount [total]=totalQuestions></app-progress>
             </div>   
             </div>
         </div>
