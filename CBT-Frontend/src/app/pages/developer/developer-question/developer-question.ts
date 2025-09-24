@@ -10,9 +10,10 @@ import { CommonModule } from '@angular/common';
 import { TestPage } from '../../user/test-page/test-page';
 import { Progress } from '../../../components/progress/progress';
 import { Subscription } from 'rxjs';
+import { Editor } from '../../../components/admin/editor/editor';
 @Component({
   selector: 'app-developer-question',
-  imports: [TestPage, CommonModule, FormsModule, CodeSection, AdminHeader, Progress],
+  imports: [Editor,TestPage, CommonModule, FormsModule, CodeSection, AdminHeader, Progress],
   templateUrl: './developer-question.html',
   styleUrl: './developer-question.css'
 })

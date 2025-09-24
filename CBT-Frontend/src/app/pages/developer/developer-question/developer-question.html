@@ -1,5 +1,5 @@
  <app-admin-header header heading="Questions"></app-admin-header>
-  <div main class="p-5 flex flex-row gap-2">
+  <div main class="p-5 w-full gap-2">
     <!-- <div class=" w-200 h-[calc(100%-75px)] p-2 font-bold border border-gray-500">
     <h2>Question</h2>
     <p>{{codingQuestion.codingQuestionId}}</p>
@@ -10,10 +10,7 @@
     <p>{{codingQuestion.outputType}}</p>
     </div> -->
     <div>
-          <app-code-section
-            [questions]="codingQuestions"
-            [currentQuestionNo]="0"
-          ></app-code-section>
+    <app-editor class="w-200"></app-editor>
     <h2>TestCases</h2>
     <div class="flex gap-2">
     <p class="p-1 bg-black text-white rounded-md">Case1</p>

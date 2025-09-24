@@ -23,10 +23,15 @@ import { CodeListing } from './pages/admin/code-listing/code-listing';
 import { AddCode } from './pages/admin/add-code/add-code';
 import { DeveloperQuestion } from './pages/developer/developer-question/developer-question';
 import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
+import { Editor } from './components/admin/editor/editor';
 export const routes: Routes = [
   {
     path: '',
     component: ParticipantForm,
+  },
+  {
+    path:'editor',
+    component:Editor,
   },
   {
     path: 'test-instructions',
