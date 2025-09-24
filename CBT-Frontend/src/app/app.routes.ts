@@ -12,7 +12,6 @@ import { CreateContest } from './pages/admin/create-contest/create-contest';
 import { ViewContest } from './pages/admin/view-contest/view-contest';
 import { EditContest } from './pages/admin/edit-contest/edit-contest';
 import { MCQListing } from './pages/admin/mcq-listing/mcq-listing';
-import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
 import { EditMcq } from './pages/admin/edit-mcq/edit-mcq';
 import { RequestDashboard } from './pages/admin/request-dashboard/request-dashboard';
 import { DashboardEditmcq } from './pages/admin/dashboard-editmcq/dashboard-editmcq';
@@ -22,6 +21,8 @@ import { DeveloperDashboard } from './pages/developer/developer-dashboard/develo
 import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 import { CodeListing } from './pages/admin/code-listing/code-listing';
 import { AddCode } from './pages/admin/add-code/add-code';
+import { DeveloperQuestion } from './pages/developer/developer-question/developer-question';
+import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
 export const routes: Routes = [
   {
     path: '',
@@ -139,10 +140,18 @@ export const routes: Routes = [
         path: 'developer-dashboard',
         component: DeveloperDashboard,
       },
+      {
+    path: 'developer-pratice',
+    component: DeveloperQuestion,
+  },
     ],
   },
   {
     path: 'developer-dashboard',
     component: DeveloperDashboard,
+  },
+  {
+    path: 'developer-pratice',
+    component: DeveloperQuestion,
   },
 ];

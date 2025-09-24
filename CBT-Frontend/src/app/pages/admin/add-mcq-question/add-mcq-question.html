@@ -9,7 +9,7 @@
     <div  *ngFor="let q of questions; let i = index" class="flex flex-col gap-2 shadow-md p-2">
     <div class="flex w-full gap-10">
     <p-floatLabel variant="on">
-    <textarea id="text" rows="1" [(ngModel)]="q.question" class="block w-full text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 h-[60px] w-[80px]">{{q.question}}</textarea>
+    <textarea id="text" rows="1" cols="70" [(ngModel)]="q.question" class="block w-full text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 h-[40px]">{{q.question}}</textarea>
     <label for="text">Question</label>
     </p-floatLabel>
     <p-floatlabel variant="on">

@@ -18,10 +18,6 @@ export class AddMcqQuestion {
   answerkey:string[]=['A','B','C','D']
   Question='';
   ContestName='';
-  value1='';
-  value2='';
-  value3='';
-  value4='';
   Weightage='';
   answer='';
   questions: any[] = [
