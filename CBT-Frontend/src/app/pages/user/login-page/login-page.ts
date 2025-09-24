@@ -53,7 +53,6 @@ export class LoginPage {
       collegeRollNo: this.userForm.value.collegeRollNo!,
       email: this.userForm.value.email!,
     };
- 
 
     this.isSubmitting = true;
     this.authService

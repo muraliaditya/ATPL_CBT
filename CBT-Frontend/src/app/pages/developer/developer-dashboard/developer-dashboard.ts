@@ -7,7 +7,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 import { recentquestion } from '../../../models/developer/developer';
 import { devSummary } from '../../../models/developer/developer';
-import { Progress } from '../../../components/progress/progress';
+import { Progress } from '../../../components/UI/progress/progress';
 @Component({
   selector: 'app-developer-dashboard',
   imports: [

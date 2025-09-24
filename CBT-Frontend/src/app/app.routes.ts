@@ -21,7 +21,7 @@ import { DeveloperLogin } from './pages/developer/developer-login/developer-logi
 import { DeveloperDashboard } from './pages/developer/developer-dashboard/developer-dashboard';
 import { DeveloperMainSection } from './pages/developer/developer-main-section/developer-main-section';
 import { CodeListing } from './pages/admin/code-listing/code-listing';
-import { AddCodingQuestion } from './components/admin/add-coding-question/add-coding-question';
+import { AddCodingQuestion } from './pages/admin/add-coding-question/add-coding-question';
 import { AddCode } from './pages/admin/add-code/add-code';
 export const routes: Routes = [
   {

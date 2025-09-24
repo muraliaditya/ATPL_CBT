@@ -1,0 +1,206 @@
+<app-dynamic-layout>
+  <app-admin-header header heading="Add Coding Question"></app-admin-header>
+  <div main class="p-5 flex flex-col gap-4">
+    <form
+      class="flex gap-4 items-center"
+      #myForm="ngForm"
+      (ngSubmit)="submitForm(myForm)"
+    >
+      <p-floatlabel variant="on">
+        <input
+          type="number"
+          id="myNumber"
+          name="myNumber"
+          [(ngModel)]="inputTypesCount"
+          #myNumber="ngModel"
+          required
+          min="1"
+          pInputText
+          class="w-56"
+          autocomplete="off"
+        />
+        <label for="myNumber">Inputs Count</label>
+      </p-floatlabel>
+
+      <button
+        class="px-2 py-1 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+        type="submit"
+        [disabled]="myForm.invalid"
+      >
+        Generate
+      </button>
+    </form>
+
+    <form
+      class="flex flex-col gap-4"
+      *ngIf="testCasesTypes.length"
+      (ngSubmit)="testcasesTypesSubmit()"
+      [formGroup]="testCaseTypesForm"
+    >
+      <div class="flex flex-col gap-2" formArrayName="testcasesTypes">
+        <div
+          *ngFor="let inputTypes of testCasesTypes.controls; let idx = index"
+        >
+          <div class="flex items-center gap-2" [formGroupName]="idx">
+            <div class="text-lg font-semibold">input {{ idx + 1 }}</div>
+            <p-floatlabel variant="on">
+              <p-select
+                formControlName="inputType"
+                inputId="eligibility-select-{{ idx }}"
+                [options]="inputDataTypes"
+                class="w-56"
+              />
+              <label for="eligibility-select-{{ idx }}">Input Type</label>
+            </p-floatlabel>
+            <p-floatlabel variant="on">
+              <input
+                formControlName="parameterName"
+                pInputText
+                id="input-type-{{ idx }}"
+                name="parameterName"
+                type="text"
+                autocomplete="off"
+              />
+              <label for="parameterName">Parameter Name</label>
+            </p-floatlabel>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="text-lg font-semibold">Output</div>
+        <p-floatlabel variant="on">
+          <p-select
+            formControlName="outputType"
+            inputId="output-type-select"
+            [options]="inputDataTypes"
+            class="w-56"
+          />
+          <label for="output-type-select">Output Type</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          class="px-2 py-1 flex gap-2 text-lg items-center justify-center border-blue-500 text-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          class="px-2 py-1 text-white flex gap-2 text-lg items-center justify-center bg-blue-500 disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-sm text-center"
+          type="submit"
+          [disabled]="testCaseTypesForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+
+    <div
+      *ngIf="TestCases.length"
+      class="flex flex-col gap-4"
+      [formGroup]="testCaseTypesForm"
+    >
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Test Cases</h3>
+        <button
+          class="px-3 py-2 bg-green-500 text-white rounded-sm font-semibold hover:bg-green-600"
+          type="button"
+          (click)="addTestCase()"
+        >
+          Add Test Case
+        </button>
+      </div>
+
+      <div formArrayName="testcases">
+        <div
+          *ngFor="let testcase of TestCases.controls; let testIdx = index"
+          class="border border-gray-300 rounded-lg p-4 mb-4"
+          [formGroupName]="testIdx"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-lg font-semibold">Test Case {{ testIdx + 1 }}</h4>
+            <button
+              class="px-2 py-1 bg-red-500 text-white rounded-sm font-semibold hover:bg-red-600"
+              type="button"
+              (click)="deleteTestCase(testIdx)"
+            >
+              Delete
+            </button>
+          </div>
+
+          <div formArrayName="testcaseInputs" class="flex flex-col gap-3 w-fit">
+            <div
+              *ngFor="
+                let inputField of getTestCaseInputsArray(testIdx).controls;
+                let inputIdx = index
+              "
+              [formGroupName]="inputIdx"
+            >
+              <ng-container *ngIf="inputIdx === 0">
+                <div class="border border-gray-200 rounded p-3">
+                  <h5 class="text-md font-semibold mb-2">Inputs</h5>
+                  <div formArrayName="inputs" class="flex flex-col w-fit gap-2">
+                    <div
+                      *ngFor="
+                        let input of getInputsArray(testIdx).controls;
+                        let inIdx = index
+                      "
+                      class="flex items-center gap-2"
+                      [formGroupName]="inIdx"
+                    >
+                      <p-floatlabel variant="on">
+                        <input
+                          formControlName="value"
+                          pInputText
+                          id="{{ getFieldName(testIdx, inIdx) }}-{{
+                            testIdx
+                          }}-{{ inIdx }}"
+                          type="text"
+                          autocomplete="off"
+                          class="w-64"
+                        />
+                        <label
+                          for="{{ getFieldName(testIdx, inIdx) }}-{{
+                            testIdx
+                          }}-{{ inIdx }}"
+                        >
+                          {{ getFieldName(testIdx, inIdx) }}
+                        </label>
+                      </p-floatlabel>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="inputIdx > 0">
+                <div class="flex items-center gap-2">
+                  <p-floatlabel variant="on">
+                    <input
+                      formControlName="value"
+                      pInputText
+                      id="{{ getBasicFieldName(testIdx, inputIdx - 1) }}-{{
+                        testIdx
+                      }}-{{ inputIdx }}"
+                      type="text"
+                      autocomplete="off"
+                      class="w-64"
+                    />
+                    <label
+                      for="{{ getBasicFieldName(testIdx, inputIdx - 1) }}-{{
+                        testIdx
+                      }}-{{ inputIdx }}"
+                    >
+                      {{ getBasicFieldName(testIdx, inputIdx - 1) }}
+                    </label>
+                  </p-floatlabel>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-dynamic-layout>

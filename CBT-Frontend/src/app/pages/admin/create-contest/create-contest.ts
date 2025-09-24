@@ -91,7 +91,6 @@ export class CreateContest implements OnInit {
       return false;
     }
   }
-
   weightageOptions = [
     { label: '2', value: 2 },
     { label: '3', value: 3 },
@@ -200,7 +199,6 @@ export class CreateContest implements OnInit {
   changeSection(value: 'Mcqs' | 'Coding') {
     this.currentSection = value;
   }
-
   getCodingQuestionControl(questionKey: string): FormGroup {
     let controlGroup = this.codingWeightageForm.get(questionKey) as FormGroup;
 
@@ -214,14 +212,17 @@ export class CreateContest implements OnInit {
 
     return controlGroup;
   }
+  onCodingDifficultyChange(questionKey: string, event: any) {
+    const value = event.value;
+    console.log(`Difficulty changed for question ${questionKey}:`, value);
+  }
   onCodingWeightageChange(questionKey: string, event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const value = Number(inputElement.value);
 
-    const controlGroup = this.getCodingQuestionControl(questionKey);
-    const weightageControl = controlGroup.get('weightage') as FormControl;
+    const control = this.getCodingQuestionControl(questionKey);
 
-    if (weightageControl.valid) {
+    if (control.valid) {
       this.store.dispatch(
         changeCodeWeightage({
           codingQuestionId: Number(questionKey),
@@ -230,14 +231,10 @@ export class CreateContest implements OnInit {
       );
     }
   }
-  onCodingDifficultyChange(questionKey: string, event: any) {
-    const value = event.value;
-    console.log(`Difficulty changed for question ${questionKey}:`, value);
-  }
 
   isCodingQuestionInvalid(questionKey: string): boolean {
-    const controlGroup = this.codingWeightageForm.get(questionKey) as FormGroup;
-    return controlGroup ? controlGroup.invalid : false;
+    const control = this.codingWeightageForm.get(questionKey);
+    return control ? control.invalid : false;
   }
 
   checkIfCodingSectionInvalid(): boolean {
@@ -245,14 +242,6 @@ export class CreateContest implements OnInit {
   }
 
   replaceCodequestion(prevCodeId: string) {
-    const controlGroup = this.codingWeightageForm.get(prevCodeId) as FormGroup;
-    if (controlGroup) {
-      const weightage = controlGroup.get('weightage')?.value;
-      const difficulty = controlGroup.get('difficulty')?.value;
-      console.log(
-        `Regenerating question ${prevCodeId} - Weightage: ${weightage}, Difficulty: ${difficulty}`
-      );
-    }
     let ques: ContestCodingQuestion = {
       codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
@@ -301,11 +290,6 @@ export class CreateContest implements OnInit {
     this.codingWeightageForm = this.fb.group({});
   }
   replaceCodingSection() {
-    const formValue = this.codingWeightageForm.value;
-    console.log(
-      'Regenerating all coding questions with form values:',
-      formValue
-    );
     const codingQuestions: ContestCodingQuestion[] = [
       {
         codeQuestionId: 'Q8',
@@ -769,20 +753,17 @@ export class CreateContest implements OnInit {
       },
     ];
     this.codingQuestions$.subscribe((codingData) => {
-      console.log(this.PreferencesArray.value);
-
       const questionKeys = Object.keys(codingData);
       questionKeys.forEach((key) => {
         if (!this.codingWeightageForm.get(key)) {
           const question = codingData[Number(key)];
-          const questionGroup = this.fb.group({
-            weightage: [
-              Number(question.weightage || 0),
-              [Validators.required, Validators.min(1)],
-            ],
-            difficulty: ['Easy', [Validators.required]],
-          });
-          this.codingWeightageForm.addControl(key, questionGroup);
+          this.codingWeightageForm.addControl(
+            key,
+            this.fb.control(Number(question.weightage || 0), [
+              Validators.required,
+              Validators.min(1),
+            ])
+          );
         }
       });
     });
