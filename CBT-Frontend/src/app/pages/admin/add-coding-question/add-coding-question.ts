@@ -17,6 +17,9 @@ import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { environment } from '../../../../environments/environment';
 import { parameterDuplicateCheck } from '../../../utils/custom-validators/parameter-duplicate';
+import { IntegerArrayValidate } from '../../../utils/custom-validators/integer-array-validator';
+import { StringArrayValidate } from '../../../utils/custom-validators/string-array-validator';
+import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
 
 @Component({
   selector: 'app-add-coding-question',
@@ -36,9 +39,17 @@ import { parameterDuplicateCheck } from '../../../utils/custom-validators/parame
 })
 export class AddCodingQuestion {
   testCaseTypesForm: FormGroup;
-  inputDataTypes: string[] = ['int', 'string', 'intArray', 'strArray'];
-  value3: string = '';
+  inputDataTypes: string[] = [
+    'int',
+    'string',
+    'boolean',
+    'character',
+    'intArray',
+    'strArray',
+  ];
   inputTypesCount: number = 0;
+  value3: string = '';
+  booleanOptions: string[] = ['true', 'false'];
 
   constructor(private fb: FormBuilder) {
     this.testCaseTypesForm = fb.group({
@@ -67,7 +78,23 @@ export class AddCodingQuestion {
     },
   ];
 
-  eachTestCaseForm: { fieldName: string; value: number | string }[] = [];
+  eachTestCaseForm: {
+    fieldName: string;
+    value: number | string;
+    validators: any[];
+    inputType: string;
+  }[] = [];
+
+  getValidators(inputType: string) {
+    if (inputType === 'intArray') {
+      return [IntegerArrayValidate];
+    } else if (inputType === 'strArray') {
+      return [StringArrayValidate];
+    } else if (inputType === 'character') {
+      return [Validators.required, NaNCheckValidate];
+    }
+    return [Validators.required];
+  }
 
   testcasesTypesSubmit() {
     let testcasesType = this.testCaseTypesForm.value.testcasesTypes;
@@ -76,6 +103,8 @@ export class AddCodingQuestion {
     let newFields = [...testcasesType].map((testcase) => ({
       fieldName: testcase.parameterName,
       value: '',
+      validators: this.getValidators(testcase.inputType),
+      inputType: testcase.inputType,
     }));
     if (newFields.length) {
       for (let idx = newFields.length - 1; idx >= 0; idx--) {
@@ -85,8 +114,8 @@ export class AddCodingQuestion {
     console.log(this.eachTestCaseForm);
 
     console.log(this.testCaseTypesForm.value.testcasesTypes);
-    this.reconstructTestCases();
 
+    this.reconstructTestCases();
     console.log(this.testCaseTypesForm.value);
   }
 
@@ -101,7 +130,8 @@ export class AddCodingQuestion {
           this.eachTestCaseForm.map((field) =>
             this.fb.group({
               fieldName: [field.fieldName],
-              value: [field.value],
+              value: [field.value, field.validators],
+              type: field.inputType,
             })
           )
         ),
@@ -109,7 +139,7 @@ export class AddCodingQuestion {
       ...this.basicFields.map((field) =>
         this.fb.group({
           fieldName: [field.fieldName],
-          value: [field.value],
+          value: [field.value, Validators.required],
         })
       ),
     ]);
@@ -170,6 +200,18 @@ export class AddCodingQuestion {
     const inputsArray = this.getInputsArray(testIdx);
     const fieldNameControl = inputsArray.at(inputIdx).get('fieldName');
     return fieldNameControl ? fieldNameControl.value : '';
+  }
+
+  getFieldType(testIdx: number, inputIdx: number): string {
+    const inputsArray = this.getInputsArray(testIdx);
+    const fieldNameControl = inputsArray.at(inputIdx).get('type');
+    if (fieldNameControl?.value === 'boolean') {
+      return 'boolean';
+    } else if (fieldNameControl?.value === 'int') {
+      return 'number';
+    } else {
+      return 'text';
+    }
   }
 
   getBasicFieldName(testIdx: number, basicIdx: number): string {

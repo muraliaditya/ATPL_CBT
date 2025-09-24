@@ -150,25 +150,43 @@
                       class="flex items-center gap-2"
                       [formGroupName]="inIdx"
                     >
-                      <p-floatlabel variant="on">
-                        <input
-                          formControlName="value"
-                          pInputText
-                          id="{{ getFieldName(testIdx, inIdx) }}-{{
-                            testIdx
-                          }}-{{ inIdx }}"
-                          type="text"
-                          autocomplete="off"
-                          class="w-64"
-                        />
-                        <label
-                          for="{{ getFieldName(testIdx, inIdx) }}-{{
-                            testIdx
-                          }}-{{ inIdx }}"
-                        >
-                          {{ getFieldName(testIdx, inIdx) }}
-                        </label>
-                      </p-floatlabel>
+                      <div *ngIf="getFieldType(testIdx, inIdx) !== 'boolean'">
+                        <p-floatlabel variant="on">
+                          <input
+                            formControlName="value"
+                            pInputText
+                            id="{{ getFieldName(testIdx, inIdx) }}-{{
+                              testIdx
+                            }}-{{ inIdx }}"
+                            [type]="getFieldType(testIdx, inIdx)"
+                            autocomplete="off"
+                            class="w-64"
+                          />
+                          <label
+                            for="{{ getFieldName(testIdx, inIdx) }}-{{
+                              testIdx
+                            }}-{{ inIdx }}"
+                          >
+                            {{ getFieldName(testIdx, inIdx) }}
+                          </label>
+                        </p-floatlabel>
+                      </div>
+                      <div *ngIf="getFieldType(testIdx, inIdx) === 'boolean'">
+                        <p-floatlabel variant="on">
+                          <p-select
+                            formControlName="value"
+                            id="{{ getFieldName(testIdx, inIdx) }}-{{
+                              testIdx
+                            }}-{{ inIdx }}"
+                            type="text"
+                            [options]="booleanOptions"
+                            class="w-56"
+                          />
+                          <label for="output-type-select">
+                            {{ getFieldName(testIdx, inIdx) }}
+                          </label>
+                        </p-floatlabel>
+                      </div>
                     </div>
                   </div>
                 </div>

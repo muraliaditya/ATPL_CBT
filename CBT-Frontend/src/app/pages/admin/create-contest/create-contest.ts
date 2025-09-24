@@ -45,6 +45,7 @@ import { Observable } from 'rxjs';
 import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 import { ContestTestcase } from '../../../models/admin/contest';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
+import { IntegerArrayValidate } from '../../../utils/custom-validators/integer-array-validator';
 
 @Component({
   selector: 'app-create-contest',
@@ -212,6 +213,7 @@ export class CreateContest implements OnInit {
 
     return controlGroup;
   }
+
   onCodingDifficultyChange(questionKey: string, event: any) {
     const value = event.value;
     console.log(`Difficulty changed for question ${questionKey}:`, value);
@@ -757,13 +759,14 @@ export class CreateContest implements OnInit {
       questionKeys.forEach((key) => {
         if (!this.codingWeightageForm.get(key)) {
           const question = codingData[Number(key)];
-          this.codingWeightageForm.addControl(
-            key,
-            this.fb.control(Number(question.weightage || 0), [
-              Validators.required,
-              Validators.min(1),
-            ])
-          );
+          const questionGroup = this.fb.group({
+            weightage: [
+              Number(question.weightage || 0),
+              [Validators.required, Validators.min(1)],
+            ],
+            difficulty: ['Medium', [Validators.required]],
+          });
+          this.codingWeightageForm.addControl(key, questionGroup);
         }
       });
     });
