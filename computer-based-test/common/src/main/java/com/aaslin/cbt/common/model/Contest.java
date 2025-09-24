@@ -79,6 +79,8 @@ public class Contest {
   public enum ContestStatus {
     ACTIVE, INACTIVE, COMPLETED
   }
+  
+  
 
 }
 

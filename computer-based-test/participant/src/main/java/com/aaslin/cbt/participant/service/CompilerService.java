@@ -1,17 +1,22 @@
 package com.aaslin.cbt.participant.service;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aaslin.cbt.common.model.CodingSubmission;
 import com.aaslin.cbt.common.model.Testcases;
 import com.aaslin.cbt.participant.dto.CompileRunRequest;
 import com.aaslin.cbt.participant.dto.CompileRunResponse;
 import com.aaslin.cbt.participant.dto.SubmissionRequest;
 import com.aaslin.cbt.participant.dto.SubmissionResponse;
 import com.aaslin.cbt.participant.dto.TestcaseResultResponse;
+import com.aaslin.cbt.participant.repository.CodingSubmissionRepository;
 import com.aaslin.cbt.participant.repository.TestCaseRepository;
+import com.aaslin.cbt.participant.util.CustomIdGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +25,15 @@ import lombok.RequiredArgsConstructor;
 public class CompilerService {
 
     private final TestCaseRepository testcaseRepo;
+    private final CodingSubmissionRepository codingSubmissionRepository;
     private final DockerExecutor dockerExecutor;
+
+    private static final int MAX_ATTEMPTS = 50;
+
+    @Autowired
+    private CustomIdGenerator customIdGenerator;
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public CompileRunResponse compileAndRun(CompileRunRequest request) {
         List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
@@ -29,18 +42,17 @@ public class CompilerService {
         List<TestcaseResultResponse> results = new ArrayList<>();
         int passedCount = 0;
 
-        for(Testcases tc : testcases) {
-            String input = tc.getInputValues();
-            String expected = tc.getExpectedOutput();
-            String actualOutput;
+        for (Testcases tc : testcases) {
             try {
-                actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), input);
-            } catch(Exception e) {
+                String stdin = flattenInput(tc.getInputValues());
+                String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
+                boolean passed = tc.getExpectedOutput().trim().equals(actualOutput.trim());
+                if (passed) passedCount++;
+                results.add(new TestcaseResultResponse(tc.getTestcaseId(), tc.getInputValues(),
+                        tc.getExpectedOutput(), actualOutput, passed ? "PASSED" : "FAILED", tc.getWeightage()));
+            } catch (Exception e) {
                 return new CompileRunResponse("COMPILATION_ERROR", e.getMessage(), 0, results);
             }
-            String status = expected.trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
-            if(status.equals("PASSED")) passedCount++;
-            results.add(new TestcaseResultResponse(tc.getTestcaseId(), input, expected, actualOutput, status, tc.getWeightage()));
         }
 
         return new CompileRunResponse(
@@ -49,50 +61,99 @@ public class CompilerService {
                 passedCount, results
         );
     }
+
     public SubmissionResponse submitCode(SubmissionRequest request) throws Exception {
+
+        String participantId = request.getParticipantId();
+        String questionId = request.getQuestionId();
+
+        // Count previous attempts
+        int attemptNumber = codingSubmissionRepository
+                .countBySubmission_Participant_ParticipantIdAndCodingQuestion_CodingQuestionId(participantId, questionId);
+        boolean finalAttempt = (attemptNumber + 1 == MAX_ATTEMPTS);
+
+        // Determine CodingSubmission ID
+        String codingSubmissionId;
+        if (finalAttempt) {
+            codingSubmissionId = customIdGenerator.generateCodingSubmissionId();
+        } else {
+            CodingSubmission latestSubmission = codingSubmissionRepository
+                    .findTopBySubmission_Participant_ParticipantIdAndCodingQuestion_CodingQuestionIdOrderByCreatedAtDesc(
+                            participantId, questionId);
+            codingSubmissionId = (latestSubmission != null)
+                    ? latestSubmission.getCodingSubmissionId()
+                    : customIdGenerator.generateCodingSubmissionId();
+        }
+
+        // Fetch testcases
         List<Testcases> publicTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                request.getQuestionId(), Testcases.TestcaseType.PUBLIC);
+                questionId, Testcases.TestcaseType.PUBLIC);
         List<Testcases> privateTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                request.getQuestionId(), Testcases.TestcaseType.PRIVATE);
+                questionId, Testcases.TestcaseType.PRIVATE);
 
         List<TestcaseResultResponse> publicResults = new ArrayList<>();
         List<TestcaseResultResponse> privateResults = new ArrayList<>();
         int publicPassed = 0;
         int privatePassed = 0;
-        int score=0;
+        int score = 0;
 
+        // Execute and save code
         String savedFilePath = dockerExecutor.runAndSaveCode(
-                request.getParticipantId(), 
-                request.getQuestionId(), 
-                request.getLanguageType(), 
+                participantId,
+                questionId,
+                request.getLanguageType(),
                 request.getCode()
         );
 
-	        for(Testcases tc : publicTestcases) {
-	            String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
-	            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
-	            if(status.equals("PASSED")) { 
-	            	
-	            	publicPassed++;
-	            	score+=tc.getWeightage();
-	            }
-	            publicResults.add(new TestcaseResultResponse(tc.getTestcaseId(), tc.getInputValues(), tc.getExpectedOutput(), actualOutput, status, tc.getWeightage()));
-	        }
-	
-	        for(Testcases tc : privateTestcases) {
-	        	 String actualOutput = dockerExecutor.executeUserCode(request.getLanguageType(), request.getCode(), tc.getInputValues());
-	            String status = tc.getExpectedOutput().trim().equals(actualOutput.trim()) ? "PASSED" : "FAILED";
-	            if(status.equals("PASSED")) {
-	            	privatePassed++;
-	            	score+=tc.getWeightage();
-	            }
-	            privateResults.add(new TestcaseResultResponse(tc.getTestcaseId(), null, null, null, status, tc.getWeightage()));
-	        }
-	
-	        String overallStatus = (publicPassed == publicTestcases.size() && privatePassed == privateTestcases.size()) ? "SOLVED" : "PARTIALLY_SOLVED";
-	        
-	        
-	
-	        return new SubmissionResponse(overallStatus, "Compiled and executed successfully",request.getCode(), publicPassed, privatePassed, score, publicResults,privateResults);
-	    }
-	}
+        for (Testcases tc : publicTestcases) {
+            String stdin = flattenInput(tc.getInputValues());
+            String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
+            boolean passed = tc.getExpectedOutput().trim().equals(actualOutput.trim());
+            if (passed) {
+                publicPassed++;
+                score += tc.getWeightage();
+            }
+            publicResults.add(new TestcaseResultResponse(tc.getTestcaseId(), tc.getInputValues(),
+                    tc.getExpectedOutput(), actualOutput, passed ? "PASSED" : "FAILED", tc.getWeightage()));
+        }
+
+        for (Testcases tc : privateTestcases) {
+            String stdin = flattenInput(tc.getInputValues());
+            String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
+            boolean passed = tc.getExpectedOutput().trim().equals(actualOutput.trim());
+            if (passed) {
+                privatePassed++;
+                score += tc.getWeightage();
+            }
+            privateResults.add(new TestcaseResultResponse(tc.getTestcaseId(), null, null, null,
+                    passed ? "PASSED" : "FAILED", tc.getWeightage()));
+        }
+
+        String overallStatus = (publicPassed == publicTestcases.size() && privatePassed == privateTestcases.size())
+                ? "SOLVED" : "PARTIALLY_SOLVED";
+
+        return new SubmissionResponse(overallStatus, "Compiled and executed successfully", request.getCode(),
+                publicPassed, privatePassed, score, codingSubmissionId, publicResults, privateResults);
+    }
+
+    private String flattenInput(String rawInput) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        try {
+            Object obj = mapper.readValue(rawInput, Object.class);
+            collectValues(obj, sb);
+        } catch (Exception e) {
+            sb.append(rawInput).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void collectValues(Object obj, StringBuilder sb) {
+        if (obj instanceof List) {
+            for (Object v : (List<?>) obj) collectValues(v, sb);
+        } else if (obj instanceof Map) {
+            for (Object v : ((Map<?, ?>) obj).values()) collectValues(v, sb);
+        } else if (obj != null) {
+            sb.append(obj).append("\n");
+        }
+    }
+}

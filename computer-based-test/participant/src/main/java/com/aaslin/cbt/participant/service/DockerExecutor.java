@@ -1,25 +1,23 @@
 package com.aaslin.cbt.participant.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.*;
+import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component("ParticipantDockerExecutor")
 public class DockerExecutor {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String SAVE_BASE_PATH = "D:\\codes";
 
-    public String runTemporaryCode(String language, String code, String inputJson) throws Exception {
-        if(language.equalsIgnoreCase("JAVA")) {
-            return runJavaInDocker(code, inputJson, false, null);
-        } else if(language.equalsIgnoreCase("PYTHON")) {
-            return runPythonInDocker(code, inputJson, false, null);
+    public String runTemporaryCode(String language, String code, String stdin) throws Exception {
+        if (language.equalsIgnoreCase("JAVA")) {
+            return runJavaInDocker(code, stdin, false, null);
+        } else if (language.equalsIgnoreCase("PYTHON")) {
+            return runPythonInDocker(code, stdin, false, null);
         }
         throw new RuntimeException("Unsupported language: " + language);
     }
@@ -27,127 +25,77 @@ public class DockerExecutor {
     public String runAndSaveCode(String participantId, String questionId, String language, String code) throws Exception {
         String savePath = SAVE_BASE_PATH + File.separator + participantId + File.separator + questionId;
         File dir = new File(savePath);
-        if(!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) dir.mkdirs();
 
         String fileName;
-        if(language.equalsIgnoreCase("JAVA")) {
+        if (language.equalsIgnoreCase("JAVA")) {
             String className = extractClassName(code);
             fileName = participantId + "_" + questionId + ".java";
-        } else if(language.equalsIgnoreCase("PYTHON")) {
+        } else if (language.equalsIgnoreCase("PYTHON")) {
             fileName = participantId + "_" + questionId + ".py";
         } else {
             throw new RuntimeException("Unsupported language: " + language);
         }
 
         File file = new File(dir, fileName);
-        try(FileWriter fw = new FileWriter(file)) {
+        try (FileWriter fw = new FileWriter(file)) {
             fw.write(code);
         }
         return file.getAbsolutePath();
     }
 
-    public String executeUserCode(String language, String code, String inputJson) throws Exception {
-        if(language.equalsIgnoreCase("JAVA")) {
-            return runJavaInDocker(code, inputJson, false, null);
-        } else if(language.equalsIgnoreCase("PYTHON")) {
-            return runPythonInDocker(code, inputJson, false, null);
-        }
-        throw new RuntimeException("Unsupported language: " + language);
-    }
-
-
-    private String runJavaInDocker(String code, String inputJson, boolean saveFile, String savePath) throws Exception {
-
-        Map<String, Object> inputMap = objectMapper.readValue(inputJson, Map.class);
-        List<String> argsList = new ArrayList<>();
-        for(Object value : inputMap.values()) {
-            argsList.add(String.valueOf(value));
-        }
-        String stdin = String.join("\n", argsList);
-
+    private String runJavaInDocker(String code, String stdin, boolean saveFile, String savePath) throws Exception {
         String className;
         Matcher m = Pattern.compile("public\\s+class\\s+(\\w+)").matcher(code);
-        if(m.find()) {
-            className = m.group(1);
-        } else {
-            className = "Solution";
-        }
+        if (m.find()) className = m.group(1);
+        else className = "Solution";
 
         String fileName = className + ".java";
-        File file;
-        if(saveFile && savePath != null) {
-            File dir = new File(savePath);
-            if(!dir.exists()) dir.mkdirs();
-            file = new File(dir, fileName);
+        File dir=saveFile && savePath !=null ? new File(savePath) :new File(".");
+        if(!dir.exists()) dir.mkdirs();
+        File file=new File(dir,fileName);
+        
+        String javaCode;
+        if (!code.contains("public class " + className)) {
+            javaCode = "public class " + className + " {\n" + code + "\n}";
         } else {
-            file = new File(fileName);
+            javaCode = code;
         }
 
-        StringBuilder javaWrapper = new StringBuilder();
-        if(!code.contains("public class " + className)) {
-            javaWrapper.append("public class ").append(className).append(" {\n")
-                    .append(code).append("\n")
-                    .append("}");
-        } else {
-            javaWrapper.append(code);
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write(javaCode);
+        }
+        
+        File inputFile=new File(dir,"input.txt");
+        try(FileWriter fw=new FileWriter(inputFile)){
+        	fw.write(stdin);
         }
 
-        try(FileWriter fw = new FileWriter(file)) {
-            fw.write(javaWrapper.toString());
-        }
+        String command = String.format("javac %s && java %s < %s", file.getName(),className,inputFile.getName());
+        String output = executeDocker("openjdk:17", file.getAbsoluteFile().getParent(), command);
 
-        String command = "javac " + file.getName() + " && echo \"" 
-                + stdin.replace("\"", "\\\"") + "\" | java " + className;
-
-        // Execute in Docker
-        String parentPath = file.getAbsoluteFile().getParent();
-        String output = executeDocker("openjdk:17", parentPath, command);
-
-        if(!saveFile) file.delete();
+        if (!saveFile) file.delete();
+        inputFile.delete();
         return output.trim();
     }
 
-    private String runPythonInDocker(String code, String inputJson, boolean saveFile, String savePath) throws Exception {
-        File file;
-        if(saveFile && savePath != null) {
-            File dir = new File(savePath);
-            if(!dir.exists()) dir.mkdirs();
-            file = new File(dir, "solution_" + System.currentTimeMillis() + ".py");
-        } else {
-            file = File.createTempFile("Solution", ".py");
+    private String runPythonInDocker(String code, String stdin, boolean saveFile, String savePath) throws Exception {
+        File file = saveFile && savePath != null ? new File(savePath, "solution_" + System.currentTimeMillis() + ".py")
+                : File.createTempFile("Solution", ".py");
+
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write(code);
         }
+        
+        File inputFile=new File(file.getParent(),"input.txt");
+       Files.writeString(inputFile.toPath(),stdin);
 
-        StringBuilder pythonWrapper = new StringBuilder();
-        pythonWrapper.append("import json, sys, io\n")
-                .append("data = json.loads('").append(inputJson.replace("'", "\\'")).append("')\n")
-                .append("globals().update(data)\n")
-                .append("output = None\n")
-                .append("_stdout = sys.stdout\n")
-                .append("sys.stdout = io.StringIO()\n")
-                .append("try:\n")
-                .append(indentCode(code))
-                .append("    printed = sys.stdout.getvalue().strip()\n")
-                .append("    if output is None and printed:\n")
-                .append("        output = printed\n")
-                .append("except Exception as e:\n")
-                .append("    sys.stdout = _stdout\n")
-                .append("    print(json.dumps({\"error\": str(e)}))\n")
-                .append("    sys.exit(1)\n")
-                .append("sys.stdout = _stdout\n")
-                .append("print(output)\n");
+        String command = "python " +file.getName()+ " < "+inputFile.getName();
+        String output = executeDocker("python:3.10", file.getAbsoluteFile().getParent(), command);
 
-        try(FileWriter fw = new FileWriter(file)) {
-            fw.write(pythonWrapper.toString());
-        }
-
-        String command = "python " + file.getName();
-        String parentPath = file.getAbsoluteFile().getParent();
-        String output = executeDocker("python:3.10", parentPath, command);
-
-        if(!saveFile) file.delete();
+        if (!saveFile) file.delete();
         return output.trim();
     }
-
 
     private String executeDocker(String image, String dir, String command) throws Exception {
         ProcessBuilder pb = new ProcessBuilder(
@@ -162,29 +110,15 @@ public class DockerExecutor {
         Process process = pb.start();
         String stdout = new String(process.getInputStream().readAllBytes());
         String stderr = new String(process.getErrorStream().readAllBytes());
-
         int exitCode = process.waitFor();
-        if(exitCode != 0) throw new RuntimeException("Compilation/Execution Error: " + stderr);
 
+        if (exitCode != 0) throw new RuntimeException("Compilation/Execution Error: " + stderr);
         return stdout.trim();
     }
 
-
     private String extractClassName(String code) {
         Matcher m = Pattern.compile("public\\s+class\\s+(\\w+)").matcher(code);
-        if(m.find()) return m.group(1);
+        if (m.find()) return m.group(1);
         return "Solution";
-    }
-
-    private String indentCode(String code) {
-        StringBuilder indented = new StringBuilder();
-        for(String line : code.split("\n")) {
-            if(!line.trim().isEmpty()) {
-                indented.append("    ").append(line).append("\n");
-            } else {
-                indented.append("\n");
-            }
-        }
-        return indented.toString();
     }
 }

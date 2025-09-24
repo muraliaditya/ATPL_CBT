@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import com.aaslin.cbt.participant.repository.LanguageTypeRepository;
 import com.aaslin.cbt.participant.repository.ParticipantRepository;
 import com.aaslin.cbt.participant.repository.SubmissionRepository;
 import com.aaslin.cbt.participant.repository.TestcaseResultRepository;
+import com.aaslin.cbt.participant.util.CustomIdGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,31 +33,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CodingSubmissionService {
 
-    private final SubmissionRepository submissionRepository;
+    private static final int MAX_ATTEMPTS = 50;
+	private final SubmissionRepository submissionRepository;
     private final ParticipantRepository participantRepository;
     private final CodingQuestionsRepository codingQuestionsRepository;
     private final LanguageTypeRepository languageTypeRepository;
     private final CodingSubmissionRepository codingSubmissionRepository;
     private final TestcaseResultRepository testcaseResultRepository;
+    
+    @Autowired
+    private CustomIdGenerator customIdGenerator;
 
     
     @Transactional
-    public void saveSubmission(SubmissionRequest request, SubmissionResponse response) {
+    public void saveCodingSubmission(SubmissionRequest request, SubmissionResponse response) {
         Participant participant = participantRepository.findById(request.getParticipantId())
                 .orElseThrow(() -> new RuntimeException("Participant not found: " + request.getParticipantId()));
-
-        Submission parent = new Submission();
-        parent.setSubmissionId(generateSubmissionId());
-      // parent.setSubmissionId(UUID.randomUUID().toString());
-        parent.setParticipant(participant);
-        parent.setSubmittedAt(LocalDateTime.now());
-        parent.setTotalCodingScore(0);
-        parent.setTotalMcqScore(0);
-        parent.setTotalScore(0);
-        parent.setCreatedAt(LocalDateTime.now());
-        parent.setUpdatedAt(LocalDateTime.now());
-
-        submissionRepository.save(parent);
 
         CodingQuestions question = codingQuestionsRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new RuntimeException("Question not found: " + request.getQuestionId()));
@@ -63,24 +56,60 @@ public class CodingSubmissionService {
         LanguageType lang = languageTypeRepository.findByLanguageType(request.getLanguageType())
                 .orElseThrow(() -> new RuntimeException("Language type not found: " + request.getLanguageType()));
 
-       CodingSubmission codingSubmission = new CodingSubmission();
-     codingSubmission.setCodingSubmissionId(generateCodingSubmissionId());
-       // codingSubmission.setCodingSubmissionId(UUID.randomUUID().toString());
-        codingSubmission.setSubmission(parent);
+        int attemptNumber = codingSubmissionRepository
+                .countBySubmission_Participant_ParticipantIdAndCodingQuestion_CodingQuestionId(
+                        participant.getParticipantId(),
+                        question.getCodingQuestionId()
+                );
+
+        boolean finalAttempt = (attemptNumber + 1 == MAX_ATTEMPTS);
+
+        CodingSubmission latestSubmission = codingSubmissionRepository
+                .findTopBySubmission_Participant_ParticipantIdAndCodingQuestion_CodingQuestionIdOrderByCreatedAtDesc(
+                        participant.getParticipantId(),
+                        question.getCodingQuestionId()
+                );
+
+        String codingSubmissionId;
+        Submission parentSubmission;
+
+        if (latestSubmission == null || finalAttempt) {
+            codingSubmissionId = customIdGenerator.generateCodingSubmissionId();
+
+            parentSubmission = new Submission();
+            parentSubmission.setSubmissionId(customIdGenerator.generateSubmissionId());
+            parentSubmission.setParticipant(participant);
+            parentSubmission.setSubmittedAt(LocalDateTime.now());
+            parentSubmission.setTotalCodingScore(0);
+            parentSubmission.setTotalMcqScore(0);
+            parentSubmission.setTotalScore(0);
+            parentSubmission.setCreatedAt(LocalDateTime.now());
+            parentSubmission.setUpdatedAt(LocalDateTime.now());
+
+            submissionRepository.save(parentSubmission);
+        } else {
+            // Reuse existing submission ID and parent
+            codingSubmissionId = latestSubmission.getCodingSubmissionId();
+            parentSubmission = latestSubmission.getSubmission();
+        }
+
+        // Create new CodingSubmission entity
+        CodingSubmission codingSubmission = new CodingSubmission();
+        codingSubmission.setCodingSubmissionId(codingSubmissionId);
+        codingSubmission.setSubmission(parentSubmission);
         codingSubmission.setCodingQuestion(question);
         codingSubmission.setLanguageTypeId(lang);
         codingSubmission.setCode(request.getCode());
         codingSubmission.setScore(response.getScore());
         codingSubmission.setPublicTestcasesPassed(response.getPublicTestcasePassed());
         codingSubmission.setPrivateTestcasesPassed(response.getPrivateTestcasePassed());
-        codingSubmission.setIsFinalAttempt(request.getIsFinalAttempt() != null ? request.getIsFinalAttempt() : false);
+        codingSubmission.setIsFinalAttempt(finalAttempt);
         codingSubmission.setSubmittedAt(LocalDateTime.now());
         codingSubmission.setCreatedAt(LocalDateTime.now());
         codingSubmission.setUpdatedAt(LocalDateTime.now());
         codingSubmission.setCodeStatus(CodingSubmissionStatus.valueOf(response.getCodeStatus().toUpperCase()));
 
         codingSubmissionRepository.save(codingSubmission);
-
         for (TestcaseResultResponse tc : response.getPublicTestcaseResults()) {
             saveTestcaseResult(codingSubmission, tc, true);
         }
@@ -110,22 +139,7 @@ public class CodingSubmissionService {
 
         testcaseResultRepository.save(result);
     }
-    
-    private String generateSubmissionId() {
-    	List<String> ids=submissionRepository.findAllSubmissionIdsDesc();
-    	if(ids.isEmpty()) return "SUB001";
-    	String lastId=ids.get(0);
-    	int num=Integer.parseInt(lastId.replace("SUB",""));
-    	num++;
-    	return String.format("SUB%03d", num);
-    }
-    
-    private String generateCodingSubmissionId() {
-    	List<String> ids=codingSubmissionRepository.findAllCodingSubmissionIdsDesc();
-    	if(ids.isEmpty()) return "CSUB001";
-    	String lastId=ids.get(0);
-    	int num=Integer.parseInt(lastId.replace("CSUB",""));
-    	num++;
-    	return String.format("CSUB%03d", num);
-    }
+
+
+   
 }
