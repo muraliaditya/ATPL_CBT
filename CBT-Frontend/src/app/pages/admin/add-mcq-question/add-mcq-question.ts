@@ -1,50 +1,63 @@
 import { Component } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
 import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
+import { FormGroup,FormBuilder,FormArray,Validators } from '@angular/forms';
+import { Editor } from '../../../components/admin/editor/editor';
 @Component({
   selector: 'app-add-mcq-question',
-  imports: [AdminHeader,FormsModule, Select, InputTextModule, FloatLabelModule, CommonModule, DynamicLayout],
+  imports: [Editor,ReactiveFormsModule,AdminHeader,FormsModule, CommonModule, DynamicLayout],
   templateUrl: './add-mcq-question.html',
   styleUrl: './add-mcq-question.css'
 })
 export class AddMcqQuestion {
- choice: string = '';
-  category: string[] = ['Aptitude','Reasoning','Quantitative'];
-  answerkey:string[]=['A','B','C','D']
-  Question='';
-  ContestName='';
-  Weightage='';
-  answer='';
-  questions: any[] = [
-    {
-      question: '',
-      category: null,
-      options: ['', '', '', ''],
-      weightage: '',
-      answer:'',
-    }
-  ];
-  idx=0;
-  addQuestion() {
-    this.questions.push({
-      question: '',
-      category: null,
-      options: ['', '', '', ''],
-      weightage: '',
-      answer:'',
+ mcqForm: FormGroup;
+
+  category = ['Aptitude','Quantitative'];
+  answerKey = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
+
+  constructor(private fb: FormBuilder) {
+    this.mcqForm = this.fb.group({
+      questions: this.fb.array([this.createQuestion()])
     });
   }
-  removeQuestion(index: number) {
-    alert(`Delete Question ${index+1}`)
-    this.questions.splice(index, 1);
+  get questions(): FormArray {
+    return this.mcqForm.get('questions') as FormArray;
   }
-  submit(){
-    alert('Submitted Added Questions');
-    console.log('Submitted', this.questions);
+  private createQuestion(): FormGroup {
+    return this.fb.group({
+      question: ['', Validators.required],
+      category: [''],
+      options: this.fb.array([
+        this.fb.control('', Validators.required),
+        this.fb.control('', Validators.required),
+        this.fb.control('', Validators.required),
+        this.fb.control('', Validators.required)
+      ]),
+      weightage: ['', Validators.required],
+      answer: ['']
+    });
   }
+
+  addQuestion(): void {
+    this.questions.push(this.createQuestion());
   }
+
+  removeQuestion(index: number): void {
+    this.questions.removeAt(index);
+  }
+
+  getOptions(i: number): FormArray {
+    return this.questions.at(i).get('options') as FormArray;
+  }
+
+  submit(): void {
+    if (this.mcqForm.valid) {
+      console.log('Submitted:', this.mcqForm.value);
+    } else {
+      this.mcqForm.markAllAsTouched();
+    }
+  }
+}

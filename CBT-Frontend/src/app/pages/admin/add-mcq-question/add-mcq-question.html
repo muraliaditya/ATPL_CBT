@@ -1,39 +1,40 @@
 <app-dynamic-layout>
-    <app-admin-header header heading="ADD MCQ"></app-admin-header>
-<div main class="p-8">
-    <div class="flex flex-1 justify-between">
-    <p class="p-1 text-left font-bold w-50 mb-2">MCQ Questions</p>
-    <button class="bg-blue-500 text-white p-1 px-4 rounded-md text-center" (click)="addQuestion()">+ Add</button>
+  <app-admin-header header heading="ADD MCQ"></app-admin-header>
+  <div main class="p-8" [formGroup]="mcqForm">
+    <div class="flex justify-between items-center mb-4">
+      <p class="text-xl font-bold">MCQ Questions</p>
+      <button type="button"  class="bg-blue-500 text-white px-4 py-1 rounded-md"  (click)="addQuestion()"> + Add Question</button>
     </div>
-    <div class="flex flex-col gap-3">
-    <div  *ngFor="let q of questions; let i = index" class="flex flex-col gap-2 shadow-md p-2">
-    <div class="flex w-full gap-10">
-    <p-floatLabel variant="on">
-    <textarea id="text" rows="1" cols="70" [(ngModel)]="q.question" class="block w-full text-sm text-gray-900 bg-white items-center placeholder:align-center rounded-lg border border-gray-300 h-[40px]">{{q.question}}</textarea>
-    <label for="text">Question</label>
-    </p-floatLabel>
-    <p-floatlabel variant="on">
-            <p-select [options]="category" [(ngModel)]="q.category" class="w-50 pt-0" />
-        <label for="on_label">Category</label>
-    </p-floatlabel>
-    <button (click)="removeQuestion(i)" class=" px-2 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class=" w-5 h-5"></button>
+    <div formArrayName="questions" class="flex flex-col gap-6">
+      <div *ngFor="let q of questions.controls; let i = index" [formGroupName]="i" class=" p-4 rounded-lg shadow-md bg-white">
+      <p class="p-2">Question {{i+1}}</p>
+        <div class="flex items-start gap-4 mb-3">
+          <textarea formControlName="question" rows="1" class="flex-1 border rounded p-2 w-full"placeholder="Question"></textarea>
+          <select formControlName="category" class="border rounded p-2 ">
+            <option value="">Category </option>
+            <option *ngFor="let c of category" [value]="c">{{ c }}</option>
+          </select>
+          <button type="button"class="text-red-600 font-bold text-xl"(click)="removeQuestion(i)"><img src="/svgs/delete.svg" alt="Back" class="align-center w-5 h-8"></button>
+        </div>
+        <div class="mb-3" formArrayName="options">
+          <div *ngFor="let opt of getOptions(i).controls; let j = index" class="flex items-center gap-4 mb-2" >
+            <input  [formControlName]="j" type="text" class=" border rounded p-2" placeholder="option {{ j + 1 }}"/>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 mb-3">
+          <input formControlName="weightage" type="number" class="border rounded p-2 " placeholder="Weightage"/>
+        </div>
+        <div class="flex items-center gap-4">
+          <select formControlName="answer" class="border w-max rounded p-2">
+            <option value="">Correct Answer</option>
+            <option *ngFor="let ans of answerKey; let k = index" [value]="k">{{ ans }}</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <div class="flex flex-col gap-2 w-45">
-        <input  pInputText [(ngModel)]="q.options[0]" type="text" pSize="small" placeholder="Option1" />
-        <input pInputText [(ngModel)]="q.options[1]" type="text" pSize="small" placeholder="Option2" />
-        <input pInputText [(ngModel)]="q.options[2]" type="text" pSize="small" placeholder="Option3" />
-        <input pInputText [(ngModel)]="q.options[3]" type="text" pSize="small" placeholder="Option4" />
-        <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="q.weightage" autocomplete="off" />
-        <label for="on_label">Weightage</label>
-        </p-floatlabel>
-        <p-floatlabel variant="on">
-            <p-select [options]="answerkey" [(ngModel)]="q.answer" class="w-50 pt-0" />
-                <label for="on_label">Correct Answer</label>
-            </p-floatlabel>
+    <div class="mt-6 pl-4">
+      <button type="button" class="bg-blue-500 text-white px-6 py-2 rounded-md " (click)="submit()">submit</button>
     </div>
-    </div>
-    </div>
-    <button (click)="submit()" class="p-1 bg-blue-500 text-white px-4 rounded-md text-center mt-3">Submit</button>
-</div>
+  </div>
 </app-dynamic-layout>
+<app-editor></app-editor>

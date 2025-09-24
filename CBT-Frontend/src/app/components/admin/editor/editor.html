@@ -1,0 +1,10 @@
+<div style="height: 500px; border: 1px solid #ccc;">
+  <ngx-monaco-editor
+    [options]="editorOptions"
+    [(ngModel)]="code"
+    (onInit)="onCodeChanged($event.getValue())"
+  ></ngx-monaco-editor>
+</div>
+
+<!-- Optional: show real-time output -->
+<pre class="mt-4 bg-gray-100 p-3 rounded">{{ code }}</pre>
