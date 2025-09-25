@@ -39,6 +39,7 @@ import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
 })
 export class AddCodingQuestion {
   testCaseTypesForm: FormGroup;
+  tempTestCasesTypesForm: FormGroup;
   inputDataTypes: string[] = [
     'int',
     'string',
@@ -47,15 +48,25 @@ export class AddCodingQuestion {
     'intArray',
     'strArray',
   ];
+  testcaseTypesOptions: string[] = ['Public', 'Private'];
   inputTypesCount: number = 0;
   value3: string = '';
+  showTestCaseForm = true;
   booleanOptions: string[] = ['true', 'false'];
 
   constructor(private fb: FormBuilder) {
     this.testCaseTypesForm = fb.group({
+      question: ['', Validators.required],
+      weightage: [0, [Validators.required, Validators.min(10)]],
+      description: ['', Validators.required],
+      methodSignature: ['', Validators.required],
       outputType: ['', Validators.required],
       testcasesTypes: fb.array([], [parameterDuplicateCheck]),
       testcases: fb.array([]),
+    });
+    this.tempTestCasesTypesForm = fb.group({
+      testcasesTypes: fb.array([]),
+      outputType: ['', Validators.required],
     });
   }
 
@@ -87,9 +98,9 @@ export class AddCodingQuestion {
 
   getValidators(inputType: string) {
     if (inputType === 'intArray') {
-      return [IntegerArrayValidate];
+      return [IntegerArrayValidate, Validators.required];
     } else if (inputType === 'strArray') {
-      return [StringArrayValidate];
+      return [StringArrayValidate, Validators.required];
     } else if (inputType === 'character') {
       return [Validators.required, NaNCheckValidate];
     }
@@ -112,11 +123,60 @@ export class AddCodingQuestion {
       }
     }
     console.log(this.eachTestCaseForm);
+    const testcasesTypes = this.testCaseTypesForm.value.testcasesTypes;
+    const outputType = this.testCaseTypesForm.value.outputType;
 
-    console.log(this.testCaseTypesForm.value.testcasesTypes);
+    const tempTestCasesTypesArray = this.tempTestCasesTypesForm.get(
+      'testcasesTypes'
+    ) as FormArray;
+    tempTestCasesTypesArray.clear();
+    testcasesTypes.forEach((testcaseType: any) => {
+      tempTestCasesTypesArray.push(
+        this.fb.group({
+          inputType: [testcaseType.inputType],
+          parameterName: [testcaseType.parameterName],
+        })
+      );
+    });
 
+    this.tempTestCasesTypesForm.patchValue({
+      outputType: outputType,
+    });
     this.reconstructTestCases();
     console.log(this.testCaseTypesForm.value);
+    this.showTestCaseForm = false;
+  }
+
+  setEdit() {
+    this.showTestCaseForm = true;
+  }
+
+  testcasesCancel() {
+    const tempTestcases = this.tempTestCasesTypesForm.value.testcasesTypes;
+    const tempOutputType = this.tempTestCasesTypesForm.value.outputType;
+
+    if (!tempTestcases.length) {
+      this.showTestCaseForm = true;
+      return;
+    }
+
+    const mainTestCasesTypes = this.testCasesTypes;
+    mainTestCasesTypes.clear();
+
+    tempTestcases.forEach((testcaseType: any) => {
+      mainTestCasesTypes.push(
+        this.fb.group({
+          inputType: [testcaseType.inputType, Validators.required],
+          parameterName: [testcaseType.parameterName, Validators.required],
+        })
+      );
+    });
+
+    this.testCaseTypesForm.patchValue({
+      outputType: tempOutputType,
+    });
+
+    this.showTestCaseForm = false;
   }
 
   get TestCases() {
@@ -153,11 +213,27 @@ export class AddCodingQuestion {
     const testcasesArray = this.testCaseTypesForm.get('testcases') as FormArray;
     testcasesArray.clear();
 
-    testcasesArray.push(this.AddNewTestCase());
+    if (this.eachTestCaseForm.length > 0) {
+      testcasesArray.push(this.AddNewTestCase());
+    }
   }
 
   get testCasesTypes(): FormArray {
     return this.testCaseTypesForm.get('testcasesTypes') as FormArray;
+  }
+
+  get tempTestcaseTypes(): FormArray {
+    return this.tempTestCasesTypesForm.get('testcasesTypes') as FormArray;
+  }
+
+  getTestCaseSpecificTypeAtIdx(idx: number) {
+    const type = this.tempTestcaseTypes.at(idx).get('inputType');
+    return type ? type.value : '';
+  }
+
+  getTestCaseSpecificParameterNameAtIdx(idx: number) {
+    const parameter = this.tempTestcaseTypes.at(idx).get('parameterName');
+    return parameter ? parameter.value : '';
   }
 
   AddTestCaseTypes() {
@@ -188,22 +264,30 @@ export class AddCodingQuestion {
   }
 
   getTestCaseInputsArray(testIdx: number): FormArray {
-    return this.TestCases.at(testIdx).get('testcaseInputs') as FormArray;
+    const testCase = this.TestCases.at(testIdx);
+    if (!testCase) return this.fb.array([]);
+    return testCase.get('testcaseInputs') as FormArray;
   }
 
   getInputsArray(testIdx: number): FormArray {
     const testcaseInputs = this.getTestCaseInputsArray(testIdx);
-    return testcaseInputs.at(0).get('inputs') as FormArray;
+    if (!testcaseInputs || testcaseInputs.length === 0)
+      return this.fb.array([]);
+    const firstGroup = testcaseInputs.at(0);
+    if (!firstGroup) return this.fb.array([]);
+    return firstGroup.get('inputs') as FormArray;
   }
 
   getFieldName(testIdx: number, inputIdx: number): string {
     const inputsArray = this.getInputsArray(testIdx);
+    if (!inputsArray || inputIdx >= inputsArray.length) return '';
     const fieldNameControl = inputsArray.at(inputIdx).get('fieldName');
     return fieldNameControl ? fieldNameControl.value : '';
   }
 
   getFieldType(testIdx: number, inputIdx: number): string {
     const inputsArray = this.getInputsArray(testIdx);
+    if (!inputsArray || inputIdx >= inputsArray.length) return 'text';
     const fieldNameControl = inputsArray.at(inputIdx).get('type');
     if (fieldNameControl?.value === 'boolean') {
       return 'boolean';
@@ -214,7 +298,23 @@ export class AddCodingQuestion {
     }
   }
 
+  getBasicFieldType(testIdx: number, basicIdx: number): string {
+    if (basicIdx >= this.basicFields.length) return 'text';
+    let fieldName = this.basicFields[basicIdx].fieldName;
+    if (fieldName === 'Description') {
+      return 'advanced-textarea';
+    }
+    if (fieldName === 'TestCase Type') {
+      return 'advanced-dropdown';
+    }
+    if (fieldName === 'output' || fieldName === 'weightage') {
+      return 'number';
+    }
+    return 'text';
+  }
+
   getBasicFieldName(testIdx: number, basicIdx: number): string {
+    if (basicIdx >= this.basicFields.length) return '';
     return this.basicFields[basicIdx].fieldName;
   }
 

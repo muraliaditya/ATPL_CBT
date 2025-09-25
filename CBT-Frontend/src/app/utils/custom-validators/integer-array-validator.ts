@@ -5,9 +5,11 @@ export const IntegerArrayValidate: ValidatorFn = (
 ): { [key: string]: any } | null => {
   if (control.value) {
     let val: string = control.value.toString().trim();
-    let valuesArray = val.split(',');
+    let elements = val.slice(1, -1);
+    let valuesArray = elements.split(',');
     if (val.startsWith('[') && val.endsWith(']') && val.includes(',')) {
       for (let i = 0; i < valuesArray.length; i++) {
+        console.log(valuesArray[i]);
         let result = parseInt(valuesArray[i]);
         console.log(result);
         if (isNaN(result)) {
@@ -16,6 +18,7 @@ export const IntegerArrayValidate: ValidatorFn = (
           return { typeError: true };
         }
       }
+      return null;
     } else if (val.startsWith('[') && val.endsWith(']') && val.length > 2) {
       let middleEle = val.replace(/[\[\]]/g, '');
       let parsedVal = parseInt(middleEle);
