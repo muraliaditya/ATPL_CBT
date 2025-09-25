@@ -28,16 +28,19 @@ public class QustionManagementController {
     @GetMapping("/search")
     public ResponseEntity<CodingQuestionResponse> searchCodingQuestions(
             @RequestParam(required = false) String question,
-            @RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(questionService.searchQuestions(question, page));
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(questionService.searchQuestions(question,difficulty, page, size));
     }
     
     @Autowired
     private RecentCodingQuestionService recentQuestionService;
     
     @GetMapping("/recent")
-    public ResponseEntity<RecentCodingQuestionResponse> getRecentQuestions(){
-    	return ResponseEntity.ok(recentQuestionService.getRecentQuestions());
+    public ResponseEntity<RecentCodingQuestionResponse> getRecentQuestions(
+            @RequestParam(required = false) Integer limit) {
+        return ResponseEntity.ok(recentQuestionService.getRecentQuestions(limit));
     }
     
     @Autowired 

@@ -8,24 +8,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.CodingQuestions.ApprovalStatus;
 
 public interface CodingQuestionRepository extends JpaRepository<CodingQuestions, String> {
 
     // Default list (all approved questions, paginated)
-    Page<CodingQuestions> findByApprovalStatus(ApprovalStatus APPROVED, Pageable pageable);
+    Page<CodingQuestions> findByApprovalStatus(CodingQuestions.ApprovalStatus APPROVED, Pageable pageable);
 
     // Search and Pagination
-    Page<CodingQuestions> findByQuestionContainingIgnoreCaseAndApprovalStatus(String question, ApprovalStatus status, Pageable pageable);
+    Page<CodingQuestions> findByQuestionContainingIgnoreCaseAndApprovalStatus(String question, CodingQuestions.ApprovalStatus status, Pageable pageable);
+    
+    //Difficulty search
+    Page<CodingQuestions> findByDifficultyAndApprovalStatus(CodingQuestions.Difficulty difficulty, CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
+
+    //difficulty and question search
+    Page<CodingQuestions> findByQuestionContainingIgnoreCaseAndDifficultyAndApprovalStatus(String question,CodingQuestions.Difficulty difficulty,CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
     
     //Fetch top 10 recently added questions
-    List<CodingQuestions> findTop10ByApprovalStatusOrderByCreatedAtDesc(CodingQuestions.ApprovalStatus status);
+    //List<CodingQuestions> findTop10ByApprovalStatusOrderByCreatedAtDesc(CodingQuestions.ApprovalStatus status);
+    
+    // dynamic limit using Pageable to fetch recently added questions
+    List<CodingQuestions> findByApprovalStatusOrderByCreatedAtDesc(CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
     
     //Fetch questions by Id
     Optional<CodingQuestions> findByCodingQuestionIdAndApprovalStatus(String codingQuestionId, CodingQuestions.ApprovalStatus status);
     
     Optional<CodingQuestions> findTopByOrderByCodingQuestionIdDesc();
     
-    Long countByApprovalStatus(ApprovalStatus approvalStatus);
+    Long countByApprovalStatus(CodingQuestions.ApprovalStatus approvalStatus);
 }
 

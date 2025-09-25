@@ -4,5 +4,5 @@ import com.aaslin.cbt.developer.Dto.RecentCodingQuestionResponse;
 
 public interface RecentCodingQuestionService {
 	
-	RecentCodingQuestionResponse getRecentQuestions();
+	RecentCodingQuestionResponse getRecentQuestions(Integer limit);
 }

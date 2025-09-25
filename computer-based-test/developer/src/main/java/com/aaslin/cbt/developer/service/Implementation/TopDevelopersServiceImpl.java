@@ -22,13 +22,18 @@ public class TopDevelopersServiceImpl implements TopDevelopersService {
     private final CodingQuestionRepository codingQuestionsRepository;
 
     @Override
-    public TopDevelopersResponseDto getTopDevelopers() {
-        List<TopDevelopersDto> topDevelopers = developerCodingSubmissionsRepository.findTopDevelopers(DeveloperCodingSubmissionStatus.SOLVED)
+    public TopDevelopersResponseDto getTopDevelopers(Integer limit) {
+        
+        int size = (limit != null && limit > 0) ? limit : 10;
+
+        List<TopDevelopersDto> topDevelopers = developerCodingSubmissionsRepository
+                .findTopDevelopers(DeveloperCodingSubmissionStatus.SOLVED)
                 .stream()
-                .limit(10) 
+                .limit(size)
                 .toList();
 
-        Long totalQuestions = codingQuestionsRepository.countByApprovalStatus(CodingQuestions.ApprovalStatus.APPROVED);
+        Long totalQuestions = codingQuestionsRepository
+                .countByApprovalStatus(CodingQuestions.ApprovalStatus.APPROVED);
 
         return new TopDevelopersResponseDto(topDevelopers, totalQuestions);
     }
