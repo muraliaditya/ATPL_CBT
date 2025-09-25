@@ -63,7 +63,6 @@ export interface submissions{
 }
 
 export interface codingQuestions{
-  
       questionId: string;
       questionName: string;
       difficulty: string;

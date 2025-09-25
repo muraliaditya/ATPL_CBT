@@ -1,16 +1,51 @@
-<div class="h-[100vh] w-full flex relative items-center justify-center gap-5 p-5">
-<form class="bg-white w-80 h-auto m-auto p-4 shadow-xl border border-black rounded-md" [formGroup]="Login" (ngSubmit)="submit()">
-    <h1 class="text-lg mb-2 font-bold text-black ">Super Admin Login</h1>
-    <label for="name" class="text-sm font-medium">User Name</label><br>
-    <input id="name" formControlName="name" type="text" placeholder="Enter the Username" class="placeholder:text-gray-300 text-sm font-light w-70 mt-2 mb-2 pl-2 h-8  border border-gray-200 rounded-md">
-    <div class="text-sm text-red-500" *ngIf="Login.get('name')?.invalid && Login.get('name')?.touched">
-      Name is required.
+<div
+  class="h-[100vh] w-full flex relative items-center justify-center gap-5 p-5"
+>
+  <form
+    class="bg-white w-80 h-auto m-auto p-4 shadow-xl border border-black rounded-md"
+    [formGroup]="Login"
+    (ngSubmit)="submit()"
+  >
+    <h1 class="text-lg mb-2 font-bold text-black">Super Admin Login</h1>
+    <label for="name" class="text-sm font-medium">User Name</label><br />
+    <input
+      id="name"
+      formControlName="name"
+      type="text"
+      placeholder="Enter the Username"
+      class="placeholder:text-gray-300 text-sm font-light w-70 mt-2 mb-2 pl-2 h-8 border border-gray-200 rounded-md"
+    />
+    <div
+      class="text-sm text-red-500"
+      *ngIf="Login.get('name')?.invalid && Login.get('name')?.touched"
+    >
+      <div *ngIf="Login.controls['name'].errors?.['required']">
+            Name is required
+          </div>
     </div>
-    <label for="password" class="text-sm font-medium">Password</label><br>
-    <input id="password" formControlName="password" type="password" placeholder="Enter the Password" class="placeholder:text-gray-300 text-sm font-light w-70 mt-2 mb-2 pl-2  h-8  border border-gray-200 rounded-md">
-    <div class="text-sm text-red-500 " *ngIf="Login.get('password')?.invalid && Login.get('password')?.touched">
-      Password is required.
+    <label for="password" class="text-sm font-medium">Password</label><br />
+    <input
+      id="password"
+      formControlName="password"
+      type="password"
+      placeholder="Enter the Password"
+      class="placeholder:text-gray-300 text-sm font-light w-70 mt-2 mb-2 pl-2 h-8 border border-gray-200 rounded-md"
+    />
+    <div
+      class="text-sm text-red-500"
+      *ngIf="Login.get('password')?.invalid && Login.get('password')?.touched"
+    >
+      <div *ngIf="Login.controls['password'].errors?.['required']">
+            Password is required
+      </div>
     </div>
-    <button class="text-sm text-white mb-2 rounded-md bg-blue-300 w-70 mt-3 p-1" (click)="submit()" [disabled]="Login.invalid" type="button">Login</button>
-</form>
+    <button
+      class="text-sm text-white mb-2 rounded-md disabled:bg-blue-300 bg-blue-500 w-70 mt-3 p-1"
+      (click)="submit()"
+      [disabled]="Login.invalid"
+      type="button"
+    >
+      Login
+    </button>
+  </form>
 </div>

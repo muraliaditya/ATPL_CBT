@@ -20,7 +20,7 @@ export class DeveloperLogin {
   }
   submit(): void {
     if(this.Login.valid){
-      alert("Admin logged In");
+      alert("Developer logged In");
       this.Login.reset()
     }
 }

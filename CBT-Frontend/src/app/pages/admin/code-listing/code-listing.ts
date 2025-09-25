@@ -29,7 +29,7 @@ export class CodeListing {
     {
       "questionId": "code_001",
       "questionName": "Add Two Numbers",
-      "difficulty": "Easy"
+      "difficulty": "Easy",
     },
     {
       "questionId": "code_002", 

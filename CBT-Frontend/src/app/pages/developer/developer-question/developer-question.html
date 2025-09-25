@@ -1,24 +1,46 @@
- <app-admin-header header heading="Questions"></app-admin-header>
-  <div main class="p-5 w-full gap-2">
-    <!-- <div class=" w-200 h-[calc(100%-75px)] p-2 font-bold border border-gray-500">
+ <app-admin-header header heading="Practice Question"></app-admin-header>
+  <div main class="p-2 bg-gray-200 shadow-lg h-[calc(100%-50px)] w-full flex gap-1">
+    <div class=" bg-white w-200 p-3 font-bold ">
     <h2>Question</h2>
-    <p>{{codingQuestion.codingQuestionId}}</p>
-    <p>{{codingQuestion.questionName}}</p>
-    <p>{{codingQuestion.questionDescription}}</p>
-    <p>{{codingQuestion.inputParams}}</p>
-    <p>{{codingQuestion.inputType}}</p>
-    <p>{{codingQuestion.outputType}}</p>
-    </div> -->
+    <p>{{codingQuestions.codingQuestionId}}</p>
+    <p>{{codingQuestions.question}}</p>
+    <p>Description : {{codingQuestions.description}}</p>
+    <p>Example : {{codingQuestions.Example1}}</p>
+    <p>Input Type : {{codingQuestions.inputType}}</p>
+    <p>Output Type : {{codingQuestions.outputType}}</p>
+    </div>
+    <div class="flex flex-col w-250 gap-0">
     <div>
-    <app-editor class="w-200"></app-editor>
-    <h2>TestCases</h2>
-    <div class="flex gap-2">
-    <p class="p-1 bg-black text-white rounded-md">Case1</p>
-    <p class="p-1 bg-black text-white rounded-md">Case2</p>
-    <p class="p-1 bg-black text-white rounded-md">Case3</p>
-    <button class="bg-blue-200 text-white">+</button>
+    <p-floatlabel class="bg-black text-white h-10" variant="on">
+            <p-select [options]="language" (ngModelChange)="languageChange($event)" [(ngModel)]="selectedlanguage" class="w-40 h-6 align-center m-2" />
+    </p-floatlabel>
     </div>
+    <app-editor class="w-250"></app-editor>
+    <div>
+      <div class="flex gap-2 w-full h-10">
+      <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Compile & run</button>
+      <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Submit</button>
+      </div>
     </div>
-  </div>
-  
-
+    <div class="shadow-lg rounded-md bg-gray-100 w-full h-50 pl-3">
+    <div class="flex gap-10 mt-1 ">
+    <button class="text-gray-400 font-bold rounded-md " (click)="sectionchange('TestCase')">TestCases</button>
+    <button class="text-gray-400  font-bold rounded-md " (click)="sectionchange('Result')">Outputs</button>
+    </div>
+    <div class="p-2" *ngIf="currentSection==='TestCase'">
+      <div class="flex flex-row  gap-2">
+      <div *ngFor="let q of codingQuestions.testcases;let i=index">
+        <button class="px-1 bg-blue-500 gap-3 text-white rounded-md hover:bg-gray px-2" (click)="testcase(i)">Case{{i+1}}</button>
+      </div>
+      </div>
+      <div class="pt-5 flex flex-col gap-2">
+        <p class="bg-black text-white w-100 rounded-md px-2">Input  : {{inputId}}</p>
+        <p class="bg-black text-white w-100 rounded-md px-2">Output : {{outputId}}</p>
+      </div> 
+      </div>
+      <div *ngIf="currentSection==='Result'">
+        <p>     results</p>
+      </div>
+      </div>
+      </div>
+    </div>

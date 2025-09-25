@@ -14,7 +14,7 @@ Login!: FormGroup;
   ngOnInit(): void {
     this.Login = this.fb.group({
       name: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', [Validators.required,Validators.minLength(8)]]
     });
   }
   submit(): void {
