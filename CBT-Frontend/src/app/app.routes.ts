@@ -24,6 +24,7 @@ import { AddCode } from './pages/admin/add-code/add-code';
 import { DeveloperQuestion } from './pages/developer/developer-question/developer-question';
 import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
 import { Editor } from './components/admin/editor/editor';
+import { CodeQuestion } from './pages/developer/code-question/code-question';
 export const routes: Routes = [
   {
     path: '',
@@ -142,21 +143,22 @@ export const routes: Routes = [
     component: DeveloperMainSection,
     children: [
       {
+        path: '',
+        redirectTo: 'developer/developer-dashboard',
+        pathMatch: 'full',
+      },
+      {
         path: 'developer-dashboard',
         component: DeveloperDashboard,
       },
       {
-    path: 'developer-pratice',
-    component: DeveloperQuestion,
-  },
+        path: 'developer-pratice',
+        component: DeveloperQuestion,
+      },
+      {
+        path:'developer-codequestion',
+        component:CodeQuestion,
+      }
     ],
-  },
-  {
-    path: 'developer-dashboard',
-    component: DeveloperDashboard,
-  },
-  {
-    path: 'developer-pratice',
-    component: DeveloperQuestion,
   },
 ];

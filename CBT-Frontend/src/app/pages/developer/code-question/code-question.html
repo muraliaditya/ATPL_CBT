@@ -1,0 +1,63 @@
+<button class="bg-blue-400 text-white flex align-right mr-2">Add Question</button>
+<div class="p-2 bg-gray-200 shadow-lg h-[calc(100%-49px)] w-full flex gap-1">
+    <app-add-code class="w-[50%]"></app-add-code>
+    <div class="flex flex-col w-250 gap-0">
+    <div>
+    <p-floatlabel class="bg-black text-white h-10" variant="on">
+            <p-select [options]="language" (ngModelChange)="languageChange($event)" [(ngModel)]="selectedlanguage" class="w-40 h-6 align-center m-2" />
+    </p-floatlabel>
+    </div>
+    <app-editor class="w-250"></app-editor>
+    <div>
+      <div class="flex gap-2 w-full h-10">
+      <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Compile & run</button>
+      <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Submit</button>
+      </div>
+    </div>
+    <div class="shadow-lg rounded-md bg-gray-100 w-full h-50 pl-3">
+    <div class="flex gap-10 mt-1 ">
+    <button class="text-gray-400 font-bold rounded-md " (click)="sectionchange('TestCase')">TestCases</button>
+    <button class="text-gray-400  font-bold rounded-md " (click)="sectionchange('Result')">Outputs</button>
+    </div>
+    <div class="p-2" *ngIf="currentSection==='TestCase'">
+      <div class="flex flex-row  gap-2">
+      <div>
+        <button class="px-1 gap-3 text-white rounded-md bg-gray-400 px-2" (click)="showDialog()">+</button>
+        <div class="card flex justify-center">
+        <p-dialog header="Add TestCases" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+    <form [formGroup]="TestCase"(ngSubmit)="onSubmit()">
+    <div class="flex flex-col gap-4 w-[90%]">
+      <p-floatlabel variant="on" class="w-full mt-1">
+        <input formControlName="input" pInputText class="w-full" id="input" type="text" autocomplete="off"/>
+        <label for="input">Input </label>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full">
+        <input formControlName="output" pInputText class="w-full" id="output" type="text" autocomplete="off"/>
+        <label for="output">Output</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full border border-gray-300 rounded-md py-2">
+            <p-select [options]="testType" formControlName="type" class="w-full shadow-none"/>
+                <label for="on_label">TestCase Type</label>
+    </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full ">
+        <input formControlName="weightage" pInputText class="w-full" id="weightage" type="number" autocomplete="off"/>
+        <label for="weightage">weightage</label>
+      </p-floatlabel>
+    </div>
+        <div class="flex ml-50 pt-2 gap-2">
+            <button severity="secondary" class="bg-gray-500 rounded-md px-2 py-1 text-white" (click)="reset()">Reset</button>
+            <button class="bg-blue-400 text-white rounded-md px-2 py-1 text-white disabled:bg-gray-300" [disabled]="TestCase.invalid" (click)="onSubmit()">Add</button>
+        </div>
+        </form>
+    </p-dialog>
+    </div>
+    </div>
+    </div>
+    </div>
+      <div *ngIf="currentSection==='Result'">
+        <p>     results</p>
+      </div>
+    </div>
+    </div>
+</div>
+

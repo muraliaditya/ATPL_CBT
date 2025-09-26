@@ -1,0 +1,11 @@
+:host ::ng-deep .p-select .p-select-label,
+:host ::ng-deep .p-select .p-select-item {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .p-select {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border: none !important;
+}

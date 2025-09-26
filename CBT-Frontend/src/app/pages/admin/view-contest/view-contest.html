@@ -37,7 +37,7 @@
     <div class="flex flex-col gap-2" *ngFor="let section of contest.mcqs.mcqSections">
     <h4 class="font-semibold">{{ section.section }}</h4>
     <div  *ngFor="let q of section.mcqQuestions; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
-    <p><b>{{ i + 1 }}.</b> {{ q.question_text }}</p>
+    <p><span class="font-bold">{{ i + 1 }}.</span> {{ q.question_text }}</p>
     <ul class="list-none">
       <li>A. {{ q.option_1 }}</li>
       <li>B. {{ q.option_2 }}</li>

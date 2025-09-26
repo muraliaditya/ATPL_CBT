@@ -15,8 +15,8 @@
     <div  class="flex flex-col gap-2">
     <div  *ngFor="let q of Codes; let i = index;" class="p-2 border border-gray-200 rounded-lg shadow-md">
     <div class="flex flex-1 justify-between items-center ">
-    <p class="w-50"><b>{{ i + 1 }}.
-         {{q.questionName}}</b></p>
+    <p class="w-50 font-bold">{{ i + 1 }}.
+         {{q.questionName}}></p>
     <p><span class="px-3 py-1 rounded-full text-sm font-medium"
               [ngClass]="
                 q.difficulty === 'Easy'

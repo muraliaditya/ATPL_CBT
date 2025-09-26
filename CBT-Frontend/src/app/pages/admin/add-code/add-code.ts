@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { FloatLabel } from 'primeng/floatlabel';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Select } from 'primeng/select';
 import { InputText } from "primeng/inputtext";
-import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
 @Component({
   selector: 'app-add-code',
   imports: [Select, FloatLabel, FormsModule, CommonModule, InputText, ReactiveFormsModule],
@@ -15,31 +14,13 @@ export class AddCode {
 saved: boolean = false; 
 showForm: boolean = false;
 question='';
+method='';
 description:'' | undefined;
 output='';
 weightage='';
 count:number=0;
 testtype=['Private','Public'];
 types=['string','int','boolean'];
-// codingquestion: any[]=[{
-//   question:'',
-//   count:'',
-//   output:'',
-//   weightage:'',
-//   description:'',
-//   inputs:[],
-//   Inputform:[], 
-// }];
-// addquestion(){
-//   this.codingquestion.push({
-//     question:'',
-//     weightage:'',
-//     output:'',
-//     description:'',
-//     inputs:[],
-//     Inputform:[],  
-//   })
-// }
 onsave() {
   this.saved = true;
 }
@@ -51,14 +32,10 @@ oncancel() {
 inputs:any[]=[];
 ongenerate(){
   this.inputs=[];
-  this.Inputform=[];
   for(let i = 0; i < this.count; i++)
   this.inputs.push({
     type:null,
     parameter:'',
-})
-this.Inputform.push({
-  inputval:[],
 })
 this.saved = false;
 this.showForm = true;

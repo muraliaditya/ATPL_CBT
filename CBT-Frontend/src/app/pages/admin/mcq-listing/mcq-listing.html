@@ -16,7 +16,7 @@
     <div  *ngFor="let q of filteredMcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
     <div class="flex flex-1 gap-3">
-    <p><b>{{ i + 1 }}.</b> {{ q.question }}</p>
+    <p><span class="font-bold">{{ i + 1 }}.</span> {{ q.question }}</p>
     <button (click)="onEdit(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/Edit.svg" alt="Back" class="invert w-5 h-5"><span>Edit</span></button>
     <button (click)="onDelete(q)" class="flex bg-blue-500 text-white px-3 py-1 rounded-lg"><img src="/svgs/delete.svg" alt="Back" class="invert w-5 h-5"><span>Delete</span></button>
     </div>

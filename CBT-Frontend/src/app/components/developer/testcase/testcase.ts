@@ -1,27 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
-import { AdminHeader } from '../../../components/UI/admin-header/admin-header';
-import { FormsModule } from '@angular/forms';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Editor } from '../../../components/admin/editor/editor';
-import { FloatLabel } from 'primeng/floatlabel';
-import { Select } from 'primeng/select';
+import { codingQuestions,testcases } from '../../../models/developer/developer';
 @Component({
-  selector: 'app-developer-question',
-  imports: [FloatLabel,Select,Editor, CommonModule, FormsModule, AdminHeader],
-  templateUrl: './developer-question.html',
-  styleUrl: './developer-question.css'
+  selector: 'app-testcase',
+  imports: [CommonModule],
+  templateUrl: './testcase.html',
+  styleUrl: './testcase.css'
 })
-export class DeveloperQuestion { 
-    inputId:string='';
-    outputId:string='';
-    language=['c','python','java','c++'];
-    selectedlanguage:string='c';
-    
-    @ViewChild(Editor) Editorref!: Editor;
-    languageChange(val:Event){
-      this.Editorref.changeLanguage(val.toString());
-    }
-    codingQuestions=
+export class Testcase {
+  currentSection: 'TestCase' | 'Result' = 'TestCase';
+  inputId: any;
+  outputId: any;
+      sectionchange(section: 'TestCase' | 'Result') {
+        this.currentSection = section;
+  }
+  codingQuestions=
       {
         codingQuestionId: 'code1',
         question: 'Implement a function to reverse a string.',
@@ -54,14 +47,9 @@ export class DeveloperQuestion {
           },
         ],
       }
-      testcase(i:number){
+  testcase(i:number){
         const test=this.codingQuestions.testcases[i];
         this.inputId=`${test.input1}`;
         this.outputId=`${test.output}`
       }
-      currentSection: 'TestCase' | 'Result' = 'TestCase';
-      sectionchange(section: 'TestCase' | 'Result') {
-        this.currentSection = section;
-  }
 }
-
