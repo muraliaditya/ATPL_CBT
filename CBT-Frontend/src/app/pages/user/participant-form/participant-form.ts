@@ -37,6 +37,8 @@ export class ParticipantForm {
       collegeRedgNo: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       collegeName: ['', Validators.required],
+      highestDegree: ['', Validators.required],
+      percentage: ['', Validators.required, Validators.min(50)],
     });
   }
   onSubmit() {}
