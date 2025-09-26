@@ -36,7 +36,17 @@
         <p>Type: {{ q.type }}</p>
         <p>Parameter: {{ q.parameter }}</p>
         </div>
-        <button class="bg-blue-500 text-white justify-end px-2 rounded-md py-1">Edit</button>
+        <button class="bg-blue-500 text-white justify-end px-2 rounded-md py-1" (click)="onEdit()" >Edit</button>
+        <ng-template *ngIf="show">
+            <p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md">
+            <p-select [options]="types" [(ngModel)]="q.type" class="w-50 mt-2 shadow-none"/>
+                <label for="on_label">Input Type</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="q.parameter" type="text" autocomplete="off" />
+        <label for="on_label">Parameter Name</label>
+    </p-floatlabel>
+        </ng-template>
       </ng-template>
     </div>
 </div>

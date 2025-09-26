@@ -12,6 +12,7 @@ import { InputText } from "primeng/inputtext";
 })
 export class AddCode {
 saved: boolean = false; 
+show:boolean=false;
 showForm: boolean = false;
 question='';
 method='';
@@ -28,6 +29,9 @@ oncancel() {
   this.showForm = false;
   this.inputs = [];
   this.count = 0;
+}
+onEdit(){
+  this.show=true;
 }
 inputs:any[]=[];
 ongenerate(){
