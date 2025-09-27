@@ -3,7 +3,7 @@
     <p-floatlabel variant="on"><input pInputText id="on_label" [(ngModel)]="UserName" autocomplete="off"/>
         <label for="on_label">UserName</label>
     </p-floatlabel>
-    <button [disabled]="!UserName" class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400 ">Search</button>
+    <button [disabled]="!UserName" (click)="search()" class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400 ">Search</button>
     </div>
     <table class="table-auto w-full border-seperate border-spacing-2 rounded-lg border border-gray-100">
         <thead class="bg-gray-100 rounded-lg text-center">
@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let p of submit;let i=index;" class="border border-gray-300 text-center hover:bg-gray-50 cursor-pointer relative">
+            <tr *ngFor="let p of filter;let i=index;" class="border border-gray-300 text-center hover:bg-gray-50 cursor-pointer relative">
                 <td class="px-4 py-3">{{p.devId}}</td>
                 <td class="px-4 py-3">{{p.userName}}</td>
                 <td class="px-4 py-3">{{p.questionType}}</td>
@@ -28,4 +28,3 @@
         </tbody>
     </table>
     </div>
-    <!-- [routerLink]="['/admin/mcqs/Edit-Mcq/:id',p.questionId]" -->

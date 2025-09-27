@@ -25,7 +25,7 @@
       </p-floatlabel>
       <button
         [disabled]="!ContestId && !ContestName && !choice"
-        class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400"
+        class="bg-blue-500 text-white px-4 rounded-md text-center disabled:bg-gray-400" (click)="searchContests()"
       >
         Search
       </button>
@@ -50,7 +50,7 @@
       </thead>
       <tbody class="m-5">
         <tr
-          *ngFor="let contest of contests; let i = index"
+          *ngFor="let contest of filteredContests; let i = index"
           (click)="toggleMenu(i, $event)"
           class="border border-gray-300 text-center hover:bg-gray-50 cursor-pointer relative"
         >

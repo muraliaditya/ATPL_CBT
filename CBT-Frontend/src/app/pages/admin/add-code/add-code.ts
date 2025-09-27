@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter,Output } from '@angular/core';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -34,6 +34,7 @@ onEdit(){
   this.show=true;
 }
 inputs:any[]=[];
+@Output() countChange = new EventEmitter<number>();
 ongenerate(){
   this.inputs=[];
   for(let i = 0; i < this.count; i++)
@@ -43,7 +44,9 @@ ongenerate(){
 })
 this.saved = false;
 this.showForm = true;
+this.countChange.emit(this.count);
 }
+
 inputval:any[]=[];
 Inputform:any[]=[];
 add(){
@@ -59,5 +62,4 @@ del(index:number){
   this.Inputform.splice(index, 1);
   console.log('ok');
 }
-
 }

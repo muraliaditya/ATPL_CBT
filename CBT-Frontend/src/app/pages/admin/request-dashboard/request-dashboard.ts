@@ -30,10 +30,22 @@ export class RequestDashboard {
         this.submit = this.submit.filter((c) => c.devId !== p.devId);
       }
     }    
+    filter : submissions[]=[];
+    ngOnInit() {
+      this.filter = this.submit;
+    }
+
+    search(): void {
+      this.filter = this.submit.filter(submission => {
+      return this.UserName
+      ? submission.userName.toLowerCase().includes(this.UserName.toLowerCase())
+      : true;
+    });
+}
   submit:submissions[]= [
     {
       "devId": "#DEV-0441",
-      "userName": "john deo",
+      "userName": "John",
       "questionType": "Mcq",
       "questionId": "mcq_12345"
     },

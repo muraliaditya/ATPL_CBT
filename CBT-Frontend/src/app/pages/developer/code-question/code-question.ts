@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AddCode } from '../../admin/add-code/add-code';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Editor } from '../../../components/admin/editor/editor';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -30,21 +30,33 @@ export class CodeQuestion {
       this.Editorref.changeLanguage(val.toString());
     }
   TestCase: FormGroup;
+  inputCount: number = 0;
   constructor(private fb: FormBuilder) {
     this.TestCase = this.fb.group({
-      input: ['', Validators.required],
+      inputs: this.fb.array([]),
       output: ['', Validators.required],
       type:['',Validators.required],
       weightage: ['', Validators.required],
     });
   }
+  get inputsArray(): FormArray {
+  return this.TestCase.get('inputs') as FormArray;
+}
+onCountChange(newCount: number) {
+  this.inputCount = newCount;
+  this.inputsArray.clear();
+  for (let i = 0; i < this.inputCount; i++) {
+    this.inputsArray.push(this.fb.control('', Validators.required));
+  }
+}
     visible: boolean = false;
     showDialog() {
         this.visible = true;
     }
+    submittedTestCases:any[]=[];
     onSubmit(){
       if(this.TestCase.valid){
-      console.log('added',this.TestCase.value);
+      this.submittedTestCases.push(this.TestCase.value);
       }
       this.TestCase.reset();
       this.visible = false
