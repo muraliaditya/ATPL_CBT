@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { Contest } from '../../../models/admin/admin';
+import { Pagination } from '../../../components/UI/pagination/pagination';
+
 @Component({
   selector: 'app-contest-listing',
   imports: [
@@ -13,15 +15,26 @@ import { Contest } from '../../../models/admin/admin';
     FloatLabelModule,
     FormsModule,
     InputTextModule,
+    Pagination,
   ],
   templateUrl: './contest-listing.html',
   styleUrl: './contest-listing.css',
 })
 export class ContestListing {
+  totalPaginatedPages: number = 10;
+  contestPerPage: number = 10;
   choice: string = '';
   status: string[] = ['Completed', 'Active', 'InActive'];
   ContestId = '';
   ContestName = '';
+  notifyPageChange(value: number) {
+    console.log(value + 'fetch');
+  }
+  notifyLimitChange(value: number) {
+    console.log(value);
+    this.contestPerPage = value;
+  }
+
   contests: Contest[] = [
     {
       id: '#CT-0441',
@@ -85,7 +98,7 @@ export class ContestListing {
     }
     this.openRow = null;
   }
-  result(){
+  result() {
     alert('result');
   }
   @HostListener('document:click', ['$event'])

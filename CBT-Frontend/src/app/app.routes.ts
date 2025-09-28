@@ -23,6 +23,8 @@ import { DeveloperMainSection } from './pages/developer/developer-main-section/d
 import { CodeListing } from './pages/admin/code-listing/code-listing';
 import { AddCodingQuestion } from './pages/admin/add-coding-question/add-coding-question';
 import { AddCode } from './pages/admin/add-code/add-code';
+import { EditCodingquestion } from './pages/admin/edit-codingquestion/edit-codingquestion';
+import { ViewCodingquestion } from './pages/admin/view-codingquestion/view-codingquestion';
 export const routes: Routes = [
   {
     path: '',
@@ -124,6 +126,7 @@ export const routes: Routes = [
             path: 'Add-McqQuestions',
             component: AddMcqQuestion,
           },
+
           {
             path: 'Edit-Mcq/:id',
             component: EditMcq,
@@ -138,12 +141,20 @@ export const routes: Routes = [
             component: CodeListing,
           },
           {
+            path: 'edit-codingquestion/:id',
+            component: EditCodingquestion,
+          },
+          {
             path: 'add-codingquestion',
             component: AddCodingQuestion,
           },
           {
             path: 'add-code',
             component: AddCode,
+          },
+          {
+            path: 'view-codingques/:id',
+            component: ViewCodingquestion,
           },
         ],
       },

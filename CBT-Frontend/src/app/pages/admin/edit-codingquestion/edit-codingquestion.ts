@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
@@ -20,9 +19,9 @@ import { parameterDuplicateCheck } from '../../../utils/custom-validators/parame
 import { IntegerArrayValidate } from '../../../utils/custom-validators/integer-array-validator';
 import { StringArrayValidate } from '../../../utils/custom-validators/string-array-validator';
 import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
-
+import { CommonModule } from '@angular/common';
 @Component({
-  selector: 'app-add-coding-question',
+  selector: 'app-edit-codingquestion',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -34,10 +33,10 @@ import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
     TextareaModule,
     Select,
   ],
-  templateUrl: './add-coding-question.html',
-  styleUrl: './add-coding-question.css',
+  templateUrl: './edit-codingquestion.html',
+  styleUrl: './edit-codingquestion.css',
 })
-export class AddCodingQuestion {
+export class EditCodingquestion {
   testCaseTypesForm: FormGroup;
   tempTestCasesTypesForm: FormGroup;
   inputDataTypes: string[] = [

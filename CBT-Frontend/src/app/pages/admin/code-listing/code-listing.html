@@ -1,81 +1,81 @@
 <app-dynamic-layout>
   <div class="h-[800px]"></div>
 
-  <div
-    (scroll)="onScroll($event)"
-    #codingQuesScroll
-    main
-    class="p-5 h-full overflow-y-auto"
-  >
-
-    <p class="p-2 text-left bg-blue-100 w-50 mb-2">Coding Questions</p>
-    <div class="h-[800px]"></div>
-    <div class="flex flex-col gap-2">
-      <div class="flex justify-between">
-        <div class="flex gap-3">
-          <p-floatlabel variant="on">
-            <input
-              class="flex-auto w-90"
-              pInputText
-              id="on_label"
-              [(ngModel)]="sort"
-              autocomplete="off"
-            />
-            <label for="on_label">Question</label>
-          </p-floatlabel>
-          <button
-            (click)="onSearch()"
-            class="bg-blue-500 text-white rounded-lg px-3"
-          >
-            Search
+  <div main class="h-full">
+    <app-infinite-scroller
+      [currentPage]="pageNo"
+      [isLoading]="isLoading"
+      (loadNextPage)="loadMore()"
+    >
+      <p class="p-2 text-left bg-blue-100 w-50 mb-2">Coding Questions</p>
+      <div class="h-[800px]"></div>
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between">
+          <div class="flex gap-3">
+            <p-floatlabel variant="on">
+              <input
+                class="flex-auto w-90"
+                pInputText
+                id="on_label"
+                [(ngModel)]="sort"
+                autocomplete="off"
+              />
+              <label for="on_label">Question</label>
+            </p-floatlabel>
+            <button
+              (click)="onSearch()"
+              class="bg-blue-500 text-white rounded-lg px-3"
+            >
+              Search
+            </button>
+          </div>
+          <button class="bg-blue-500 text-white rounded-lg px-3 py-1">
+            Add Question
           </button>
         </div>
-        <button class="bg-blue-500 text-white rounded-lg px-3 py-1">
-          Add Question
-        </button>
-      </div>
-      <div class="flex flex-col gap-2">
-        <div
-          *ngFor="let q of Codes; let i = index"
-          class="p-2 border border-gray-200 rounded-sm shadow-md"
-        >
-          <div class="flex flex-1 justify-between items-center">
-            <div class="text-lg font-bold">
-              {{ i + 1 }}. {{ q.questionName }}
-            </div>
+        <div class="flex flex-col gap-2">
+          <div
+            *ngFor="let q of Codes; let i = index"
+            class="p-2 border border-gray-200 rounded-sm shadow-md"
+          >
+            <div class="flex flex-1 justify-between items-center">
+              <div class="text-lg font-bold">
+                {{ i + 1 }}. {{ q.questionName }}
+              </div>
 
-            <div class="flex gap-2 justify-between w-[200px]">
-              <p>
-                <span
-                  class="px-3 py-1 rounded-full text-sm font-medium"
-                  [ngClass]="
-                    q.difficulty === 'Easy'
-                      ? 'bg-green-100 text-green-600'
-                      : q.difficulty === 'Medium'
-                      ? 'bg-orange-100 text-orange-600'
-                      : 'bg-red-200 text-red-600'
-                  "
-                  >{{ q.difficulty }}</span
-                >
-              </p>
-              <div class="flex gap-2 items-center">
-                <button
-                  (click)="onEdit(q)"
-                  class="flex items-center cursor-pointer justify-center shadow-lg rounded-full p-2 transition"
-                >
-                  <img src="/svgs/Edit.svg" alt="Edit" class="w-4 h-4" />
-                </button>
-                <button
-                  (click)="onDelete(q)"
-                  class="flex items-center cursor-pointer justify-center shadow-lg rounded-full p-2 transition"
-                >
-                  <img src="/svgs/delete.svg" alt="Delete" class="w-4 h-4" />
-                </button>
+              <div class="flex gap-2 justify-between w-[200px]">
+                <p>
+                  <span
+                    class="px-3 py-1 rounded-full text-sm font-medium"
+                    [ngClass]="
+                      q.difficulty === 'Easy'
+                        ? 'bg-green-100 text-green-600'
+                        : q.difficulty === 'Medium'
+                        ? 'bg-orange-100 text-orange-600'
+                        : 'bg-red-200 text-red-600'
+                    "
+                    >{{ q.difficulty }}</span
+                  >
+                </p>
+                <div class="flex gap-2 items-center">
+                  <button
+                    (click)="onEdit(q)"
+                    class="flex items-center cursor-pointer justify-center shadow-lg rounded-full p-2 transition"
+                  >
+                    <img src="/svgs/Edit.svg" alt="Edit" class="w-4 h-4" />
+                  </button>
+                  <button
+                    (click)="onDelete(q)"
+                    class="flex items-center cursor-pointer justify-center shadow-lg rounded-full p-2 transition"
+                  >
+                    <img src="/svgs/delete.svg" alt="Delete" class="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </app-infinite-scroller>
   </div>
 </app-dynamic-layout>

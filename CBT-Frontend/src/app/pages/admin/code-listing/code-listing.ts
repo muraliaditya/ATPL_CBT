@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { InfiniteScroller } from '../../../components/UI/infinite-scroller/infinite-scroller';
 @Component({
   selector: 'app-code-listing',
   imports: [
@@ -13,13 +14,14 @@ import { CommonModule } from '@angular/common';
     FloatLabelModule,
     FormsModule,
     CommonModule,
+    InfiniteScroller,
   ],
   templateUrl: './code-listing.html',
   styleUrl: './code-listing.css',
 })
 export class CodeListing {
-  @ViewChild('codingQuesScroll') questionScroll!: ElementRef<HTMLDivElement>;
   pageNo: number = 1;
+  isLoading: boolean = false;
   sort = '';
   editingId = '';
   Codes: codingQuestions[] = [
@@ -49,30 +51,16 @@ export class CodeListing {
       difficulty: 'Medium',
     },
   ];
-  timeout: null | number = null;
+  loadMore() {
+    if (this.isLoading) return;
+    this.isLoading = true;
 
-  onScroll(event: Event) {
-    if (this.questionScroll) {
-      const questionsScrollElement = this.questionScroll.nativeElement;
-      if (
-        questionsScrollElement.clientHeight +
-          questionsScrollElement.scrollTop >=
-        questionsScrollElement.scrollHeight - 50
-      ) {
-        if (this.timeout) {
-          return;
-        }
-        console.log('bottom reached');
-
-        this.timeout = setTimeout(() => {
-          this.Codes = [...this.Codes, ...this.Codes.slice(0, 10)];
-          if (this.timeout) {
-            this.timeout = null;
-          }
-        }, 2000);
-      }
-    }
+    setTimeout(() => {
+      this.Codes = [...this.Codes, ...this.Codes.slice(0, 10)];
+      this.isLoading = false;
+    }, 2000);
   }
+
   onSearch() {
     console.log('Search');
   }

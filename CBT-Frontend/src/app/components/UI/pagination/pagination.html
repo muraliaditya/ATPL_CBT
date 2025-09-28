@@ -1,0 +1,50 @@
+<div class="flex flex-col items-center mt-5 w-full">
+  <div class="flex flex-row items-center justify-between w-full gap-2">
+    <button
+      (click)="goToPrevPage()"
+      [disabled]="currentPage === 1"
+      class="px-3 py-1 flex cursor-pointer border-none items-center gap-2 rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <img src="/svgs/prevsymbol.svg" class="w-5 h-5" alt="previous_symbol" />
+      Previous
+    </button>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-3">
+        <button
+          *ngFor="let ele of constructPaginatedArray"
+          (click)="goToPage(ele)"
+          [disabled]="ele === '...'"
+          [ngClass]="
+            ele === currentPage.toString()
+              ? 'bg-blue-500 text-white cursor-pointer px-3 py-2 h-fit rounded font-medium  tracking-widest'
+              : ele === '...'
+              ? 'cursor-default border-none px-3 py-2 h-fit rounded font-medium'
+              : 'bg-gray-200 hover:bg-blue-200 cursor-pointer px-3 py-2 h-fit rounded font-medium  tracking-widest'
+          "
+        >
+          {{ ele }}
+        </button>
+        <p-floatlabel variant="on">
+          <p-select
+            [(ngModel)]="paginatedLimit"
+            (ngModelChange)="changeLimit($event)"
+            inputId="paginate-select"
+            name="paginate"
+            [options]="paginationOptions"
+          />
+          <label for="paginate-select">Limit</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <button
+      (click)="goToNextPage()"
+      [disabled]="currentPage === totalPages"
+      class="px-3 py-1 flex cursor-pointer border-none items-center gap-2 rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Next
+      <img src="/svgs/nextsymbol.svg" class="w-5 h-5" alt="next_symbol" />
+    </button>
+  </div>
+</div>

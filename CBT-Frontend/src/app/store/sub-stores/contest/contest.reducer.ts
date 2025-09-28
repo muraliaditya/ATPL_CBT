@@ -192,7 +192,8 @@ export const contestReducer = createReducer(
       );
     }
     if (data[section] && data[section][prevMcqId]) {
-      data[section][prevMcqId] = mcq;
+      let question = data[section][prevMcqId];
+      data[section][prevMcqId] = { ...mcq, weightage: question.weightage };
     }
     return {
       ...state,
@@ -273,9 +274,10 @@ export const contestReducer = createReducer(
     let maxQuestionId = 0;
     let finalisedMcqs = {
       ...state.finalisedMcqQuestions,
-      [section]: [...state.finalisedMcqQuestions[section]],
+      [section]: [...(state.finalisedMcqQuestions[section] || [])],
     };
     let regenerateIds = new Set(state.regenerateOnceListIds);
+    console.log(data[section]);
 
     let key: string;
     if (finalisedMcqs[section]) {
@@ -304,8 +306,12 @@ export const contestReducer = createReducer(
         (id) => !matchedIds.includes(id)
       );
     }
-    for (let mcq of mcqs) {
-      data[section][maxQuestionId + 1] = mcq;
+    for (const [index, mcq] of mcqs.entries()) {
+      console.log(data[section][index + 1].weightage);
+      data[section][maxQuestionId + 1] = {
+        ...mcq,
+        weightage: data[section][index + 1].weightage,
+      };
       maxQuestionId++;
     }
     return {
@@ -380,7 +386,12 @@ export const contestReducer = createReducer(
     }
 
     if (codingQuesData[Number(prevCodeId)]) {
-      codingQuesData[Number(prevCodeId)] = codeQuestion;
+      let ques = codingQuesData[Number(prevCodeId)];
+
+      codingQuesData[Number(prevCodeId)] = {
+        ...codeQuestion,
+        weightage: ques.weightage,
+      };
     }
 
     return {
@@ -447,15 +458,23 @@ export const contestReducer = createReducer(
     let codingFinalQuestionsIds = [...state.finalisedcodingQuestions].map(
       (ques) => ques.codeQuestionId
     );
+    let tempcodingQuestions = { ...state.tempcodingQuestions };
+    console.log(tempcodingQuestions);
     //console.log(codingFinalQuestionsIds);
     for (let id of codingFinalQuestionsIds) {
       if (finalisedQuesSet.has(id)) {
         finalisedQuesSet.delete(id);
       }
     }
-    for (let question of codeQuestions) {
+    let ques;
+    for (const [index, question] of codeQuestions.entries()) {
       maxQuestionId = maxQuestionId + 1;
-      codingQuesData[maxQuestionId] = question;
+      ques = tempcodingQuestions[index + 1];
+
+      codingQuesData[maxQuestionId] = {
+        ...question,
+        weightage: ques.weightage,
+      };
     }
 
     return {

@@ -73,7 +73,8 @@
           <td class="px-4 py-2">{{ contest.duration || " " }}</td>
           <td class="px-4 py-2">{{ contest.eligibility || " " }}</td>
           <td class="px-4 py-2 relative">
-            <button (click)="result()"
+            <button
+              (click)="result()"
               class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
             >
               View Results
@@ -108,4 +109,10 @@
       </tbody>
     </table>
   </div>
+  <app-pagination
+    [pagesCount]="totalPaginatedPages"
+    class="mt-5"
+    (pageChange)="notifyPageChange($event)"
+    (limitChange)="notifyLimitChange($event)"
+  ></app-pagination>
 </div>

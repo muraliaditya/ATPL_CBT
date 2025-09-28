@@ -1,0 +1,69 @@
+<app-dynamic-layout>
+  <div main class="flex flex-col p-5 gap-2">
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold">{{ codingQuestion.questionName }}</h1>
+
+      <div class="flex gap-3">
+        <button
+          type="button"
+          class="py-1 h-fit text-white disabled:bg-blue-300 px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          class="py-1 h-fit text-white disabled:bg-blue-300 px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
+        >
+          Approve
+        </button>
+        <button
+          type="button"
+          class="py-1 h-fit text-white disabled:bg-blue-300 px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-red-600 text-lg rounded-sm"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+    <h1 class="font-semibold text-xl">Description</h1>
+    <h1></h1>
+    <h2>{{ codingQuestion.description }}</h2>
+    <div
+      *ngFor="
+        let testcase of codingQuestion.testcases
+          | testcaseFilter : filterTestCase;
+        index as idx
+      "
+      class="pt-3"
+    >
+      <div>Example {{ idx + 1 }} :</div>
+      <div *ngFor="let inputValue of testcase.inputValues; index as i">
+        {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+      </div>
+      {{ testcase.explanation }}
+    </div>
+
+    <div class="font-bold text-xl">TestCases -</div>
+    <div *ngFor="let testcase of codingQuestion.testcases; index as i">
+      <h1 class="font-semibold text-lg mt-1 text-zinc-500">
+        TestCase - {{ i + 1 }}
+      </h1>
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-medium">input : -</div>
+          <div class="flex flex-col gap-2 w-fit">
+            <code
+              class="bg-black text-white px-2 py-1 rounded"
+              *ngFor="let inputValue of testcase.inputValues; index as i"
+            >
+              {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+            </code>
+          </div>
+          <div class="font-medium">output : -</div>
+          <code class="bg-black text-white px-2 py-1 rounded">
+            {{ testcase.expectedOutput }}
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-dynamic-layout>

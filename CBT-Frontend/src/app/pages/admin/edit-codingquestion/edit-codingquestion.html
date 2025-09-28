@@ -427,7 +427,6 @@
                       getBasicFieldType(testIdx, inputIdx) ===
                       'advanced-dropdown-boolean'
                     "
-                    class="w-full"
                     variant="on"
                   >
                     <p-select
@@ -436,7 +435,7 @@
                         getBasicFieldName(testIdx, inputIdx)
                       }}-{{ testIdx }}-{{ inputIdx }}"
                       [options]="booleanOptions"
-                      class="w-full"
+                      class="w-56"
                     />
                     <label
                       for="dropdown-boolean-{{
@@ -452,7 +451,6 @@
                       getBasicFieldType(testIdx, inputIdx) ===
                       'advanced-dropdown'
                     "
-                    class="w-full"
                     variant="on"
                   >
                     <p-select
@@ -495,7 +493,7 @@
         [disabled]="isQuestionFormInvalid()"
         class="py-1 h-fit text-white disabled:bg-blue-300 px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
       >
-        Submit
+        Save
       </button>
     </div>
   </div>
