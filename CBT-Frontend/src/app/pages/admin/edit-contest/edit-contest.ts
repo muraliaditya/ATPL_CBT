@@ -224,23 +224,33 @@ export class EditContest {
     }
   }
 
-  getCodingQuestionControl(questionKey: string): FormControl {
-    let control = this.codingWeightageForm.get(questionKey) as FormControl;
+  getCodingQuestionControl(questionKey: string): FormGroup {
+    let controlGroup = this.codingWeightageForm.get(questionKey) as FormGroup;
 
-    if (!control) {
-      control = this.fb.control(0, [Validators.required, Validators.min(1)]);
-      this.codingWeightageForm.addControl(questionKey, control);
+    if (!controlGroup) {
+      controlGroup = this.fb.group({
+        weightage: [0, [Validators.required, Validators.min(1)]],
+        difficulty: ['Easy', [Validators.required]],
+      });
+      this.codingWeightageForm.addControl(questionKey, controlGroup);
     }
 
-    return control;
+    return controlGroup;
   }
+
+  onCodingDifficultyChange(questionKey: string, event: any) {
+    const value = event.value;
+    console.log(`Difficulty changed for question ${questionKey}:`, value);
+  }
+
   onCodingWeightageChange(questionKey: string, event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const value = Number(inputElement.value);
 
-    const control = this.getCodingQuestionControl(questionKey);
+    const controlGroup = this.getCodingQuestionControl(questionKey);
+    const weightageControl = controlGroup.get('weightage');
 
-    if (control.valid) {
+    if (weightageControl && weightageControl.valid) {
       this.store.dispatch(
         changeCodeWeightage({
           codingQuestionId: Number(questionKey),
@@ -260,6 +270,11 @@ export class EditContest {
   }
 
   replaceCodequestion(prevCodeId: string) {
+    const questionControl = this.getCodingQuestionControl(prevCodeId);
+    const currentDifficulty = questionControl.get('difficulty')?.value;
+
+    console.log('Current question difficulty:', currentDifficulty);
+
     let ques: ContestCodingQuestion = {
       codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
@@ -308,6 +323,17 @@ export class EditContest {
     this.codingWeightageForm = this.fb.group({});
   }
   replaceCodingSection() {
+    const allPreferences: { [key: string]: string } = {};
+
+    Object.keys(this.codingWeightageForm.controls).forEach((questionKey) => {
+      const questionControl = this.codingWeightageForm.get(
+        questionKey
+      ) as FormGroup;
+      allPreferences[questionKey] = questionControl.get('difficulty')?.value;
+    });
+
+    console.log('All section preferences:', allPreferences);
+
     const codingQuestions: ContestCodingQuestion[] = [
       {
         codeQuestionId: 'Q8',
@@ -459,11 +485,7 @@ export class EditContest {
   acceptOneMcq(mcq: ContestMCQQuestion, category: string) {
     this.store.dispatch(AcceptMcqQuestion({ Mcq: mcq, section: category }));
   }
-  replaceMcqQuestion(
-    category: string,
-
-    prevMcqId: string
-  ) {
+  replaceMcqQuestion(category: string, prevMcqId: string) {
     let questionId = Math.floor(Math.random() * 100);
     const Question = {
       mcqQuestionId: 'sci-009' + questionId,
@@ -788,13 +810,14 @@ export class EditContest {
       questionKeys.forEach((key) => {
         if (!this.codingWeightageForm.get(key)) {
           const question = codingData[Number(key)];
-          this.codingWeightageForm.addControl(
-            key,
-            this.fb.control(Number(question.weightage || 0), [
-              Validators.required,
-              Validators.min(1),
-            ])
-          );
+          const questionGroup = this.fb.group({
+            weightage: [
+              Number(question.weightage || 0),
+              [Validators.required, Validators.min(1)],
+            ],
+            difficulty: ['Easy', [Validators.required]],
+          });
+          this.codingWeightageForm.addControl(key, questionGroup);
         }
       });
     });

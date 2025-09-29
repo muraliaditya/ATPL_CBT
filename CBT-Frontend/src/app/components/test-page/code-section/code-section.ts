@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ViewChild, viewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { SplitterModule } from 'primeng/splitter';
 import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
@@ -27,8 +34,9 @@ interface languageCodes {
   templateUrl: './code-section.html',
   styleUrl: './code-section.css',
 })
-export class CodeSection implements OnInit {
+export class CodeSection implements OnInit, OnChanges {
   language: string = 'python';
+  currentSelectedTab: 'TestCases' | 'Test Results' = 'TestCases';
   @ViewChild(MonacoEditor) codeEditor!: MonacoEditor;
 
   currentCode = `
@@ -36,28 +44,126 @@ export class CodeSection implements OnInit {
    `;
   @Input() currentQuestionNo: number = -1;
   @Input() questions: CodingQuestions[] = [];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentQuestionNo']) {
+      this.setBoilerPlateCode();
+    }
+  }
+
+  findTestCaseResult(testcaseId: string) {
+    if (this.codingResponse[this.currentQuestionNo]) {
+      let questionResult = this.codingResponse[this.currentQuestionNo];
+      let testcaseFound = questionResult.publicTestcaseResults.find(
+        (testcase) => testcase.testcaseId === testcaseId
+      );
+      if (testcaseFound && testcaseFound.status === 'PASSED') {
+        return true;
+      }
+    }
+    return false;
+  }
+  findTestCase(testcaseId: string) {
+    if (this.codingResponse[this.currentQuestionNo]) {
+      let questionResult = this.codingResponse[this.currentQuestionNo];
+      let testcaseFound = questionResult.publicTestcaseResults.find(
+        (testcase) => testcase.testcaseId === testcaseId
+      );
+      return testcaseFound;
+    }
+    return null;
+  }
+
+  getCurrentCodeStatus() {
+    return this.codingResponse[this.currentQuestionNo].codeStatus;
+  }
+  changeTab(val: 'TestCases' | 'Test Results') {
+    this.currentSelectedTab = val;
+  }
+
+  showErrorMessage() {
+    let status = this.getCurrentCodeStatus();
+    if (status === 'COMPILATION_ERROR') {
+      return 'Compilation Error :(';
+    } else if (status === 'RUNTIME_ERROR') {
+      return 'Runtime Error :(';
+    }
+    return null;
+  }
+
+  codingResponse: CodeExecutionResponse[] = [
+    {
+      codeStatus: 'SOLVED',
+      message: 'Compiled and executed successfully',
+      publicTestcasePassed: 1,
+      publicTestcaseResults: [
+        {
+          testcaseId: 't11',
+          input: ['2 3'],
+          expectedOutput: '5',
+          actualOutput: '5',
+          status: 'PASSED',
+          weightage: 2,
+        },
+        {
+          testcaseId: 't22',
+          input: ['10 20'],
+          expectedOutput: '30',
+          actualOutput: '25',
+          status: 'FAILED',
+          weightage: 3,
+        },
+        {
+          testcaseId: 't33',
+          input: ['10 20'],
+          expectedOutput: '30',
+          actualOutput: '25',
+          status: 'FAILED',
+          weightage: 3,
+        },
+      ],
+    },
+    {
+      codeStatus: 'COMPILATION_ERROR',
+      message: 'Compiled and executed successfully',
+      publicTestcasePassed: 2,
+      privateTestcasePassed: 2,
+      publicTestcaseResults: [
+        {
+          testcaseId: 't44',
+          input: ['2 3'],
+          expectedOutput: '5',
+          actualOutput: '5',
+          status: 'PASSED',
+          weightage: 2,
+        },
+        {
+          testcaseId: 't55',
+          input: ['10 20'],
+          expectedOutput: '30',
+          actualOutput: '30',
+          status: 'PASSED',
+          weightage: 3,
+        },
+      ],
+      privateTestcaseResults: [
+        {
+          testcaseId: 't77',
+          status: 'PASSED',
+          weightage: 2,
+        },
+        {
+          testcaseId: 't88',
+          status: 'PASSED',
+          weightage: 3,
+        },
+      ],
+    },
+  ];
+
   languagesSupported: string[] = ['python', 'java'];
   currentTestCases: Testcase[] = [];
   viewCurrentTestCase: Testcase | null = null;
-  pythonBoilerCode = `def reverse_string_slicing(s):
-    return s[::-1]
-
-original_string = "hello"
-reversed_string = reverse_string_slicing(original_string)
-print(f"Original: {original_string}, Reversed: {reversed_string}")`;
-  javaBoilerCode = `public class ReverseStringUsingForLoop {
-    public static void main(String[] args) {
-        String originalString = "Programming";
-        String reversedString = "";
-
-        for (int i = originalString.length() - 1; i >= 0; i--) {
-            reversedString += originalString.charAt(i);
-        }
-
-        System.out.println("Original String: " + originalString);
-        System.out.println("Reversed String: " + reversedString);
-    }
-}`;
 
   getToQuestionNo(questionNo: number) {
     if (questionNo > -1 && questionNo < this.questions.length - 1) {
@@ -75,6 +181,30 @@ print(f"Original: {original_string}, Reversed: {reversed_string}")`;
     this.codeEditor.changeEditorOptions(val);
 
     this.setBoilerPlateCode();
+  }
+  codeChange(value: string) {
+    console.log(value);
+    let index = `${this.currentQuestionNo}-${
+      this.getCurrentQuestion()?.codingQuestionId
+    }-${this.language}`;
+    let codes = localStorage.getItem('codes');
+    let parsedData = codes ? JSON.parse(codes) : {};
+    console.log(parsedData);
+    parsedData[index] = value;
+    localStorage.setItem('codes', JSON.stringify(parsedData));
+  }
+
+  getCurrentCode() {
+    let index = `${this.currentQuestionNo}-${
+      this.getCurrentQuestion()?.codingQuestionId
+    }-${this.language}`;
+    let codes = localStorage.getItem('codes');
+    let parsedData = codes ? JSON.parse(codes) : {};
+    console.log(parsedData);
+    if (parsedData[index]) {
+      return parsedData[index];
+    }
+    return null;
   }
 
   getCurrentQuestion(): CodingQuestions | undefined {
@@ -103,9 +233,13 @@ print(f"Original: {original_string}, Reversed: {reversed_string}")`;
   }
   setBoilerPlateCode() {
     if (this.language === 'python') {
-      this.currentCode = this.getCurrentQuestion()?.pythonBoilerCode ?? '';
+      this.currentCode = this.getCurrentCode()
+        ? this.getCurrentCode()
+        : this.getCurrentQuestion()?.pythonBoilerCode ?? '';
     } else if (this.language === 'java') {
-      this.currentCode = this.getCurrentQuestion()?.javaBoilerCode ?? '';
+      this.currentCode = this.getCurrentCode()
+        ? this.getCurrentCode()
+        : this.getCurrentQuestion()?.javaBoilerCode ?? '';
     }
   }
   ngOnInit(): void {

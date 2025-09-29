@@ -1,8 +1,10 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +23,7 @@ interface monacoEditorType {
   styleUrl: './monoco-editor.css',
 })
 export class MonacoEditor implements OnInit, OnChanges {
+  @Output() notifyCodeChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() currentLanguage: string = '';
   @Input() code: string = '';
   editorOptions: monacoEditorType = {
@@ -49,8 +52,8 @@ export class MonacoEditor implements OnInit, OnChanges {
       this.code = '';
     }
   }
-  changedCode(value: String) {
-    console.log(value);
+  changedCode(value: string) {
+    this.notifyCodeChange.emit(value);
   }
 
   ngOnInit(): void {

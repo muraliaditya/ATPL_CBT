@@ -137,7 +137,7 @@ export class CreateContest implements OnInit {
     this.contestDetailsForm = this.fb.group({
       contestName: ['', [Validators.required]],
       eligibility: ['', [Validators.required]],
-      active: [false, [Validators.required]],
+      active: [true, [Validators.required]],
       startTime: [null, [Validators.required]],
       endTime: [null, [Validators.required]],
       duration: ['', [Validators.required, Validators.min(1)]],
@@ -244,6 +244,10 @@ export class CreateContest implements OnInit {
   }
 
   replaceCodequestion(prevCodeId: string) {
+    const questionControl = this.getCodingQuestionControl(prevCodeId);
+    const currentDifficulty = questionControl.get('difficulty')?.value;
+
+    console.log('Current question difficulty:', currentDifficulty);
     let ques: ContestCodingQuestion = {
       codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
@@ -292,6 +296,16 @@ export class CreateContest implements OnInit {
     this.codingWeightageForm = this.fb.group({});
   }
   replaceCodingSection() {
+    const allPreferences: { [key: string]: string } = {};
+
+    Object.keys(this.codingWeightageForm.controls).forEach((questionKey) => {
+      const questionControl = this.codingWeightageForm.get(
+        questionKey
+      ) as FormGroup;
+      allPreferences[questionKey] = questionControl.get('difficulty')?.value;
+    });
+
+    console.log('All section preferences:', allPreferences);
     const codingQuestions: ContestCodingQuestion[] = [
       {
         codeQuestionId: 'Q8',

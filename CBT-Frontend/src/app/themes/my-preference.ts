@@ -56,5 +56,21 @@ export const MyPreset = definePreset(Aura, {
         focusBorderColor: '{blue.600}',
       },
     },
+    toggleswitch: {
+      colorScheme: {
+        light: {
+          root: {
+            checkedBackground: '{blue.500}',
+            checkedHoverBackground: '{blue.600}',
+          },
+        },
+        dark: {
+          root: {
+            checkedBackground: '{blue.500}',
+            checkedHoverBackground: '{blue.600}',
+          },
+        },
+      },
+    },
   },
 });

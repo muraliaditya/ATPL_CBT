@@ -447,22 +447,43 @@
             >
               <div class="flex flex-col gap-2">
                 <div class="flex gap-2 justify-between items-center">
-                  <div class="flex gap-2 items-center">
-                    <p-floatlabel variant="on">
-                      <input
-                        [formControl]="getCodingQuestionControl(code.key)"
-                        (input)="onCodingWeightageChange(code.key, $event)"
-                        pInputText
-                        id="coding-weightage-{{ code.key }}"
-                        name="coding_weightage_{{ code.key }}"
-                        type="number"
-                        autocomplete="off"
-                      />
-                      <label for="coding-weightage-{{ code.key }}"
-                        >Weightage</label
-                      >
-                    </p-floatlabel>
+                  <div>
+                    <div
+                      class="flex gap-2 items-center"
+                      [formGroup]="getCodingQuestionControl(code.key)"
+                    >
+                      <p-floatlabel variant="on">
+                        <p-select
+                          formControlName="difficulty"
+                          (onChange)="
+                            onCodingDifficultyChange(code.key, $event)
+                          "
+                          inputId="coding-difficulty-{{ code.key }}"
+                          name="coding_difficulty_{{ code.key }}"
+                          [options]="difficultyOptions"
+                          class="w-56"
+                        />
+                        <label for="coding-difficulty-{{ code.key }}"
+                          >Difficulty</label
+                        >
+                      </p-floatlabel>
+                      <p-floatlabel variant="on">
+                        <input
+                          formControlName="weightage"
+                          (input)="onCodingWeightageChange(code.key, $event)"
+                          pInputText
+                          id="coding-weightage-{{ code.key }}"
+                          name="coding_weightage_{{ code.key }}"
+                          type="number"
+                          autocomplete="off"
+                        />
+                        <label for="coding-weightage-{{ code.key }}"
+                          >Weightage</label
+                        >
+                      </p-floatlabel>
+                    </div>
                   </div>
+
                   <div class="flex gap-2 items-center">
                     <button
                       *ngIf="

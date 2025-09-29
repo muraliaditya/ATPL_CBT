@@ -74,6 +74,7 @@
             </div>
             <div class="flex-1 overflow-hidden">
               <app-monaco-editor
+                (notifyCodeChange)="codeChange($event)"
                 [currentLanguage]="language"
                 [code]="currentCode"
               ></app-monaco-editor>
@@ -98,11 +99,24 @@
         <ng-template pTemplate="panel">
           <div class="h-full flex flex-col rounded-lg overflow-hidden">
             <div
-              class="bg-indigo-600 text-white px-6 py-1 font-semibold text-lg border-b rounded-t-lg"
+              class="bg-indigo-600 flex gap-2 text-white px-6 py-1 font-semibold text-lg border-b rounded-t-lg"
             >
-              Output & Test Results
+              <div
+                class="hover:bg-indigo-300 px-3 cursor-pointer rounded-sm"
+                (click)="changeTab('TestCases')"
+              >
+                TestCases
+              </div>
+
+              <div
+                class="hover:bg-indigo-300 px-3 cursor-pointer rounded-sm"
+                (click)="changeTab('Test Results')"
+              >
+                Test Results
+              </div>
             </div>
             <div
+              *ngIf="currentSelectedTab === 'TestCases'"
               class="p-4 flex flex-1 bg-white flex-col gap-3 overflow-y-auto"
             >
               <div
@@ -149,6 +163,87 @@
                       class="bg-black text-white px-2 py-1 rounded text-xs"
                       >{{ viewCurrentTestCase.output }}</code
                     >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              *ngIf="currentSelectedTab === 'Test Results'"
+              class="p-4 flex flex-1 bg-white flex-col gap-3 overflow-y-auto"
+            >
+              <div
+                *ngIf="getCurrentQuestion()?.testcases?.length"
+                class="flex gap-2 flex-wrap"
+              >
+                <div
+                  class="text-xl text-center w-full text-red-600 font-semibold"
+                  *ngIf="showErrorMessage()"
+                >
+                  {{ showErrorMessage() }}
+                </div>
+                <div *ngIf="!showErrorMessage()">
+                  <div class="flex gap-3 flex-wrap">
+                    <div
+                      [ngClass]="
+                        viewCurrentTestCase?.id === testcase.id
+                          ? 'bg-blue-100 text-blue-800 border-blue-200'
+                          : ' border-blue-200'
+                      "
+                      (click)="changeQuestion(testcase)"
+                      class="text-sm relative px-3 border cursor-pointer py-1 rounded-sm font-semibold"
+                      *ngFor="
+                        let testcase of getCurrentQuestion()?.testcases;
+                        index as idx
+                      "
+                    >
+                      <div
+                        class="w-2 h-2 absolute -top-0.5 -right-0.5 rounded-full"
+                        [ngClass]="
+                          findTestCaseResult(testcase.id)
+                            ? 'bg-green-500'
+                            : 'bg-red-600'
+                        "
+                      ></div>
+                      Case {{ idx + 1 }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="!showErrorMessage()">
+                <div
+                  *ngIf="viewCurrentTestCase"
+                  class="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm"
+                >
+                  <div class="space-y-2 text-sm">
+                    <div class="flex flex-col gap-2">
+                      <div class="font-medium text-gray-700">Inputs:</div>
+                      <code
+                        *ngFor="
+                          let input of viewCurrentTestCase.inputs;
+                          let idx = index
+                        "
+                        class="bg-black text-white px-2 py-1 rounded text-xs"
+                      >
+                        {{ getCurrentQuestion()?.inputParams?.[idx]  }} =
+                        {{ " " }} {{ input }}</code
+                      >
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <div class="font-medium text-gray-700">Expected:</div>
+                      <code
+                        class="bg-black text-white px-2 py-1 rounded text-xs"
+                        >{{ viewCurrentTestCase.output }}</code
+                      >
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <div class="font-medium text-gray-700">Output:</div>
+                      <code
+                        class="bg-black text-white px-2 py-1 rounded text-xs"
+                        >{{
+                          findTestCase(viewCurrentTestCase.id)?.actualOutput
+                        }}</code
+                      >
+                    </div>
                   </div>
                 </div>
               </div>
