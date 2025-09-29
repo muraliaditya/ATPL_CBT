@@ -1,11 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Navbar } from '../../../components/UI/navbar/navbar';
 
 interface InstructionsHeader {
   instructionHeader: string;
   instructions: string[];
+}
+interface Section {
+  sectionType: string;
+  questionCount: number;
+  totalMarks: number;
+  subSections?: SubSection[];
+}
+
+interface SubSection {
+  type: string;
+  questionCount: number;
+  marks: number;
 }
 
 @Component({
@@ -16,6 +27,31 @@ interface InstructionsHeader {
 })
 export class InstructionsPage {
   contestName: string = 'CONTEST-1';
+
+  sections: Section[] = [
+    {
+      sectionType: 'Coding',
+      questionCount: 2,
+      totalMarks: 100,
+    },
+    {
+      sectionType: 'MCQ',
+      questionCount: 20,
+      totalMarks: 40,
+      subSections: [
+        {
+          type: 'Quantitative',
+          questionCount: 10,
+          marks: 20,
+        },
+        {
+          type: 'Aptitude',
+          questionCount: 10,
+          marks: 20,
+        },
+      ],
+    },
+  ];
 
   codingQuestions: number = 3;
   mcqsQuestions: number = 20;

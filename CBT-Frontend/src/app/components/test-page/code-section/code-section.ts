@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, viewChild } from '@angular/core';
 import { SplitterModule } from 'primeng/splitter';
 import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
@@ -28,32 +28,36 @@ interface languageCodes {
   styleUrl: './code-section.css',
 })
 export class CodeSection implements OnInit {
-  language: string = 'cpp';
+  language: string = 'python';
+  @ViewChild(MonacoEditor) codeEditor!: MonacoEditor;
 
   currentCode = `
-  // C++ program to check if the number is even
-// or odd using modulo operator
-#include <bits/stdc++.h>
-using namespace std;
 
-int main() {
-    int n = 11;
-
-    // If n is completely divisible by 2
-    if (n % 2 == 0)
-        cout << "Even";
-
-    // If n is NOT completely divisible by 2
-    else
-        cout << "Odd";
-    return 0;
-}
    `;
   @Input() currentQuestionNo: number = -1;
   @Input() questions: CodingQuestions[] = [];
-  languagesSupported: string[] = ['cpp', 'python', 'java', 'javascript'];
+  languagesSupported: string[] = ['python', 'java'];
   currentTestCases: Testcase[] = [];
   viewCurrentTestCase: Testcase | null = null;
+  pythonBoilerCode = `def reverse_string_slicing(s):
+    return s[::-1]
+
+original_string = "hello"
+reversed_string = reverse_string_slicing(original_string)
+print(f"Original: {original_string}, Reversed: {reversed_string}")`;
+  javaBoilerCode = `public class ReverseStringUsingForLoop {
+    public static void main(String[] args) {
+        String originalString = "Programming";
+        String reversedString = "";
+
+        for (int i = originalString.length() - 1; i >= 0; i--) {
+            reversedString += originalString.charAt(i);
+        }
+
+        System.out.println("Original String: " + originalString);
+        System.out.println("Reversed String: " + reversedString);
+    }
+}`;
 
   getToQuestionNo(questionNo: number) {
     if (questionNo > -1 && questionNo < this.questions.length - 1) {
@@ -65,6 +69,12 @@ int main() {
     if (testcase) {
       this.viewCurrentTestCase = testcase;
     }
+  }
+  changeLanguage(val: string) {
+    this.language = val;
+    this.codeEditor.changeEditorOptions(val);
+
+    this.setBoilerPlateCode();
   }
 
   getCurrentQuestion(): CodingQuestions | undefined {
@@ -91,8 +101,16 @@ int main() {
       this.viewCurrentTestCase = null;
     }
   }
+  setBoilerPlateCode() {
+    if (this.language === 'python') {
+      this.currentCode = this.getCurrentQuestion()?.pythonBoilerCode ?? '';
+    } else if (this.language === 'java') {
+      this.currentCode = this.getCurrentQuestion()?.javaBoilerCode ?? '';
+    }
+  }
   ngOnInit(): void {
     this.setCurrentTestCases(this.getCurrentQuestion());
     this.showFirstTestCase(this.getCurrentQuestion());
+    this.setBoilerPlateCode();
   }
 }

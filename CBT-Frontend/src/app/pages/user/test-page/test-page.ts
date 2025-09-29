@@ -30,26 +30,31 @@ export class TestPage implements OnInit, OnDestroy {
       description:
         'Write a program that takes a string as input and returns the reversed version of it.',
       difficulty: 'Easy',
-      inputType: 'string',
-      outputType: 'string',
+
+      javaBoilerCode:
+        'public class Solution {\n  public static void main(String[] args) {\n    // Your code here\n  }\n}',
+      pythonBoilerCode: 'def solve():\n    # Your code here\n    pass',
+      inputParams: ['a', 'b'],
+      inputType: ['int', 'int'],
+      outputType: 'int',
       testcases: [
         {
           id: 't11',
-          input1: 'hello',
+          inputs: ['hello'],
           output: 'olleh',
           explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
           id: 't22',
 
-          input1: 'world',
+          inputs: ['world'],
           output: 'dlrow',
           explanation: ' The only possible triplet does not sum up to 0.',
         },
         {
           id: 't33',
 
-          input1: 'OpenAI',
+          inputs: ['OpenAI'],
           output: 'IAnepO',
           explanation: ' The only possible triplet does not sum up to 0.',
         },
@@ -61,29 +66,36 @@ export class TestPage implements OnInit, OnDestroy {
       description:
         'Given an array of integers, write a function to find the contiguous subarray which has the largest sum.',
       difficulty: 'Medium',
-      inputType: 'number[]',
-      outputType: 'number',
+      javaBoilerCode:
+        'public class Solution {\n  public static void main(String[] args) {\n    // Your code here\n  }\n}',
+      pythonBoilerCode: 'def solve():\n    # Your code here\n    pass',
+      inputParams: ['a', 'b'],
+      inputType: ['int', 'int'],
+      outputType: 'int',
       testcases: [
         {
           id: 't44',
 
-          input1: '[1, -2, 3, 4, -1, 2, 1, -5, 4]',
+          inputs: ['[1, -2, 3, 4, -1, 2, 1, -5, 4]'],
           output: '9',
           explanation: ' The only possible triplet does not sum up to 0.',
+          weightage: 2,
         },
         {
           id: 't55',
 
-          input1: '[-2, -3, -1, -5]',
+          inputs: ['[-2, -3, -1, -5]', '[1,2,3]'],
           output: '-1',
           explanation: ' The only possible triplet does not sum up to 0.',
+          weightage: 2,
         },
         {
           id: 't66',
 
-          input1: '[5, 4, -1, 7, 8]',
+          inputs: ['[5, 4, -1, 7, 8]'],
           output: '23',
           explanation: ' The only possible triplet does not sum up to 0.',
+          weightage: 2,
         },
       ],
     },

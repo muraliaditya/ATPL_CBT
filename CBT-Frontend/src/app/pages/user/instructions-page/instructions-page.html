@@ -3,13 +3,48 @@
     <div class="text-2xl font-bold">{{ contestName }}</div>
     <div class="p-5 border shadow-md rounded-lg border-gray-200">
       <div class="font-bold text-2xl">Sections</div>
-      <div class="flex items-center gap-2">
-        <img src="/svgs/code.svg" class="w-5 h-5" />
-        <p class="font-semibold text-2xl">{{ codingQuestions }} Contests</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <img src="/svgs/mcqs.svg" class="w-5 h-5" />
-        <p class="font-semibold text-2xl">{{ mcqsQuestions }} Mcqs</p>
+      <div class="w-fit font-bold text-lg">
+        <div *ngFor="let section of sections">
+          <div class="flex gap-6 justify-between items-center">
+            <div class="flex items-center gap-2">
+              <img
+                *ngIf="section.sectionType === 'Coding'"
+                src="/svgs/code.svg"
+                class="w-5 h-5"
+              />
+              <img
+                *ngIf="section.sectionType !== 'Coding'"
+                src="/svgs/mcqs.svg"
+                class="w-5 h-5"
+              />
+
+              <h1>
+                {{ section.questionCount }}
+                {{
+                  section.sectionType === "Coding"
+                    ? "Coding Questions"
+                    : section.sectionType === "MCQ"
+                    ? "MCQ'S"
+                    : ""
+                }}
+              </h1>
+            </div>
+            <h2>{{ section.totalMarks }} Marks</h2>
+          </div>
+          <div *ngIf="section?.subSections?.length" class="">
+            <ul
+              class="list-disc pl-8"
+              *ngFor="let subsection of section.subSections"
+            >
+              <li>
+                <div class="flex gap-6 justify-between">
+                  <h1>{{ subsection.questionCount }} {{ subsection.type }}</h1>
+                  <span> {{ subsection.marks }} Marks</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="p-5 border shadow-md rounded-lg border-gray-200">

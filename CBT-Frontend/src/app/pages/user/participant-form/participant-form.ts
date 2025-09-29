@@ -10,6 +10,8 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { finalize } from 'rxjs';
 import { Toast } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
+import { Select } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-participant-form',
@@ -20,7 +22,9 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,
+    Select,
     ProgressSpinner,
+    InputNumberModule,
     Toast,
   ],
 
@@ -29,7 +33,18 @@ import { CommonModule } from '@angular/common';
   providers: [MessageService],
 })
 export class ParticipantForm {
+  category: 'Student' | 'Experienced' = 'Experienced';
   participantForm: FormGroup;
+  employeeForm: FormGroup;
+  highestDegreeOptions: string[] = [
+    'B.Tech',
+    'M.Tech',
+    'B.E',
+    'B.SC',
+    'M.Sc',
+    'BCA',
+    'MCA',
+  ];
 
   constructor(private messageService: MessageService, private fb: FormBuilder) {
     this.participantForm = this.fb.group({
@@ -38,7 +53,17 @@ export class ParticipantForm {
       email: ['', [Validators.required, Validators.email]],
       collegeName: ['', Validators.required],
       highestDegree: ['', Validators.required],
-      percentage: ['', Validators.required, Validators.min(50)],
+      percentage: ['', [Validators.required, Validators.min(50)]],
+    });
+    this.employeeForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      designation: ['', Validators.required],
+      currentCompanyName: ['', Validators.required],
+      overallExperience: [
+        null,
+        [Validators.required, Validators.max(20), Validators.min(0.1)],
+      ],
     });
   }
   onSubmit() {}

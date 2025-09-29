@@ -9,15 +9,19 @@ export interface CodingQuestions {
   question: string;
   description: string;
   difficulty: string;
-  inputType: string;
+  inputType: string[];
+  javaBoilerCode: string;
+  pythonBoilerCode: string;
+
+  inputParams: string[];
   outputType: string;
   testcases: Testcase[];
 }
 
 export interface Testcase {
   id: string;
-  input1: string;
-  input2?: string;
+  inputs: string[];
   output: string;
   explanation?: string;
+  weightage?: number;
 }

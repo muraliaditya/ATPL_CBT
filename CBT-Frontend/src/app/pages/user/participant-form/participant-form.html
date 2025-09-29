@@ -5,6 +5,7 @@
 
   <form
     [formGroup]="participantForm"
+    *ngIf="category === 'Student'"
     class="w-[400px] p-5 rounded-lg shadow-lg flex flex-col gap-5 items-center justify-between"
     (ngSubmit)="onSubmit()"
   >
@@ -111,10 +112,219 @@
           </div>
         </div>
       </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-select
+          [options]="highestDegreeOptions"
+          formControlName="highestDegree"
+          id="highestDegree"
+          class="w-full pt-0"
+        />
+        <label for="highestDegree">Highest Degree</label>
+        <div
+          *ngIf="
+            participantForm.controls['highestDegree'].invalid &&
+            participantForm.controls['highestDegree'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="participantForm.controls['highestDegree'].errors?.['required']"
+          >
+            highest Degree is required
+          </div>
+        </div>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          formControlName="percentage"
+          [mode]="'decimal'"
+          [maxFractionDigits]="2"
+          class="w-full"
+          id="percentage"
+        ></p-inputnumber>
+
+        <label for="percentage">Percentage</label>
+        <div
+          *ngIf="
+            participantForm.controls['percentage'].invalid &&
+            participantForm.controls['percentage'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="participantForm.controls['percentage'].errors?.['required']"
+          >
+            percentage is required
+          </div>
+          <div *ngIf="participantForm.controls['percentage'].errors?.['min']">
+            minimum 50% is required
+          </div>
+        </div>
+      </p-floatlabel>
     </div>
     <button
       type="submit"
       [disabled]="participantForm.invalid"
+      class="w-[90%] p-2 text-white flex gap-2 items-center justify-center bg-blue-500 text-xl disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
+    >
+      <!-- @if(isSubmitting){
+      <p-progress-spinner
+        strokeWidth="6"
+        fill="transparent"
+        animationDuration=".5s"
+        class="!m-0"
+        [style]="{ width: '25px', height: '25px' }"
+      />
+
+      }  -->
+
+      Join
+    </button>
+  </form>
+  <form
+    [formGroup]="employeeForm"
+    class="w-[400px] p-5 rounded-lg shadow-lg flex flex-col gap-5 items-center justify-between"
+    (ngSubmit)="onSubmit()"
+  >
+    <h2 class="text-3xl font-bold">Personal Details</h2>
+    <div class="flex flex-col gap-4 w-[90%]">
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="name"
+          pInputText
+          class="w-full"
+          id="name"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="name">name</label>
+        <div
+          *ngIf="
+            employeeForm.controls['name'].invalid &&
+            employeeForm.controls['name'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div *ngIf="employeeForm.controls['name'].errors?.['required']">
+            name is required
+          </div>
+        </div>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="email"
+          class="w-full"
+          pInputText
+          id="email"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="email">Email</label>
+        <div
+          *ngIf="
+            employeeForm.controls['email'].invalid &&
+            employeeForm.controls['email'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div *ngIf="employeeForm.controls['email'].errors?.['required']">
+            email is required
+          </div>
+          <div *ngIf="employeeForm.controls['email'].errors?.['email']">
+            enter valid email
+          </div>
+        </div>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="designation"
+          class="w-full"
+          pInputText
+          id="designation"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="designation">designation</label>
+        <div
+          *ngIf="
+            employeeForm.controls['designation'].invalid &&
+            employeeForm.controls['designation'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="employeeForm.controls['designation'].errors?.['required']"
+          >
+            designation is required
+          </div>
+        </div>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          formControlName="currentCompanyName"
+          pInputText
+          class="w-full"
+          id="name"
+          type="text"
+          autocomplete="off"
+        />
+
+        <label for="name">Current Company Name</label>
+        <div
+          *ngIf="
+            employeeForm.controls['currentCompanyName'].invalid &&
+            employeeForm.controls['currentCompanyName'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="employeeForm.controls['currentCompanyName'].errors?.['required']"
+          >
+            company name is required
+          </div>
+        </div>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          formControlName="overallExperience"
+          class="w-full"
+          [maxFractionDigits]="1"
+          id="percentage"
+        ></p-inputnumber>
+
+        <label for="overallExperience">Overall Experience</label>
+        <div
+          *ngIf="
+            employeeForm.controls['overallExperience'].invalid &&
+            employeeForm.controls['overallExperience'].touched
+          "
+          class="text-red-400 font-medium text-sm text-left"
+        >
+          <div
+            *ngIf="employeeForm.controls['overallExperience'].errors?.['required']"
+          >
+            overallExperience is required
+          </div>
+          <div
+            *ngIf="employeeForm.controls['overallExperience'].errors?.['min']"
+          >
+            min one month is required
+          </div>
+          <div
+            *ngIf="employeeForm.controls['overallExperience'].errors?.['max']"
+          >
+            experience must be less than 20 years
+          </div>
+        </div>
+      </p-floatlabel>
+    </div>
+    <button
+      type="submit"
+      [disabled]="employeeForm.invalid"
       class="w-[90%] p-2 text-white flex gap-2 items-center justify-center bg-blue-500 text-xl disabled:bg-neutral-500 border-0 outline-0 cursor-pointer font-semibold rounded-lg text-center"
     >
       <!-- @if(isSubmitting){
