@@ -58,8 +58,7 @@ public class QustionManagementController {
     public ResponseEntity<AddCodingQuestionResponse> addQuestion(
             @RequestBody AddCodingQuestionRequestDto request) {
         try {
-        	String userId = "DEV001";
-        	AddCodingQuestionResponse response = codingQuestionService.addCodingQuestion(request, userId);
+        	AddCodingQuestionResponse response = codingQuestionService.addCodingQuestion(request);
             return ResponseEntity.ok(response);  
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -77,8 +76,7 @@ public class QustionManagementController {
     public ResponseEntity<AddMcqQuestionResponse> addMcqQuestions(
             @RequestBody AddMcqQuestionRequestDto request) {
     	try {
-    		String userId = "DEV001";
-    		AddMcqQuestionResponse response = mcqQuestionService.addMcqQuestions(request, userId);
+    		AddMcqQuestionResponse response = mcqQuestionService.addMcqQuestions(request);
     		return ResponseEntity.ok(response);
     	} catch(IllegalArgumentException e) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST)

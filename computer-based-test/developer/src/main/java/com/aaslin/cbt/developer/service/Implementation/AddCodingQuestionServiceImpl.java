@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,28 +15,38 @@ import com.aaslin.cbt.developer.Dto.AddCodingQuestionResponse;
 import com.aaslin.cbt.developer.Dto.AddTestcaseRequestDto;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
 import com.aaslin.cbt.developer.repository.TestcaseRepository;
+import com.aaslin.cbt.developer.repository.UserRepository;
 import com.aaslin.cbt.developer.service.AddCodingQuestionService;
 import com.aaslin.cbt.developer.util.CustomIdGenerator;
+import com.aaslin.cbt.developer.util.GetCurrentUsername;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
-
-    @Autowired
+	
     private CodingQuestionRepository codingQuestionRepo;
-
-    @Autowired
     private TestcaseRepository testcaseRepo;
-
-    @Autowired
+    private UserRepository userRepository;
+    private GetCurrentUsername currentUser;
     private ObjectMapper objectMapper;
 
     @Transactional
     @Override
-    public AddCodingQuestionResponse addCodingQuestion(AddCodingQuestionRequestDto request, String createdByUserId) {
+    public AddCodingQuestionResponse addCodingQuestion(AddCodingQuestionRequestDto request) {
         if (request.getTestcases() == null || request.getTestcases().isEmpty()) {
             throw new IllegalArgumentException("At least one testcase is required");
         }
+        
+        String username = currentUser.getCurrentUsername();
+        if (username == null) {
+        	throw new RuntimeException("Unauthorized: user not found in context");
+        }
+        
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new RuntimeException("User not found"));
 
         String lastQuestionId = codingQuestionRepo.findTopByOrderByCodingQuestionIdDesc()
                 .map(CodingQuestions::getCodingQuestionId)
@@ -49,7 +58,6 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         question.setQuestion(request.getQuestion());
         question.setDescription(request.getDescription());
         question.setDifficulty(CodingQuestions.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
-        question.setOutputFormat(request.getOutputType());
         question.setApprovalStatus(CodingQuestions.ApprovalStatus.PENDING);
         question.setMethodName(request.getMethodName());
         question.setExecutionTimeLimit(request.getExecutionTimeLimit());
@@ -59,6 +67,8 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         LocalDateTime now = LocalDateTime.now();
         question.setCreatedAt(now);
         question.setUpdatedAt(now);
+        question.setCreatedBy(user);
+        question.setUpdatedBy(user);
         question.setJavaBoilerCode(request.getJavaBoilerCode());
         question.setPythonBoilerCode(request.getPythonBoilerCode());
 
@@ -68,11 +78,6 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize input params/type", e);
         }
-
-        User user = new User();
-        user.setUserId(createdByUserId);
-        question.setCreatedBy(user);
-        question.setUpdatedBy(user);
 
         codingQuestionRepo.save(question);
 

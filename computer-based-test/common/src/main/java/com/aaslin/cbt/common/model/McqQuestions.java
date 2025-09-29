@@ -52,7 +52,7 @@ public class McqQuestions {
     private LocalDateTime createdAt;
     
     @Column(name="is_active")
-    private boolean deleted=false;
+    private Boolean isActive = true;
 
     @Column(name = "weightage")
     private Integer weightage = 1;

@@ -1,6 +1,7 @@
 package com.aaslin.cbt.developer.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface DeveloperCodingSubmissionRepository extends JpaRepository<Devel
 		       ORDER BY COUNT(DISTINCT dcs.codingQuestion.codingQuestionId) DESC
 		       """)
 		List<TopDevelopersDto> findTopDevelopers(@Param("status") DeveloperCodingSubmissionStatus status);
+	    Optional<DeveloperCodingSubmissions> findTopByOrderByDeveloperCodingSubmissionIdDesc();
+	    Optional<DeveloperCodingSubmissions>findByUser_UserIdAndCodingQuestion_CodingQuestionId(String userId, String questionId);
 }
