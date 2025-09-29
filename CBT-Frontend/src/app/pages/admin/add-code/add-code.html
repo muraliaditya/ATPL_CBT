@@ -1,3 +1,4 @@
+
 <div class="flex flex-col gap-5 p-10">
 <textarea [(ngModel)]="question" rows="4" class="h-[50px] p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Question"></textarea>
 <p-floatlabel variant="on">
@@ -15,40 +16,40 @@
 <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="ongenerate()">Generate</button>
 </div>
 <div *ngIf="showForm">
+<table class="flex flex-col gap-2">
+<thead><tr class="flex gap-9">
+<th>Inputs</th>
+<th>Types</th>
+<th>Parameter</th></tr>
+<ng-template #savedView>
+    <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="onEdit()">Edit</button>
+</ng-template>
+</thead>
+<tbody ><tr>
 <div *ngFor="let q of inputs;let i=index;" class="flex flex-col gap-3">
-    <div flex flex-col gap-1>
     <div class="flex gap-3 mb-2">
-    <p class="mt-2">Input {{i+1}}</p>
+    <td class="mt-2">Input {{i+1}}</td>
     <ng-container *ngIf="!saved; else savedView"> 
-    <p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md">
+    <td><p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md py-1">
             <p-select [options]="types" [(ngModel)]="q.type" class="w-50 mt-2 shadow-none"/>
                 <label for="on_label">Input Type</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
+    </p-floatlabel></td>
+    <td><p-floatlabel variant="on">
         <input pInputText id="on_label" [(ngModel)]="q.parameter" type="text" autocomplete="off" />
         <label for="on_label">Parameter Name</label>
     </p-floatlabel>
+    </td>
     </ng-container>
     </div>
-    </div>
-    <ng-template class="mt-4" #savedView>
-        <div class="flex gap-1">
-        <p>Type: {{ q.type }}</p>
-        <p>Parameter: {{ q.parameter }}</p>
-        </div>
-        <button class="bg-blue-500 text-white justify-end px-2 rounded-md py-1" (click)="onEdit()" >Edit</button>
-        <ng-template *ngIf="show">
-            <p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md">
-            <p-select [options]="types" [(ngModel)]="q.type" class="w-50 mt-2 shadow-none"/>
-                <label for="on_label">Input Type</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="q.parameter" type="text" autocomplete="off" />
-        <label for="on_label">Parameter Name</label>
-    </p-floatlabel>
-        </ng-template>
+    <ng-template #savedView>
+        <div class="mt-2 ml-7 flex flex-row gap-10 text-center">
+            <p>{{ q.type }}</p>
+            <p>{{ q.parameter }}</p>
+            </div>
       </ng-template>
     </div>
+</tr></tbody>
+</table>
 </div>
 <div class="flex align-center gap-2">
 <p class="align-center">Output</p>
@@ -64,33 +65,5 @@
     <div class="flex gap-4">
     <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="oncancel()">Cancel</button> 
     <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="onsave()">Save</button>
-    </div>
-    <div  *ngFor="let p of Inputform;let i=index;" class="flex flex-col gap-3">
-    <div class="flex w-full py-1 gap-5"> 
-    <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="p.input1" autocomplete="off" />
-        <label for="on_label">Input 1</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="p.output" autocomplete="off" />
-        <label for="on_label">Output</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="p.input3" autocomplete="off" />
-        <label for="on_label">Weightage</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-            <p-select [options]="types" [(ngModel)]="p.testtype" class="w-50 pt-0" />
-                <label for="on_label">TestCase Type</label>
-    </p-floatlabel>
-    <div class="flex gap-3">
-    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="add()">+</button>
-    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="del(i)">-</button>
-    </div>
-    </div>
-    <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="p.description" autocomplete="off" />
-        <label for="on_label">Description</label>
-    </p-floatlabel>
     </div>
     </div>

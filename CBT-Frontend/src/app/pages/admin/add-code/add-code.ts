@@ -1,9 +1,11 @@
 import { Component, EventEmitter,Output } from '@angular/core';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { CommonModule } from '@angular/common';
 import { Select } from 'primeng/select';
 import { InputText } from "primeng/inputtext";
+import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 @Component({
   selector: 'app-add-code',
   imports: [Select, FloatLabel, FormsModule, CommonModule, InputText, ReactiveFormsModule],
@@ -31,7 +33,7 @@ oncancel() {
   this.count = 0;
 }
 onEdit(){
-  this.show=true;
+  this.saved = false;
 }
 inputs:any[]=[];
 @Output() countChange = new EventEmitter<number>();

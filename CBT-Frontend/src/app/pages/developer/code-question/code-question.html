@@ -1,13 +1,92 @@
-<button class="bg-blue-400 text-white flex align-right mr-2">Add Question</button>
-<div class="p-2 bg-gray-200 shadow-lg h-[calc(100%-49px)] w-full flex gap-1">
-    <app-add-code class="w-[50%]" (countChange)="onCountChange($event)"></app-add-code>
-    <div class="flex flex-col w-250 gap-0">
+<app-dynamic-layout>
+<div main class="h-full">
+<div class="p-2 h-full bg-gray-200 shadow-lg w-full flex gap-1">
+<div class="w-[50%]">
+<div class="flex flex-col gap-5 p-10">
+<textarea [(ngModel)]="question" rows="4" class="h-[50px] p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Question"></textarea>
+<p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="weightage" autocomplete="off" />
+        <label for="on_label">Weightage</label>
+</p-floatlabel>
+<textarea [(ngModel)]="description" rows="4" class=" p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Description.."></textarea>
+<h1 class="font-bold">Test Cases</h1>
+<h2 class="font-bold">Configure test cases</h2>
+<div class="flex gap-2">
+    <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="count" autocomplete="off" />
+        <label for="on_label">Input Count</label>
+</p-floatlabel>
+<button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="ongenerate()">Generate</button>
+</div>
+<div *ngIf="showForm">
+<table class="flex flex-col gap-2">
+<thead><tr class="flex gap-9">
+<th>Inputs</th>
+<th>Types</th>
+<th>Parameter</th></tr>
+</thead>
+<tbody ><tr>
+<div>
+<div *ngFor="let q of inputs;let i=index;" class="flex flex-col gap-3">
+    <div class="flex gap-3 mb-2">
+    <td class="mt-2">Input {{i+1}}</td>
+    <ng-container *ngIf="!saved; else savedView"> 
+    <td><p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md py-1">
+            <p-select [options]="types" [(ngModel)]="q.type" class="w-50 mt-2 shadow-none"/>
+                <label for="on_label">Input Type</label>
+    </p-floatlabel></td>
+    <td><p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="q.parameter" type="text" autocomplete="off" />
+        <label for="on_label">Parameter Name</label>
+    </p-floatlabel>
+    </td>
+    </ng-container>
+    </div>
+    <ng-template #savedView>
+        <div class="mt-2 ml-7 flex flex-row gap-10 align-center">
+            <p>{{ q.type }}</p>
+            <p>{{ q.parameter }}</p>
+            </div>
+      </ng-template>
+    </div>
+    </div>
+</tr></tbody>
+</table>
+<div class="flex gap-3 ">
+<p class="align-center">Output</p>
+<ng-container *ngIf="!saved; else savedView"> 
+    <p-floatlabel variant="on" class="bg-white border border-gray-300 rounded-md py-2">
+            <p-select [options]="types" [(ngModel)]="output" class="w-50 pt-0 shadow-none" />
+                <label for="on_label">Output Type</label>
+    </p-floatlabel>
+    </ng-container>
+    <ng-template #savedView>
+      <p class="ml-5">{{output}}</p>
+      <div class="flex flex-col">
+      <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="onEdit()">Edit</button>
+      </div>
+    </ng-template>
+</div>
+</div>
+    <p-floatlabel variant="on">
+        <input pInputText id="on_label" [(ngModel)]="method" autocomplete="off" />
+        <label for="on_label">Method Signature</label>
+    </p-floatlabel>
+    <div class="flex gap-4">
+    <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="oncancel()">Cancel</button> 
+    <button class="bg-blue-500 text-white px-2 text-center rounded-md" [disabled]="" (click)="onsave()">Save</button>
+    </div>
+    </div>
+  </div>
+
+
+    <div class="flex flex-col w-[50%] gap-0">
     <div>
     <p-floatlabel class="bg-black text-white h-10" variant="on">
             <p-select [options]="language" (ngModelChange)="languageChange($event)" [(ngModel)]="selectedlanguage" class="w-40 h-6 align-center m-2" />
     </p-floatlabel>
     </div>
-    <app-editor class="w-250"></app-editor>
+    <app-editor class="w-[100%]"></app-editor>
     <div>
       <div class="flex gap-2 w-full h-10">
       <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Compile & run</button>
@@ -27,12 +106,12 @@
     <p-dialog header="Add TestCases" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
     <form [formGroup]="TestCase"(ngSubmit)="onSubmit()">
     <div class="flex flex-col gap-4 w-[90%]">
-       <div formArrayName="inputs">
-        <div *ngFor="let ctrl of inputsArray.controls; let i = index" class="mb-2">
-          <p-floatlabel variant="on" class="w-full">
-            <input [formControlName]="i" pInputText class="w-full" id="input-{{i}}" type="text" autocomplete="off"/>
-            <label for="input-{{i}}">Input {{ i + 1 }}</label>
-          </p-floatlabel>
+       <div formArrayName="inputs" class="mt-2">
+        <div *ngFor="let ctrl of inputsArray.controls; let i = index">
+          <p-floatlabel variant="on" class="w-full ">
+        <input [formControlName]="i"  pInputText class="w-full mt-2 gap-2" id="input-{{i}}" autocomplete="off"/>
+        <label for="input-{{i}}">Input {{ i + 1 }}</label>
+      </p-floatlabel>
         </div>
       </div>
       <p-floatlabel variant="on" class="w-full">
@@ -54,14 +133,19 @@
         </div>
         </form>
     </p-dialog>
+    <div *ngIf="save">
+        <p>{{inputs}}</p>
+        <p>{{output}}</p>
+    </div>
     </div>
     </div>
     </div>
     </div>
       <div *ngIf="currentSection==='Result'">
-        <p>     results</p>
+        <p>results</p>
       </div>
     </div>
     </div>
 </div>
-
+</div>
+</app-dynamic-layout>
