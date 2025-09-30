@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SubmissionRequest {
-	private String submissionId;
+	private String contestId;
 	private String questionId;
 	private String languageType;
 	private String code;

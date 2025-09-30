@@ -9,4 +9,5 @@ import lombok.*;
 public class ResultResponseDTO {
     private ParticipantInfoDTO participantInfo;
     private McqResponse mcqs;
+    private CodingResponse coding;
 }

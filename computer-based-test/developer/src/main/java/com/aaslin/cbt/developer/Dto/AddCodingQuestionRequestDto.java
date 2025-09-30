@@ -11,8 +11,8 @@ public class AddCodingQuestionRequestDto {
 	private String question;
     private String description;
     private String difficulty;
-    private String inputParams;  // Frontend sends: "["nums","target"]"
-    private String inputType;    // Frontend sends: "["array","int"]"
+    private List<String> inputParams;  
+    private List<String> inputType;    
     private String outputFormat;
     private String javaBoilerCode;
     private String pythonBoilerCode;
@@ -20,6 +20,7 @@ public class AddCodingQuestionRequestDto {
     private BigDecimal executionTimeLimit;
     private Long memoryLimit;
     private Boolean isActive;
+    private int weightage;
 
     private List<AddTestcaseRequestDto> testcases;
 }

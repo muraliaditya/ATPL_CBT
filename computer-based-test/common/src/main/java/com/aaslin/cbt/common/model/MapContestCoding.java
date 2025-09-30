@@ -32,6 +32,9 @@ public class MapContestCoding {
 
     @Column(name = "memory_limit")
     private Long memoryLimit;
+    
+    @Column(name="weightage")
+    private Integer weightage;
 
     @ManyToOne
     @JoinColumn(name = "created_by")

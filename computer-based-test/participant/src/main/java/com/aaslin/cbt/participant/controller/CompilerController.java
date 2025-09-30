@@ -30,7 +30,7 @@ public class CompilerController {
 	@PostMapping("/submission")
 	public SubmissionResponse submitCode(@RequestBody SubmissionRequest request) throws Exception {
 		SubmissionResponse response=compilerService.submitCode(request);
-		submissionService.saveSubmission(request, response);
+		submissionService.saveCodingSubmission(request, response);
 		return response;
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.aaslin.cbt.common.model.McqQuestions;
+import com.aaslin.cbt.common.model.McqQuestions.ApprovalStatus;
 import com.aaslin.cbt.common.model.Sections;
 
 
@@ -22,6 +23,10 @@ public interface McqQuestionRepository extends JpaRepository<McqQuestions,String
 	    List<McqQuestions> findBySectionAndIsActiveFalse(Sections section);
 	    List<McqQuestions> findAllByIsActiveFalse();
 	    List<McqQuestions> findBySection(Sections section);
+	    List<McqQuestions> findByApprovalStatus(ApprovalStatus approvalStatus);
+	    List<McqQuestions> findByCreatedByUsernameAndApprovalStatus(String username, ApprovalStatus approvalStatus);
+
+	   
 
     @Query(value = "SELECT MAX(CAST(SUBSTRING(mcq_question_id, 4) AS UNSIGNED)) FROM mcq_questions_cbt", nativeQuery = true)
     int findMaxIdNumber();    

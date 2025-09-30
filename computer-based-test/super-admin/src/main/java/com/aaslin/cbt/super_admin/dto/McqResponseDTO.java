@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class McqResponseDTO {
-	
 	private String status;
 	private String message;
 

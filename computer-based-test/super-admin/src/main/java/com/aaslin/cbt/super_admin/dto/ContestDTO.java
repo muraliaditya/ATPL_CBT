@@ -2,8 +2,6 @@ package com.aaslin.cbt.super_admin.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.aaslin.cbt.common.model.Category;
 import com.aaslin.cbt.common.model.Contest.ContestStatus;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContestDTO {
-	private String ContestId;
-	private String ContestName;
+	private String contestId;
+	private String contestName;
 	private Integer totalCodingQuestions;
 	private Integer totalQuantsMcqs;
 	private Integer totalReasoningMcqs;
@@ -26,7 +24,9 @@ public class ContestDTO {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private ContestStatus status;
-	private Category category;
+	private String categoryName;
 	private List<McqSectionDTO> mcqSections;
+	private List<CodingQuestionRequest> codingQuestions;
 
 }
+

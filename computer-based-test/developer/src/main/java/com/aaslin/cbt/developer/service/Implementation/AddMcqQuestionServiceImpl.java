@@ -1,21 +1,17 @@
 package com.aaslin.cbt.developer.service.Implementation;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aaslin.cbt.common.model.McqQuestions;
 import com.aaslin.cbt.common.model.Sections;
-import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
 import com.aaslin.cbt.developer.repository.McqQuestionsRepository;
 import com.aaslin.cbt.developer.repository.Sectionrepository;
-import com.aaslin.cbt.developer.repository.UserRepository;
 import com.aaslin.cbt.developer.service.AddMcqQuestionService;
 import com.aaslin.cbt.developer.util.CustomIdGenerator;
-import com.aaslin.cbt.developer.util.GetCurrentUsername;
+import com.aaslin.cbt.super_admin.util.AuditHelper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
 
     private McqQuestionsRepository mcqQuestionsRepository;
-    private UserRepository userRepository;
     private Sectionrepository sectionRepository;
-    private GetCurrentUsername currentUser;
+    private AuditHelper auditHelper;
 
     @Override
     @Transactional
@@ -35,20 +30,9 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
             throw new IllegalArgumentException("At least one MCQ question is required");
         }
         
-        String username = currentUser.getCurrentUsername();
-        if (username == null) {
-        	throw new RuntimeException("Unauthorized: user not found in context");
-        }
-        
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new RuntimeException("User not found"));
-        
         String lastId = mcqQuestionsRepository.findTopByOrderByMcqQuestionIdDesc()
                 .map(McqQuestions::getMcqQuestionId)
                 .orElse(null);
-
-        LocalDateTime now = LocalDateTime.now();
-
 
         for (AddMcqQuestionRequestDto.McqQuestionDto dto : request.getMcqQuestions()) {
      
@@ -67,14 +51,8 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
             mcq.setAnswerKey(dto.getAnswerKey());
             mcq.setSection(section);
             mcq.setWeightage(dto.getWeightage() != null ? dto.getWeightage() : 1);
-            mcq.setApprovalStatus(McqQuestions.ApprovalStatus.PENDING);
             mcq.setIsActive(true);
-
-            mcq.setCreatedBy(user);
-            mcq.setUpdatedBy(user);
-            mcq.setCreatedAt(now);
-            mcq.setUpdatedAt(now);
-
+            auditHelper.applyAuditForMcqQuestion(mcq);
             mcqQuestionsRepository.save(mcq);
         }
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenerationService {
@@ -102,4 +101,3 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
         return mapToResponse(cq);
     }
 }
-

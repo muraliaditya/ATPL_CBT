@@ -1,6 +1,7 @@
 package com.aaslin.cbt.super_admin.controller;
 import com.aaslin.cbt.super_admin.dto.ContestDTO;
 import com.aaslin.cbt.super_admin.dto.ContestResponseDTO;
+import com.aaslin.cbt.super_admin.dto.PaginatedContestResponse;
 import com.aaslin.cbt.super_admin.service.ContestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,14 @@ public class ContestController {
         return new ContestResponseDTO("Success", msg);
     }
 
+    @GetMapping("/search")
+    public PaginatedContestResponse searchContests(
+            @RequestParam(required = false, defaultValue = "") String contestName,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return contestService.searchContests(contestName, page, size);
+    }
+    
     @PutMapping("/{contestId}")
     public ContestResponseDTO updateContest(@PathVariable String contestId, @RequestBody ContestDTO dto) {
         String msg = contestService.updateContest(contestId, dto);
@@ -36,7 +45,7 @@ public class ContestController {
     public List<ContestDTO> getAllContests() {
         return contestService.getAllContests();
     }
-
+    
     @GetMapping("/{contestId}")
     public ContestDTO viewContest(@PathVariable String contestId) {
         return contestService.getContestById(contestId);

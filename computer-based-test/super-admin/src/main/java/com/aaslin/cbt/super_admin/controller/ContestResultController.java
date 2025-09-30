@@ -16,6 +16,4 @@ public class ContestResultController {
     public ContestResultsResponse getContestResults(@PathVariable String contestId) {
         return contestResultService.getContestResults(contestId);
     }
-    
-
 }

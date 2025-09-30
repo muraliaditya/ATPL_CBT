@@ -14,6 +14,8 @@ public class SubmissionResponse {
 	private String code;
 	public Integer publicTestcasePassed;
 	public Integer privateTestcasePassed;
+	private Integer score;
+	private String codingSubmissionId;
 	private List<TestcaseResultResponse> publicTestcaseResults;
 	private List<TestcaseResultResponse> privateTestcaseResults;
 }

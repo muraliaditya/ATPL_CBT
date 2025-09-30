@@ -1,10 +1,11 @@
 package com.aaslin.cbt.super_admin.dto;
 import lombok.*;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 @Getter
 @Setter
 @NoArgsConstructor 
 @AllArgsConstructor @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContestResultDTO {
     private String submissionId;
     private String participantId;
