@@ -15,13 +15,96 @@ import { parameterDuplicateCheck } from '../../../utils/custom-validators/parame
 import { StringArrayValidate } from '../../../utils/custom-validators/string-array-validator';
 import { IntegerArrayValidate } from '../../../utils/custom-validators/integer-array-validator';
 import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
+
 @Component({
-  selector: 'app-code-question',
+  selector: 'app-demo',
   imports: [FloatLabel,Select,Editor, CommonModule, FormsModule, Dialog,ButtonModule,InputTextModule,ReactiveFormsModule,DynamicLayout],
-  templateUrl: './code-question.html',
-  styleUrl: './code-question.css'
+  templateUrl: './demo.html',
+  styleUrl: './demo.css'
 })
-export class CodeQuestion {
+export class Demo {
+  // types = ['string', 'int', 'boolean'];
+  // showForm = false;
+
+  // TestCaseForm: FormGroup;
+  // TestValuesForm: FormGroup;
+  // count = 0;
+
+  // constructor(private fb: FormBuilder) {
+  //   this.TestCaseForm = this.fb.group({
+  //     question: ['', Validators.required],
+  //     weightage: ['', Validators.required],
+  //     description: ['', Validators.required],
+  //     count:['',Validators.required],
+  //     inputs: this.fb.array([]),
+  //     output: this.fb.group({
+  //       type: ['', Validators.required],
+  //       method: ['', Validators.required],
+  //     }),
+  //   });
+
+  //   this.TestValuesForm = this.fb.group({
+  //     testInputs: this.fb.array([]),
+  //     expectedOutput: ['', Validators.required]
+  //   });
+  // }
+
+  // get inputsArray(): FormArray {
+  //   return this.TestCaseForm.get('inputs') as FormArray;
+  // }
+
+  // get testInputsArray(): FormArray {
+  //   return this.TestValuesForm.get('testInputs') as FormArray;
+  // }
+
+  // onGenerate() {
+  //   this.inputsArray.clear();
+  //   this.testInputsArray.clear();
+
+  //   for (let i = 0; i < this.count; i++) {
+  //     const inputGroup = this.fb.group({
+  //       type: ['', Validators.required],
+  //       parameter: ['', Validators.required],
+  //     });
+  //     this.inputsArray.push(inputGroup);
+
+  //     this.testInputsArray.push(this.fb.control('', Validators.required));
+  //   }
+
+  //   this.showForm = true;
+  // }
+  // onTypeChange(index: number) {
+  //   const type = this.inputsArray.at(index).get('type')?.value;
+  //   const ctrl = this.testInputsArray.at(index);
+
+  //   if (type === 'int') {
+  //     ctrl.setValidators([Validators.required, Validators.pattern(/^\d+$/)]);
+  //   } else if (type === 'string') {
+  //     ctrl.setValidators([
+  //       Validators.required,
+  //       Validators.pattern(/^[a-zA-Z ]+$/),
+  //     ]);
+  //   } else if (type === 'boolean') {
+  //     ctrl.setValidators([
+  //       Validators.required,
+  //       Validators.pattern(/^(true|false)$/i),
+  //     ]);
+  //   }
+
+  //   ctrl.updateValueAndValidity();
+  // }
+
+  // onSave() {
+  //   if (this.TestCaseForm.valid && this.TestValuesForm.valid) {
+  //     console.log('Final Data:', {
+  //       config: this.TestCaseForm.value,
+  //       testValues: this.TestValuesForm.value,
+  //     });
+  //   } else {
+  //     this.TestCaseForm.markAllAsTouched();
+  //     this.TestValuesForm.markAllAsTouched();
+  //   }
+  // }
 test:any[]=[];
 saved: boolean = false; 
 save:boolean=false;
@@ -89,6 +172,7 @@ Inputform:any[]=[];
       question:['', Validators.required],
       weightage:['', Validators.required],
       description:['',Validators.required],
+      count:['',Validators.required],
     })
 
   }
@@ -160,5 +244,10 @@ onSubmit() {
 
 viewTestCase(index: number) {
   this.selectedTestCase = this.submittedTestCases[index];
+}
+onvalid(){
+  if(this.Main.valid){
+  console.log('validated');
+  }
 }
 }

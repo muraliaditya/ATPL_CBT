@@ -24,10 +24,10 @@
     </div>
     <div class="shadow-lg rounded-md bg-gray-100 w-full h-50 pl-3">
     <div class="flex gap-10 mt-1 ">
-    <button class="text-gray-400 font-bold rounded-md " (click)="sectionchange('TestCase')">TestCases</button>
+    <button class="text-gray-400 font-bold rounded-md click:text-green-100" (click)="sectionchange('TestCase')">TestCases</button>
     <button class="text-gray-400  font-bold rounded-md " (click)="sectionchange('Result')">Outputs</button>
     </div>
-    <div class="p-2" *ngIf="currentSection==='TestCase'">
+    <div class="p-2 text-blue-500" *ngIf="currentSection==='TestCase'">
       <div class="flex flex-row  gap-2">
       <div *ngFor="let q of codingQuestions.testcases;let i=index">
         <button class="px-1 bg-blue-500 gap-3 text-white rounded-md hover:bg-gray px-2" (click)="testcase(i)">Case{{i+1}}</button>
@@ -38,8 +38,20 @@
         <p class="bg-black text-white w-100 rounded-md px-2">Output : {{outputId}}</p>
       </div> 
       </div>
-      <div *ngIf="currentSection==='Result'">
-        <p>     results</p>
+      <div class="p-2 text-blue-500" *ngIf="currentSection==='Result'">
+      <div class="flex flex-row  gap-2">
+      <div *ngFor="let q of codingQuestions.testcases;let i=index">
+        <button class="px-1 bg-blue-500 gap-3 text-white rounded-md" [ngClass]="{'bg-green-500':outputId===userr && selected===i,
+          'bg-red-500':outputId!==userr && selected===i ,
+          'bg-gray-500':outputId!==userr && selected!==i,
+        }"  (click)="resultcase(i)">Case{{i+1}}</button>
+      </div>
+      </div>
+      <div class="pt-5 flex flex-col gap-2">
+        <p class="bg-black text-white w-100 rounded-md px-2">Input  : {{inputId}}</p>
+        <p class="bg-black text-white w-100 rounded-md px-2">Output : {{outputId}}</p>
+        <p class="bg-black text-white w-100 rounded-md px-2">Excepted : {{userr}}</p>
+      </div> 
       </div>
       </div>
       </div>

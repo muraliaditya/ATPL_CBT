@@ -14,6 +14,7 @@ import { Select } from 'primeng/select';
 export class DeveloperQuestion { 
     inputId:string='';
     outputId:string='';
+    userr:string='';
     language=['c','python','java','c++'];
     selectedlanguage:string='c';
     
@@ -38,18 +39,21 @@ export class DeveloperQuestion {
             id: 't11',
             input1: 'hello',
             output: 'olleh',
+            user_op:'olleh',
             explanation: ' The only possible triplet does not sum up to 0.',
           },
           {
             id: 't22',
             input1: 'world',
             output: 'dlrow',
+            user_op:'dlrow',
             explanation: ' The only possible triplet does not sum up to 0.',
           },
           {
             id: 't33',
             input1: 'OpenAI',
             output: 'IAnepO',
+            user_op:'i',
             explanation: ' The only possible triplet does not sum up to 0.',
           },
         ],
@@ -58,6 +62,14 @@ export class DeveloperQuestion {
         const test=this.codingQuestions.testcases[i];
         this.inputId=`${test.input1}`;
         this.outputId=`${test.output}`
+      }
+      selected:number|null=null;
+      resultcase(i:number){
+        this.selected=i;
+        const result=this.codingQuestions.testcases[i];
+        this.inputId=`${result.input1}`;
+        this.outputId=`${result.output}`;
+        this.userr=`${result.user_op}`;
       }
       currentSection: 'TestCase' | 'Result' = 'TestCase';
       sectionchange(section: 'TestCase' | 'Result') {

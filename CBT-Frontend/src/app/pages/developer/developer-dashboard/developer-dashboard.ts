@@ -88,33 +88,6 @@ export class DeveloperDashboard {
     },
   ];
   'pageNo': 1;
-  Codes: codingQuestions[] = [
-    {
-      questionId: 'code_001',
-      questionName: 'Add Two Numbers',
-      difficulty: 'Easy',
-    },
-    {
-      questionId: 'code_002',
-      questionName: 'Integer Conversion',
-      difficulty: 'Medium',
-    },
-    {
-      questionId: 'code_003',
-      questionName: 'Binary Tree Traversal',
-      difficulty: 'Hard',
-    },
-    {
-      questionId: 'code_004',
-      questionName: 'Array Sum',
-      difficulty: 'Easy',
-    },
-    {
-      questionId: 'code_005',
-      questionName: 'String Palindrome',
-      difficulty: 'Medium',
-    },
-  ];
   developerstatus: devSummary[] = [
     {
       devId: '#DEV-0441',
@@ -167,5 +140,44 @@ export class DeveloperDashboard {
       solvedQuestionsCount: 41,
     },
   ];
+   Codes: codingQuestions[] = [
+    {
+      questionId: 'code_001',
+      questionName: 'Add Two Numbers',
+      difficulty: 'Easy',
+    },
+    {
+      questionId: 'code_002',
+      questionName: 'Integer Conversion',
+      difficulty: 'Medium',
+    },
+    {
+      questionId: 'code_003',
+      questionName: 'Binary Tree Traversal',
+      difficulty: 'Hard',
+    },
+    {
+      questionId: 'code_004',
+      questionName: 'Array Sum',
+      difficulty: 'Easy',
+    },
+    {
+      questionId: 'code_005',
+      questionName: 'String Palindrome',
+      difficulty: 'Medium',
+    },
+  ];
   totalQuestions = 300;
+  sortquestion:codingQuestions[]=[];
+  ngOnInit(){
+    this.sortquestion=this.Codes;
+  }
+  onsearch(){
+    this.sortquestion = this.Codes.filter(code => {
+    const QuestionName = this.sort
+      ? code.questionName.toLowerCase().includes(this.sort.toLowerCase())
+      : true;
+      return QuestionName;
+  });
+}
 }

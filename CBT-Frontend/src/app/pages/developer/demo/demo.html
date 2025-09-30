@@ -3,18 +3,20 @@
 <div class="p-2 h-full bg-gray-200 shadow-lg w-full flex gap-1">
 <div class="w-[50%]">
 <div class="flex flex-col gap-5 p-10">
-<textarea [(ngModel)]="question" rows="4" class="h-[50px] p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Question"></textarea>
-<div></div>
+<form [formGroup]="Main" (ngSubmit)="onvalid()">
+<textarea formControlName="question" rows="4" class="h-[50px] p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Question"></textarea>
 <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="weightage" autocomplete="off" />
+        <input pInputText id="on_label" formControlName="weightage" type="number" autocomplete="off" />
         <label for="on_label">Weightage</label>
 </p-floatlabel>
-<textarea [(ngModel)]="description" rows="4" class=" p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Description.."></textarea>
+<textarea formControlName="description" rows="4" class=" p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 " placeholder="Description.."></textarea>
+<button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="onvalid()">Valid</button>
+</form>
 <h1 class="font-bold">Test Cases</h1>
 <h2 class="font-bold">Configure test cases</h2>
 <div class="flex gap-2">
     <p-floatlabel variant="on">
-        <input pInputText id="on_label" [(ngModel)]="count" autocomplete="off" />
+        <input pInputText id="on_label" formControlName="count" autocomplete="off" />
         <label for="on_label">Input Count</label>
 </p-floatlabel>
 <button class="bg-blue-500 text-white px-2 text-center rounded-md" (click)="ongenerate()">Generate</button>
@@ -77,10 +79,8 @@
     <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md" (click)="oncancel()">Cancel</button> 
     <button class="bg-blue-500 text-white px-3 py-1 text-center rounded-md"  (click)="onsave()">Save</button>
     </div>
-    </div>
-  </div>
-
-
+</div>
+</div>
     <div class="flex flex-col w-[50%] gap-0">
     <div>
     <p-floatlabel class="bg-black text-white h-10" variant="on">
@@ -107,11 +107,11 @@
    
 <p-dialog header="Add TestCases" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
   <form [formGroup]="TestCase" (ngSubmit)="onSubmit()">
-    <div class="flex flex-col gap-3 w-[90%]">
-      <div formArrayName="inputs" class="mt-1">
-        <div class="mb-3" *ngFor="let ctrl of inputsArray.controls; let i = index">
+    <div class="flex flex-col gap-4 w-[90%]">
+      <div formArrayName="inputs" class="mt-2">
+        <div *ngFor="let ctrl of inputsArray.controls; let i = index">
           <p-floatlabel variant="on" class="w-full ">
-            <input [formControlName]="i" pInputText class="w-full" id="input-{{i}}" autocomplete="off"/>
+            <input [formControlName]="i" pInputText class="w-full mt-2 gap-2" id="input-{{i}}" autocomplete="off"/>
             <label for="input-{{i}}">Input {{ i + 1 }}</label>
           </p-floatlabel>
         </div>

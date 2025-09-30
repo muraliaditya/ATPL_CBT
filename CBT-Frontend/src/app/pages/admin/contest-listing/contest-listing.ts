@@ -72,16 +72,14 @@ searchContests() {
     const matchName = this.ContestName
       ? contest.name.toLowerCase().includes(this.ContestName.toLowerCase())
       : true;
-
     const matchId = this.ContestId
       ? contest.id.toLowerCase().includes(this.ContestId.toLowerCase())
       : true;
 
     const matchStatus = this.choice
       ? contest.status.toLowerCase() === this.choice.toLowerCase()
-      : true;
-
-    return matchName && matchId && matchStatus;
+      : true; 
+return matchName && matchId && matchStatus; 
   });
 }
 
