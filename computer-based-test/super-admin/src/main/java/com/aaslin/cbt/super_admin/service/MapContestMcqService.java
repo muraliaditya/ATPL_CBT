@@ -3,6 +3,7 @@ import com.aaslin.cbt.common.model.Contest;
 import com.aaslin.cbt.common.model.MapContestMcq;
 import com.aaslin.cbt.super_admin.idgenerator.MapIdGenerator;
 import com.aaslin.cbt.super_admin.repository.MapContestMcqRepository;
+import com.aaslin.cbt.super_admin.util.AuditHelper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 public class MapContestMcqService {
 
     private final MapContestMcqRepository mapRepo;
+    private final AuditHelper auditHelper;
 
     public void mapMcqsToContest(Contest contest, List<MapContestMcq> mappings) {
         mapRepo.deleteByContest_ContestId(contest.getContestId());   
@@ -29,6 +31,7 @@ public class MapContestMcqService {
 
             map.setContest(contest);
             map.setCreatedAt(LocalDateTime.now());
+            auditHelper.applyAuditForMapContestMcq(map); 
         }    
         mapRepo.saveAll(mappings);
     }

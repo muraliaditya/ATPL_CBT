@@ -49,7 +49,6 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         question.setQuestion(request.getQuestion());
         question.setDescription(request.getDescription());
         question.setDifficulty(CodingQuestions.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
-        question.setOutputFormat(request.getOutputType());
         question.setApprovalStatus(CodingQuestions.ApprovalStatus.PENDING);
         question.setMethodName(request.getMethodName());
         question.setExecutionTimeLimit(request.getExecutionTimeLimit());

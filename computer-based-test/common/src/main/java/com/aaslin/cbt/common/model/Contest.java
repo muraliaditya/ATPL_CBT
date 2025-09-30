@@ -3,6 +3,8 @@ package com.aaslin.cbt.common.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,11 +20,12 @@ public class Contest {
     @Column(name = "contest_id", length = 50)
     private String contestId;
 
-    @Column(name = "contest_name")
+    @Column(name = "contest_name",unique = true)
     private String contestName;
-
+  
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     private Category category;
 
     @Column(name = "total_coding_questions")

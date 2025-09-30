@@ -22,3 +22,4 @@ public class McqQuestionDTO {
     private Integer weightage;
 	
 }
+

@@ -40,8 +40,8 @@ public class ContestResultService {
             dto.setCodingMarks(sub.getTotalCodingScore());
             dto.setMcqMarks(sub.getTotalMcqScore());
             dto.setTotalMarks(sub.getTotalScore());
-
-            if ("Student".equalsIgnoreCase(eligibility)) {
+            
+           if ("Student".equalsIgnoreCase(eligibility)) {
                 dto.setCollege(sub.getParticipant().getCollege().getCollegeName());
                 dto.setCollegeRegdNo(sub.getParticipant().getCollegeRegdNo());
                 if (sub.getParticipant().getPercentage() != null) {
@@ -60,4 +60,5 @@ public class ContestResultService {
                 .build();
     }
 }
+
 

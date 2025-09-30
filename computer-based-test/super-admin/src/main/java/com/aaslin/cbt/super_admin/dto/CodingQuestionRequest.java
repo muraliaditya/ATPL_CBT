@@ -16,4 +16,7 @@ public class CodingQuestionRequest {
     private String pythonBoilerCode;
     private String methodName;
     private List<TestcaseRequest> testcases;
+    private Boolean isActive;
+    private String codingQuestionId; 
+    private Integer weightage;
 }

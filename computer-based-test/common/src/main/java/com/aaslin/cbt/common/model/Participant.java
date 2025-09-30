@@ -26,7 +26,7 @@ public class Participant {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "college_id")
     private College college;
 

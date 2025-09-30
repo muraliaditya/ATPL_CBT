@@ -1,21 +1,20 @@
 package com.aaslin.cbt.super_admin.service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
+import com.aaslin.cbt.common.model.CodingSubmission;
 import com.aaslin.cbt.common.model.McqAnswer;
 import com.aaslin.cbt.common.model.McqQuestions;
 import com.aaslin.cbt.common.model.Participant;
 import com.aaslin.cbt.common.model.Submission;
-import com.aaslin.cbt.super_admin.dto.ResultResponseDTO;
-import com.aaslin.cbt.super_admin.repository.McqAnswerRepository;
-import com.aaslin.cbt.super_admin.repository.SubmissionRepository;
+import com.aaslin.cbt.super_admin.dto.*;
+import com.aaslin.cbt.super_admin.repository.*;
 
 import lombok.RequiredArgsConstructor;
-import com.aaslin.cbt.super_admin.dto.McqResponse;
-import com.aaslin.cbt.super_admin.dto.McqSectionDTO;
-import com.aaslin.cbt.super_admin.dto.McqQuestionAnswerDTO;
-import com.aaslin.cbt.super_admin.dto.ParticipantInfoDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +22,14 @@ public class ResultService {
 
     private final SubmissionRepository submissionRepo;
     private final McqAnswerRepository mcqAnswerRepo;
+    private final CodingSubmissionsRepository codingSubmissionRepo;
+
     public ResultResponseDTO getResult(String submissionId, String participantId, String contestId) {
         Submission submission = submissionRepo.findBySubmissionIdAndParticipant_ParticipantIdAndContest_ContestId(
-                        submissionId, participantId, contestId)
+                submissionId, participantId, contestId)
                 .orElseThrow(() -> new RuntimeException("Result not found for given submission"));
 
         Participant participant = submission.getParticipant();
-
         ParticipantInfoDTO participantInfo = ParticipantInfoDTO.builder()
                 .participantId(participant.getParticipantId())
                 .username(participant.getName())
@@ -40,11 +40,11 @@ public class ResultService {
                 .totalMarks(submission.getTotalScore())
                 .percentage(participant.getPercentage())
                 .build();
-        List<McqAnswer> mcqAnswers = mcqAnswerRepo.findBySubmission_SubmissionId(submissionId);   
-        Map<String, List<McqQuestionAnswerDTO>> groupedBySection =
-            mcqAnswers.stream()
+
+        List<McqAnswer> mcqAnswers = mcqAnswerRepo.findBySubmission_SubmissionId(submissionId);
+        Map<String, List<McqQuestionAnswerDTO>> groupedBySection = mcqAnswers.stream()
                 .map(answer -> {
-                    McqQuestions q = answer.getMcqQuestion();     
+                    McqQuestions q = answer.getMcqQuestion();
                     String sectionName = (q.getSection() != null) ? q.getSection().getSection() : "Unknown";
                     return McqQuestionAnswerDTO.builder()
                             .mcqQuestionId(q.getMcqQuestionId())
@@ -61,32 +61,55 @@ public class ResultService {
                             .build();
                 })
                 .collect(Collectors.groupingBy(McqQuestionAnswerDTO::getSection, Collectors.toList()));
+
         List<McqSectionDTO> sections = groupedBySection.entrySet().stream()
-        		 .map(entry -> {
-        		     List<McqQuestionAnswerDTO> answersInSection = entry.getValue();
-        		     int totalWeight = answersInSection.stream()
-        		             .filter(a -> a.getWeightage() != null)
-        		             .mapToInt(a -> a.getWeightage())  
-        		             .sum();
+                .map(entry -> {
+                    List<McqQuestionAnswerDTO> answersInSection = entry.getValue();
+                    int totalWeight = answersInSection.stream()
+                            .filter(a -> a.getWeightage() != null)
+                            .mapToInt(a -> a.getWeightage())
+                            .sum();
 
-        		     return McqSectionDTO.builder()
-        		             .section(entry.getKey())
-        		             .sectionWeightage(totalWeight)
-        		             .mcqQuestionAnswer(answersInSection)
-        		             .build();
-        		 })
-        		 .collect(Collectors.toList());
-        		McqResponse mcqResponse = McqResponse.builder()
-        		.mcqSections(sections)
-        		.build();
+                    return McqSectionDTO.builder()
+                            .section(entry.getKey())
+                            .sectionWeightage(totalWeight)
+                            .mcqQuestionAnswer(answersInSection)
+                            .build();
+                })
+                .collect(Collectors.toList());
 
-        		return ResultResponseDTO.builder()
-        		.participantInfo(participantInfo)
-        		.mcqs(mcqResponse)
-        		.build();
+        McqResponse mcqResponse = McqResponse.builder()
+                .mcqSections(sections)
+                .build();
+
+        List<CodingSubmission> codingSubmissions = codingSubmissionRepo.findBySubmission_SubmissionId(submissionId);
+        List<CodingSubmissionDTO> codingSubmissionDTOs = codingSubmissions.stream()
+        	    .map((CodingSubmission cs) -> CodingSubmissionDTO.builder()
+        	        .codingSubmissionId(cs.getCodingSubmissionId())
+        	        .codingQuestionId(cs.getCodingQuestion().getCodingQuestionId())
+        	        .code(cs.getCode())
+        	        .score(cs.getScore())
+        	        .publicTestcasesPassed(cs.getPublicTestcasesPassed())
+        	        .privateTestcasesPassed(cs.getPrivateTestcasesPassed())
+        	        .isFinalAttempt(cs.getIsFinalAttempt())
+        	        .submittedAt(cs.getSubmittedAt())
+        	        .status(cs.getCodeStatus().name())
+        	        .build())
+        	    .collect(Collectors.toList());
+
+
+        CodingResponse codingResponse = CodingResponse.builder()
+                .codingSubmissions(codingSubmissionDTOs)
+                .build();
+
+      
+        return ResultResponseDTO.builder()
+                .participantInfo(participantInfo)
+                .mcqs(mcqResponse)
+                .coding(codingResponse)
+                .build();
     }
-
-   
 }
+
 
 

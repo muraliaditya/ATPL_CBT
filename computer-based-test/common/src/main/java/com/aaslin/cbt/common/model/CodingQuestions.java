@@ -78,6 +78,9 @@ public class CodingQuestions {
     
     @Column(name="is_active")
     private Boolean isActive = true;
+    
+    @Column(name = "weightage",nullable = false)
+    private Integer weightage;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
@@ -87,8 +90,7 @@ public class CodingQuestions {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "codingQuestion",cascade=CascadeType.ALL,orphanRemoval=true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "codingQuestion",cascade=CascadeType.ALL,orphanRemoval=true, fetch = FetchType.EAGER)
     private List<Testcases> testcases;
 
     public enum Difficulty { 
@@ -98,4 +100,5 @@ public class CodingQuestions {
     public enum ApprovalStatus { 
     	PENDING, APPROVED, REJECTED
     }
+
 }

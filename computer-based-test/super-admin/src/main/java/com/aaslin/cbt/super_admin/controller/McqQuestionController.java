@@ -2,36 +2,30 @@ package com.aaslin.cbt.super_admin.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.aaslin.cbt.super_admin.dto.McqQuestionDTO;
 import com.aaslin.cbt.super_admin.dto.McqResponseDTO;
 import com.aaslin.cbt.super_admin.service.McqQuestionService;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/mcqs")
+@RequiredArgsConstructor
 public class McqQuestionController {
 
 	@Autowired
     private final McqQuestionService mcqService;
-
-    public McqQuestionController(McqQuestionService mcqService) {
-        this.mcqService = mcqService;
-    }
-
-
-    @GetMapping
+    
+	@GetMapping("/mcq")
     public ResponseEntity<List<McqQuestionDTO>> getBySection(@RequestParam String sectionName) {
-        return ResponseEntity.ok(mcqService.getQuestionsBySection(sectionName));
+        List<McqQuestionDTO> questions = mcqService.getQuestionsBySection(sectionName);
+        return ResponseEntity.ok(questions);
     }
-
     @PostMapping
     public ResponseEntity<McqResponseDTO> addMultipleMcqs(@RequestBody List<McqQuestionDTO> dtos) {
         mcqService.addQuestions(dtos);
         return ResponseEntity.ok(new McqResponseDTO("Success","MCQs are Added Succesfully"));
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<McqResponseDTO> updateMcq(@PathVariable String id, @RequestBody McqQuestionDTO dto) {
         mcqService.updateMcq(id, dto);
@@ -42,8 +36,8 @@ public class McqQuestionController {
     public ResponseEntity<McqResponseDTO> deleteMcq(@PathVariable String id) {
         mcqService.safeDelete(id);
         return ResponseEntity.ok(new McqResponseDTO("Success","MCQ deleted Succesfullly"));
-    }
-        
+    }  
+    
     @GetMapping("/random")
         public ResponseEntity<List<McqQuestionDTO>> getRandomQuestions(
                 @RequestParam String sectionName,
@@ -57,7 +51,6 @@ public class McqQuestionController {
                 @RequestParam String currentQuestionId) {
             return ResponseEntity.ok(mcqService.regenerateQuestion(sectionName, currentQuestionId));
         }
-
 }
 
 

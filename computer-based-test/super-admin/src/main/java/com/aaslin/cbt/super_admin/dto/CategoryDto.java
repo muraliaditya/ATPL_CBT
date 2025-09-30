@@ -6,7 +6,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDto {
+public class CategoryDTO {
     private String categoryId;
     private String categoryName;
     private List<ContestDTO> contests;
