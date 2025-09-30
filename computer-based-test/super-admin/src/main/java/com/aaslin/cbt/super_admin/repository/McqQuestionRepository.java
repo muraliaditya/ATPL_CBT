@@ -19,8 +19,8 @@ public interface McqQuestionRepository extends JpaRepository<McqQuestions,String
 	    McqQuestions findRandomOtherBySection(@Param("sectionId") String sectionId, @Param("currentQuestionId") String currentQuestionId);
 
     
-	    List<McqQuestions> findBySectionAndDeletedFalse(Sections section);
-	    List<McqQuestions> findAllByDeletedFalse();
+	    List<McqQuestions> findBySectionAndIsActiveFalse(Sections section);
+	    List<McqQuestions> findAllByIsActiveFalse();
 	    List<McqQuestions> findBySection(Sections section);
 
     @Query(value = "SELECT MAX(CAST(SUBSTRING(mcq_question_id, 4) AS UNSIGNED)) FROM mcq_questions_cbt", nativeQuery = true)

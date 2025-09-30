@@ -1,13 +1,13 @@
 package com.aaslin.cbt.developer.service.Implementation;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aaslin.cbt.common.model.CodingQuestions;
+import java.util.List;
 import com.aaslin.cbt.common.model.Testcases;
 import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionRequestDto;
@@ -36,90 +36,90 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
     @Transactional
     @Override
     public AddCodingQuestionResponse addCodingQuestion(AddCodingQuestionRequestDto request) {
-        if (request.getTestcases() == null || request.getTestcases().isEmpty()) {
-            throw new IllegalArgumentException("At least one testcase is required");
-        }
-        
-        String username = currentUser.getCurrentUsername();
-        if (username == null) {
-        	throw new RuntimeException("Unauthorized: user not found in context");
-        }
-        
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new RuntimeException("User not found"));
+    	 if (request.getTestcases() == null || request.getTestcases().isEmpty()) {
+             throw new IllegalArgumentException("At least one testcase is required");
+         }
 
-        String lastQuestionId = codingQuestionRepo.findTopByOrderByCodingQuestionIdDesc()
-                .map(CodingQuestions::getCodingQuestionId)
-                .orElse(null);
-        String newQuestionId = CustomIdGenerator.generateNextId("CQ", lastQuestionId);
+         String username = currentUser.getCurrentUsername();
+         if (username == null) throw new RuntimeException("Unauthorized: user not found in context");
 
-        CodingQuestions question = new CodingQuestions();
-        question.setCodingQuestionId(newQuestionId);
-        question.setQuestion(request.getQuestion());
-        question.setDescription(request.getDescription());
-        question.setDifficulty(CodingQuestions.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
-        question.setApprovalStatus(CodingQuestions.ApprovalStatus.PENDING);
-        question.setMethodName(request.getMethodName());
-        question.setExecutionTimeLimit(request.getExecutionTimeLimit());
-        question.setMemoryLimit(request.getMemoryLimit());
-        question.setIsActive(true);
-        
-        LocalDateTime now = LocalDateTime.now();
-        question.setCreatedAt(now);
-        question.setUpdatedAt(now);
-        question.setCreatedBy(user);
-        question.setUpdatedBy(user);
-        question.setJavaBoilerCode(request.getJavaBoilerCode());
-        question.setPythonBoilerCode(request.getPythonBoilerCode());
+         User user = userRepository.findByUsername(username)
+                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        try {
-            question.setInputParams(objectMapper.writeValueAsString(Map.of("params", request.getInputParams())));
-            question.setInputType(objectMapper.writeValueAsString(Map.of("type", request.getInputType())));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to serialize input params/type", e);
-        }
+         String lastQuestionId = codingQuestionRepo.findTopByOrderByCodingQuestionIdDesc()
+                 .map(CodingQuestions::getCodingQuestionId)
+                 .orElse(null);
+         String newQuestionId = CustomIdGenerator.generateNextId("CQ", lastQuestionId);
 
-        codingQuestionRepo.save(question);
+         CodingQuestions question = new CodingQuestions();
+         question.setCodingQuestionId(newQuestionId);
+         question.setQuestion(request.getQuestion());
+         question.setDescription(request.getDescription());
+         question.setDifficulty(CodingQuestions.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
+         question.setApprovalStatus(CodingQuestions.ApprovalStatus.PENDING);
+         question.setMethodName(request.getMethodName());
+         question.setExecutionTimeLimit(request.getExecutionTimeLimit());
+         question.setMemoryLimit(request.getMemoryLimit());
+         question.setIsActive(true);
+         question.setCreatedBy(user);
+         question.setUpdatedBy(user);
 
-        for (AddTestcaseRequestDto tcDto : request.getTestcases()) {
-            if (tcDto.getInputValues() == null || tcDto.getInputValues().isEmpty()) {
-                throw new IllegalArgumentException("Testcase inputs cannot be null or empty");
-            }
+         LocalDateTime now = LocalDateTime.now();
+         question.setCreatedAt(now);
+         question.setUpdatedAt(now);
+         question.setJavaBoilerCode(request.getJavaBoilerCode());
+         question.setPythonBoilerCode(request.getPythonBoilerCode());
 
-            String lastTestcaseId = testcaseRepo.findTopByOrderByTestcaseIdDesc()
-                    .map(Testcases::getTestcaseId)
-                    .orElse(null);
-            String newTestcaseId = CustomIdGenerator.generateNextId("TC", lastTestcaseId);
+         try {
+             // Convert frontend strings to proper JSON objects for DB
+             question.setInputParams(objectMapper.writeValueAsString(
+                 Map.of("params", objectMapper.readValue(request.getInputParams(), List.class))
+             ));
+             question.setInputType(objectMapper.writeValueAsString(
+                 Map.of("types", objectMapper.readValue(request.getInputType(), List.class))
+             ));
+         } catch (Exception e) {
+             throw new RuntimeException("Failed to serialize input params/type", e);
+         }
 
-            Testcases tc = new Testcases();
-            tc.setTestcaseId(newTestcaseId);
-            tc.setCodingQuestion(question);
+         codingQuestionRepo.save(question);
 
-            try {
-                // inputs to JSON
-                Map<String, Object> inputWrapper = new LinkedHashMap<>();
-                for (int i = 0; i < request.getInputParams().size(); i++) {
-                    inputWrapper.put(request.getInputParams().get(i), tcDto.getInputValues().get(i));
-                }
-                tc.setInputValues(objectMapper.writeValueAsString(inputWrapper));
+         for (AddTestcaseRequestDto tcDto : request.getTestcases()) {
+             if (tcDto.getInputValues() == null || tcDto.getInputValues().isEmpty()) {
+                 throw new IllegalArgumentException("Testcase inputs cannot be null or empty");
+             }
 
-                // output to JSON
-                tc.setExpectedOutput(objectMapper.writeValueAsString(Map.of("output", tcDto.getOutput())));
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to serialize testcase data", e);
-            }
+             String lastTestcaseId = testcaseRepo.findTopByOrderByTestcaseIdDesc()
+                     .map(Testcases::getTestcaseId)
+                     .orElse(null);
+             String newTestcaseId = CustomIdGenerator.generateNextId("TC", lastTestcaseId);
 
-            tc.setTestcaseType(Testcases.TestcaseType.valueOf(tcDto.getTestcaseType().toUpperCase()));
-            tc.setWeightage(tcDto.getWeightage());
-            tc.setDescription(tcDto.getDescription());
-            tc.setCreatedAt(now);
-            tc.setUpdatedAt(now);
-            tc.setCreatedBy(user);
-            tc.setUpdatedBy(user);
+             Testcases tc = new Testcases();
+             tc.setTestcaseId(newTestcaseId);
+             tc.setCodingQuestion(question);
 
-            testcaseRepo.save(tc);
-        }
+             try {
+                 // inputValues stored as {"values":[[2,7,11,15],9]}
+                 tc.setInputValues(objectMapper.writeValueAsString(
+                     Map.of("values", objectMapper.readValue(tcDto.getInputValues(), List.class))
+                 ));
+                 // expectedOutput stored as plain varchar
+                 tc.setExpectedOutput(tcDto.getExpectedOutput());
+             } catch (Exception e) {
+                 throw new RuntimeException("Failed to serialize testcase data", e);
+             }
 
-        return new AddCodingQuestionResponse("Coding question added successfully", "success");
+             tc.setTestcaseType(Testcases.TestcaseType.valueOf(tcDto.getTestcaseType().toUpperCase()));
+             tc.setWeightage(tcDto.getWeightage());
+             tc.setDescription(tcDto.getDescription());
+             tc.setCreatedAt(now);
+             tc.setUpdatedAt(now);
+             tc.setCreatedBy(user);
+             tc.setUpdatedBy(user);
+
+             testcaseRepo.save(tc);
+         }
+
+         return new AddCodingQuestionResponse("Coding question added successfully", "success");
     }
 }

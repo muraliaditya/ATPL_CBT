@@ -60,7 +60,7 @@ public class McqQuestionService {
         Sections section = sectionRepo.findBySection(sectionName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid section name: " + sectionName));
 
-        return mcqRepo.findBySectionAndDeletedFalse(section).stream()
+        return mcqRepo.findBySectionAndIsActiveFalse(section).stream()
         		.map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
