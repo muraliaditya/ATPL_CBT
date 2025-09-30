@@ -93,7 +93,7 @@
       <button class="px-1 h-7 m-1 bg-blue-400 gap-3 text-white rounded-md">Submit</button>
       </div>
     </div>
-    <div class="shadow-lg rounded-md bg-gray-100 w-full h-50 pl-3">
+    <div class="shadow-lg rounded-md bg-gray-100 w-full h-auto pl-3">
     <div class="flex gap-10 mt-1 ">
     <button class="text-gray-400 font-bold rounded-md " (click)="sectionchange('TestCase')">TestCases</button>
     <button class="text-gray-400  font-bold rounded-md " (click)="sectionchange('Result')">Outputs</button>
@@ -103,40 +103,59 @@
       <div>
         <button class="px-1 gap-3 text-white rounded-md bg-gray-400 px-2" (click)="showDialog()">+</button>
         <div class="card flex justify-center">
-    <p-dialog header="Add TestCases" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-    <form [formGroup]="TestCase"(ngSubmit)="onSubmit()">
+   
+<p-dialog header="Add TestCases" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+  <form [formGroup]="TestCase" (ngSubmit)="onSubmit()">
     <div class="flex flex-col gap-4 w-[90%]">
-       <div formArrayName="inputs" class="mt-2">
+      <div formArrayName="inputs" class="mt-2">
         <div *ngFor="let ctrl of inputsArray.controls; let i = index">
           <p-floatlabel variant="on" class="w-full ">
-        <input [formControlName]="i"  pInputText class="w-full mt-2 gap-2" id="input-{{i}}" autocomplete="off"/>
-        <label for="input-{{i}}">Input {{ i + 1 }}</label>
-      </p-floatlabel>
+            <input [formControlName]="i" pInputText class="w-full mt-2 gap-2" id="input-{{i}}" autocomplete="off"/>
+            <label for="input-{{i}}">Input {{ i + 1 }}</label>
+          </p-floatlabel>
         </div>
       </div>
+
       <p-floatlabel variant="on" class="w-full">
         <input formControlName="output" pInputText class="w-full" id="output" type="text" autocomplete="off"/>
         <label for="output">Output</label>
       </p-floatlabel>
+
       <p-floatlabel variant="on" class="w-full border border-gray-300 rounded-md py-2">
-            <p-select [options]="testType" formControlName="type" class="w-full shadow-none"/>
-                <label for="on_label">TestCase Type</label>
-    </p-floatlabel>
-      <p-floatlabel variant="on" class="w-full ">
+        <p-select [options]="testType" formControlName="type" class="w-full shadow-none"></p-select>
+        <label for="on_label">TestCase Type</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="w-full">
         <input formControlName="weightage" pInputText class="w-full" id="weightage" type="number" autocomplete="off"/>
-        <label for="weightage">weightage</label>
+        <label for="weightage">Weightage</label>
       </p-floatlabel>
     </div>
-        <div class="flex ml-50 pt-2 gap-2">
-            <button severity="secondary" class="bg-gray-500 rounded-md px-2 py-1 text-white" (click)="reset()">Reset</button>
-            <button class="bg-blue-400 text-white rounded-md px-2 py-1 text-white disabled:bg-gray-300" [disabled]="TestCase.invalid" (click)="onSubmit()">Add</button>
-        </div>
-        </form>
-    </p-dialog>
-    <div *ngIf="save">
-        <p>{{inputs}}</p>
-        <p>{{output}}</p>
+
+    <div class="flex ml-50 pt-2 gap-2">
+      <button type="button" class="bg-gray-500 rounded-md px-2 py-1 text-white" (click)="reset()">Reset</button>
+      <button type="submit" class="bg-blue-400 text-white rounded-md px-2 py-1 disabled:bg-gray-300" [disabled]="TestCase.invalid">Add</button>
     </div>
+  </form>
+</p-dialog>
+<div class="flex flex-col gap-2">
+<div *ngIf="save" class="mt-5">
+  <div class="flex flex-wrap gap-3">
+    <button 
+      *ngFor="let tc of submittedTestCases; let i = index"
+      type="button"
+      class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600"
+      (click)="viewTestCase(i)">
+      TestCase {{ i + 1 }}
+    </button>
+  </div>
+</div>
+<div *ngIf="selectedTestCase" class="mt-4">
+  <h3 class="text-lg font-bold mb-2">TestCase Details</h3>
+  <p><strong>Inputs:</strong> </p><p class="bg-black text-white "> {{ selectedTestCase.inputs }}</p>
+  <p><strong>Output:</strong> </p><p class="bg-black text-white "> {{ selectedTestCase.output }}</p>
+</div>
+</div>
     </div>
     </div>
     </div>

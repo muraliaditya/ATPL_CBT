@@ -126,18 +126,6 @@ Inputform:any[]=[];
   this.visible = true;
 }
     submittedTestCases:any[]=[];
-    onSubmit(){
-      if(this.TestCase.valid){
-      console.log(this.TestCase.value);
-      }
-      this.test.push({
-        inputs:'',
-        output:'',
-      });
-      this.save=true;
-      this.TestCase.reset();
-      this.visible = false;
-    }
     reset(){
       this.TestCase.reset();
     }
@@ -145,4 +133,22 @@ Inputform:any[]=[];
       sectionchange(section: 'TestCase' | 'Result') {
         this.currentSection = section;
   }
+selectedTestCase: any = null;
+
+onSubmit() {
+  if (this.TestCase.valid) {
+    const testCase = this.TestCase.value;
+    this.submittedTestCases.push(testCase);
+    this.TestCase.reset();
+    this.visible = false;
+    this.save = true;
+  } else {
+    this.TestCase.markAllAsTouched();
+  }
+}
+
+viewTestCase(index: number) {
+  this.selectedTestCase = this.submittedTestCases[index];
+}
+
 }
