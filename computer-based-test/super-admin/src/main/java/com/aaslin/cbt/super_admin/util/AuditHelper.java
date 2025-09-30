@@ -9,6 +9,7 @@ import com.aaslin.cbt.common.model.Contest;
 import com.aaslin.cbt.common.model.MapContestCoding;
 import com.aaslin.cbt.common.model.MapContestMcq;
 import com.aaslin.cbt.common.model.McqQuestions;
+import com.aaslin.cbt.common.model.Sections;
 import com.aaslin.cbt.common.model.Testcases;
 import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.super_admin.repository.UsersRepository;
@@ -74,6 +75,8 @@ public class AuditHelper {
             mapMcq.setCreatedAt(LocalDateTime.now());
         }
     }
+    
+    
 
     public void applyAuditForMapContestCoding(MapContestCoding mapCoding) {
         User user = getCurrentUser();

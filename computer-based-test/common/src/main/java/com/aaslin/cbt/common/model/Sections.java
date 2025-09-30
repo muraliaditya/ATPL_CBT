@@ -24,6 +24,9 @@ public class Sections {
 	 @Column(name = "section", nullable = false, length = 100)
 	 private String section;
 	 
+	 @Column(name = "is_active",nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+	 private Boolean isActive=true;
+	 
 	 @OneToMany(mappedBy = "section")
 	 private List<McqQuestions> mcqQuestions;
 }

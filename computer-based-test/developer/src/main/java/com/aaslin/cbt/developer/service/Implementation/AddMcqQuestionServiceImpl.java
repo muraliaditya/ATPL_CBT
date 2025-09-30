@@ -19,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
 
-    private McqQuestionsRepository mcqQuestionsRepository;
-    private Sectionrepository sectionRepository;
-    private AuditHelper auditHelper;
+    private final McqQuestionsRepository mcqQuestionsRepository;
+    private final Sectionrepository sectionRepository;
+    private final AuditHelper auditHelper;
 
     @Override
     @Transactional
@@ -35,9 +35,19 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
                 .orElse(null);
 
         for (AddMcqQuestionRequestDto.McqQuestionDto dto : request.getMcqQuestions()) {
-     
+        	
+        	String lastSectionId = sectionRepository.findTopByOrderBySectionIdDesc()
+        	        .map(Sections::getSectionId)
+        	        .orElse(null);
+        	
             Sections section = sectionRepository.findBySectionIgnoreCase(dto.getSection())
-                    .orElseThrow(() -> new RuntimeException("Section not found: " + dto.getSection()));
+            		.orElseGet(() -> {
+                        Sections newSection = new Sections();
+                        newSection.setSectionId(CustomIdGenerator.generateNextId("SECT", lastSectionId)); 
+                        newSection.setSection(dto.getSection());
+                        newSection.setIsActive(true);
+                        return sectionRepository.save(newSection);
+                    });
 
             lastId = CustomIdGenerator.generateNextId("MCQ", lastId);
 

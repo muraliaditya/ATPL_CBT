@@ -24,10 +24,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
 
-    private CodingQuestionRepository codingQuestionRepo;
-    private TestcaseRepository testcaseRepo;
-    private ObjectMapper objectMapper;
-    private AuditHelper auditHelper;
+    private final CodingQuestionRepository codingQuestionRepo;
+    private final TestcaseRepository testcaseRepo;
+    private final ObjectMapper objectMapper;
+    private final AuditHelper auditHelper;
 
     @Transactional
     @Override
