@@ -36,7 +36,6 @@ public class FetchCodingQuestionServiceImpl implements FetchCodingQuestionServic
 	    
 	    List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(questionId,Testcases.TestcaseType.PUBLIC);
 	    
-	    // Map to DTOs with parsed and unwrapped JSON
         List<FetchTestcaseDto> testcaseDtos = testcases.stream()
                 .map(tc -> new FetchTestcaseDto(
                         tc.getTestcaseId(),

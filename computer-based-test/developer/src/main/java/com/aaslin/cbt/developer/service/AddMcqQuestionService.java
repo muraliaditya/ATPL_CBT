@@ -5,5 +5,5 @@ import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
 
 public interface AddMcqQuestionService {
 	
-	AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request, String userId);
+	AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request);
 }

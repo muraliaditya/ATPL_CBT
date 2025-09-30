@@ -21,19 +21,41 @@ public class CodingQuestionPageServiceImpl implements CodingQuestionService {
     @Autowired
     private CodingQuestionRepository codingQuestionRepo;
 
-    public CodingQuestionResponse searchQuestions(String question, int page) {
-    	
+    @Override
+    public CodingQuestionResponse searchQuestions(String question, String difficulty, int page, int size) {
+
     	int pageIndex = (page > 0) ? page - 1 : 0;
-        Pageable pageable = PageRequest.of(pageIndex, 10); // 10 results per page
+        int pageSize = (size > 0) ? size : 10;
+
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<CodingQuestions> questions;
 
-        if (question != null && !question.isEmpty()) {
-            // Search,Pagination
+        CodingQuestions.Difficulty difficultyEnum = null;
+        
+        if (difficulty != null && !difficulty.isEmpty()) {
+            try {
+                difficultyEnum = CodingQuestions.Difficulty.valueOf(difficulty.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid difficulty level: " + difficulty);
+            }
+        }
+        
+        //question and difficulty
+        if (difficultyEnum != null && question != null && !question.isEmpty()) {
+            questions = codingQuestionRepo.findByQuestionContainingIgnoreCaseAndDifficultyAndApprovalStatus(
+                    question, difficultyEnum, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+        
+        } else if (difficultyEnum != null) {
+            questions = codingQuestionRepo.findByDifficultyAndApprovalStatus(
+                    difficultyEnum, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+
+        } else if (question != null && !question.isEmpty()) {
             questions = codingQuestionRepo.findByQuestionContainingIgnoreCaseAndApprovalStatus(
                     question, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+
         } else {
-            //Default Load, Pagination
-            questions = codingQuestionRepo.findByApprovalStatus(CodingQuestions.ApprovalStatus.APPROVED, pageable);
+            questions = codingQuestionRepo.findByApprovalStatus(
+                    CodingQuestions.ApprovalStatus.APPROVED, pageable);
         }
 
         List<CodingQuestionDto> dtoList = questions.stream()
@@ -43,8 +65,11 @@ public class CodingQuestionPageServiceImpl implements CodingQuestionService {
                         q.getDifficulty()))
                 .toList();
 
-        return new CodingQuestionResponse(page, dtoList,
-        		questions.getTotalElements(),  
-                questions.getTotalPages() );
+        return new CodingQuestionResponse(
+                page,
+                dtoList,
+                questions.getTotalElements(),
+                questions.getTotalPages()
+        );
     }
 }

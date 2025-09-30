@@ -1,5 +1,10 @@
 package com.aaslin.cbt.developer.service.Implementation;
 
+import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.aaslin.cbt.common.model.McqQuestions;
 import com.aaslin.cbt.common.model.Sections;
 import com.aaslin.cbt.common.model.User;
@@ -7,39 +12,43 @@ import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
 import com.aaslin.cbt.developer.repository.McqQuestionsRepository;
 import com.aaslin.cbt.developer.repository.Sectionrepository;
+import com.aaslin.cbt.developer.repository.UserRepository;
 import com.aaslin.cbt.developer.service.AddMcqQuestionService;
 import com.aaslin.cbt.developer.util.CustomIdGenerator;
+import com.aaslin.cbt.developer.util.GetCurrentUsername;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
 
-    @Autowired
     private McqQuestionsRepository mcqQuestionsRepository;
-
-    @Autowired
+    private UserRepository userRepository;
     private Sectionrepository sectionRepository;
+    private GetCurrentUsername currentUser;
 
     @Override
     @Transactional
-    public AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request, String createdByUserId) {
+    public AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request) {
         if (request.getMcqQuestions() == null || request.getMcqQuestions().isEmpty()) {
             throw new IllegalArgumentException("At least one MCQ question is required");
         }
-
+        
+        String username = currentUser.getCurrentUsername();
+        if (username == null) {
+        	throw new RuntimeException("Unauthorized: user not found in context");
+        }
+        
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new RuntimeException("User not found"));
+        
         String lastId = mcqQuestionsRepository.findTopByOrderByMcqQuestionIdDesc()
                 .map(McqQuestions::getMcqQuestionId)
                 .orElse(null);
 
         LocalDateTime now = LocalDateTime.now();
 
-        User user = new User();
-        user.setUserId(createdByUserId);
 
         for (AddMcqQuestionRequestDto.McqQuestionDto dto : request.getMcqQuestions()) {
      
@@ -59,7 +68,7 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
             mcq.setSection(section);
             mcq.setWeightage(dto.getWeightage() != null ? dto.getWeightage() : 1);
             mcq.setApprovalStatus(McqQuestions.ApprovalStatus.PENDING);
-            mcq.setDeleted(true);
+            mcq.setIsActive(true);
 
             mcq.setCreatedBy(user);
             mcq.setUpdatedBy(user);

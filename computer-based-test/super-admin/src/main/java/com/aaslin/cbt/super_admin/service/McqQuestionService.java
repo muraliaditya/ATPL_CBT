@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class McqQuestionService {
     private final McqQuestionRepository mcqRepo;
     private final SectionRepository sectionRepo;
@@ -117,7 +118,7 @@ public class McqQuestionService {
     public void safeDelete(String id) {
         McqQuestions mcq = mcqRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("MCQ not found: " + id));
-        mcq.setDeleted(true);
+        mcq.setIsActive(true);
         mcqRepo.save(mcq);
     }
 

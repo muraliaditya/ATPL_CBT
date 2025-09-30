@@ -13,7 +13,10 @@ public class AddCodingQuestionRequestDto {
 	 private String difficulty;
 	 private List<String> inputParams;
 	 private String inputType;
+<<<<<<< HEAD
 	// private String outputType;
+=======
+>>>>>>> a8e32f6fcbfb31481ee9ec6eb019abe006b215b3
 	 private String outputFormat;
 	 private String javaBoilerCode;
 	 private String pythonBoilerCode;
