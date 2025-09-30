@@ -25,6 +25,7 @@ import { AddCodingQuestion } from './pages/admin/add-coding-question/add-coding-
 import { AddCode } from './pages/admin/add-code/add-code';
 import { EditCodingquestion } from './pages/admin/edit-codingquestion/edit-codingquestion';
 import { ViewCodingquestion } from './pages/admin/view-codingquestion/view-codingquestion';
+import { SubmissionScreen } from './pages/admin/submission-screen/submission-screen';
 export const routes: Routes = [
   {
     path: '',
@@ -45,6 +46,10 @@ export const routes: Routes = [
     path: 'test',
     loadComponent: () =>
       import('./pages/user/test-page/test-page').then((c) => c.TestPage),
+  },
+  {
+    path: 'test/submission',
+    component: SubmissionScreen,
   },
   {
     path: 'admin',

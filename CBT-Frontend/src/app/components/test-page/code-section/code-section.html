@@ -171,8 +171,27 @@
               *ngIf="currentSelectedTab === 'Test Results'"
               class="p-4 flex flex-1 bg-white flex-col gap-3 overflow-y-auto"
             >
+              <div *ngIf="!showErrorMessage()">
+                <h1
+                  [ngClass]="
+                    getCurrentCodeStatus() === 'SOLVED'
+                      ? 'text-green-500'
+                      : 'text-red-600'
+                  "
+                  class="font-semibold text-sm"
+                >
+                  {{
+                    getCurrentCodeStatus() === "SOLVED"
+                      ? "ACCEPTED"
+                      : "WRONG ANSWER"
+                  }}
+                </h1>
+              </div>
               <div
-                *ngIf="getCurrentQuestion()?.testcases?.length"
+                *ngIf="
+                  getCurrentQuestion()?.testcases?.length &&
+                  checkIfCodingReponseExist()
+                "
                 class="flex gap-2 flex-wrap"
               >
                 <div
@@ -181,6 +200,7 @@
                 >
                   {{ showErrorMessage() }}
                 </div>
+
                 <div *ngIf="!showErrorMessage()">
                   <div class="flex gap-3 flex-wrap">
                     <div
@@ -209,7 +229,7 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="!showErrorMessage()">
+              <div *ngIf="!showErrorMessage() && checkIfCodingReponseExist()">
                 <div
                   *ngIf="viewCurrentTestCase"
                   class="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm"

@@ -186,7 +186,7 @@
               <button
                 type="button"
                 *ngIf="!checkIsSectionFinalised(section.value)"
-                (click)="replaceAll(section.key)"
+                (click)="replaceAll(section.key, section.value)"
                 [disabled]="checkIfSectionInvalid(section.key)"
                 class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
               >
@@ -243,7 +243,13 @@
                   </button>
                   <button
                     type="button"
-                    (click)="replaceMcqQuestion(section.key, question.key)"
+                    (click)="
+                      replaceMcqQuestion(
+                        section.key,
+                        question.key,
+                        question.value.mcqQuestionId
+                      )
+                    "
                     [disabled]="isQuestionInvalid(section.key, question.key)"
                     class="py-1 h-fit text-white px-3 disabled:bg-neutral-500 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
                   >
@@ -525,7 +531,8 @@
                   <div
                     *ngFor="let inputValue of testcase.inputValues; index as i"
                   >
-                    {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+                    {{ codingQuestion.inputParams[i] }} =
+                    {{ stringifyInputValue(inputValue) }}
                   </div>
                   {{ testcase.explanation }}
                 </div>
@@ -547,7 +554,8 @@
                             index as i
                           "
                         >
-                          {{ codingQuestion.inputParams[i] }} = {{ inputValue }}
+                          {{ codingQuestion.inputParams[i] }} =
+                          {{ stringifyInputValue(inputValue) }}
                         </code>
                       </div>
                       <div class="font-medium">Output:</div>

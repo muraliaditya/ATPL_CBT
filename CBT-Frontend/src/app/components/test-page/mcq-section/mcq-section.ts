@@ -1,4 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { McqQuestions } from '../../../models/test/questions';
 import { CommonModule } from '@angular/common';
 import { RadioButton } from 'primeng/radiobutton';
@@ -15,15 +23,38 @@ export class McqSection implements OnInit {
   currentQuestionNo: number = -1;
   selectedOption: string = '';
 
+  markUserAnswer() {
+    let answers: any = localStorage.getItem('mcq-answers');
+    let selectedMcqAnswers;
+    if (answers) {
+      selectedMcqAnswers = JSON.parse(answers);
+      console.log(answers);
+      let index = this.questions[this.currentQuestionNo].mcqId;
+      console.log(index);
+      if (selectedMcqAnswers[index]) {
+        this.selectedOption = selectedMcqAnswers[index];
+      }
+    }
+  }
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
   goToNextQuestion() {
-    this.currentQuestionNo = this.currentQuestionNo + 1;
+    this.currentQuestionNumber = this.currentQuestionNo + 1;
   }
   goToPrevQuestion() {
-    this.currentQuestionNo = this.currentQuestionNo - 1;
+    this.currentQuestionNumber = this.currentQuestionNo - 1;
   }
 
   getCurrentQuestion(): McqQuestions | undefined {
     return this.questions[this.currentQuestionNo];
+  }
+
+  set currentQuestionNumber(value: number) {
+    if (this.currentQuestionNo !== value) {
+      this.currentQuestionNo = value;
+      this.markUserAnswer();
+    }
   }
 
   onChange(value: string) {
@@ -32,30 +63,23 @@ export class McqSection implements OnInit {
     let selectedMcqAnswers;
     if (answers) {
       selectedMcqAnswers = JSON.parse(answers);
-      console.log(selectedMcqAnswers);
       selectedMcqAnswers = {
         ...selectedMcqAnswers,
 
-        [this.questions[this.currentQuestionNo].mcqId]: {
-          ...this.questions[this.currentQuestionNo],
-          selectedOption: value,
-        },
+        [this.questions[this.currentQuestionNo].mcqId]: value,
       };
       localStorage.setItem('mcq-answers', JSON.stringify(selectedMcqAnswers));
     } else {
       localStorage.setItem(
         'mcq-answers',
         JSON.stringify({
-          [this.questions[this.currentQuestionNo].mcqId]: {
-            ...this.questions[this.currentQuestionNo],
-            selectedOption: value,
-          },
+          [this.questions[this.currentQuestionNo].mcqId]: value,
         })
       );
     }
   }
   changeQuestionNumber(num: number) {
-    this.currentQuestionNo = num;
+    this.currentQuestionNumber = num;
   }
   ngOnInit(): void {
     this.currentQuestionNo = 0;

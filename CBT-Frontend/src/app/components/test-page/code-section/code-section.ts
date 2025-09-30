@@ -74,6 +74,10 @@ export class CodeSection implements OnInit, OnChanges {
     return null;
   }
 
+  checkIfCodingReponseExist(): CodeExecutionResponse | undefined {
+    return this.codingResponse[this.currentQuestionNo];
+  }
+
   getCurrentCodeStatus() {
     return this.codingResponse[this.currentQuestionNo].codeStatus;
   }
@@ -91,9 +95,9 @@ export class CodeSection implements OnInit, OnChanges {
     return null;
   }
 
-  codingResponse: CodeExecutionResponse[] = [
-    {
-      codeStatus: 'SOLVED',
+  codingResponse: Record<number, CodeExecutionResponse> = {
+    0: {
+      codeStatus: 'WRONG ANSWER',
       message: 'Compiled and executed successfully',
       publicTestcasePassed: 1,
       publicTestcaseResults: [
@@ -123,7 +127,7 @@ export class CodeSection implements OnInit, OnChanges {
         },
       ],
     },
-    {
+    1: {
       codeStatus: 'COMPILATION_ERROR',
       message: 'Compiled and executed successfully',
       publicTestcasePassed: 2,
@@ -159,7 +163,7 @@ export class CodeSection implements OnInit, OnChanges {
         },
       ],
     },
-  ];
+  };
 
   languagesSupported: string[] = ['python', 'java'];
   currentTestCases: Testcase[] = [];
@@ -182,15 +186,14 @@ export class CodeSection implements OnInit, OnChanges {
 
     this.setBoilerPlateCode();
   }
-  codeChange(value: string) {
+  codeChange(value: Event) {
     console.log(value);
     let index = `${this.currentQuestionNo}-${
       this.getCurrentQuestion()?.codingQuestionId
     }-${this.language}`;
     let codes = localStorage.getItem('codes');
     let parsedData = codes ? JSON.parse(codes) : {};
-    console.log(parsedData);
-    parsedData[index] = value;
+    parsedData[index] = value.toString();
     localStorage.setItem('codes', JSON.stringify(parsedData));
   }
 

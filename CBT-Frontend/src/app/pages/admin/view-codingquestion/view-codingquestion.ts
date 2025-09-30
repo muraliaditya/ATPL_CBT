@@ -17,13 +17,13 @@ export class ViewCodingquestion {
   codingQuestion: ContestCodingQuestion = {
     codeQuestionId: 'code001',
     questionName: 'Reverse a string',
-    difficulty: 'Easy',
+    difficulty: 'EASY',
     description:
       'Write a function that takes a string and returns it reversed.',
 
     inputParams: ['str', 'str2'],
     inputType: ['string'],
-    outputFormat: 'string',
+    outputType: 'string',
     testcases: [
       {
         testcaseId: 'tc1',

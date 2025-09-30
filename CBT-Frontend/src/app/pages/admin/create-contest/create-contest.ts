@@ -46,6 +46,7 @@ import { TestcaseFilterPipe } from '../../../pipes/testcase-filter-pipe';
 import { ContestTestcase } from '../../../models/admin/contest';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 import { IntegerArrayValidate } from '../../../utils/custom-validators/integer-array-validator';
+import { CreateContestService } from '../../../services/admin/create-contest-service';
 
 @Component({
   selector: 'app-create-contest',
@@ -133,7 +134,11 @@ export class CreateContest implements OnInit {
   finalisedQuestionSet: Set<string> = new Set();
   finalisedCodingQuestions$: Observable<ContestCodingQuestion[]>;
 
-  constructor(private store: Store<AppState>, private fb: FormBuilder) {
+  constructor(
+    private store: Store<AppState>,
+    private fb: FormBuilder,
+    private contestService: CreateContestService
+  ) {
     this.contestDetailsForm = this.fb.group({
       contestName: ['', [Validators.required]],
       eligibility: ['', [Validators.required]],
@@ -243,6 +248,10 @@ export class CreateContest implements OnInit {
     return this.codingWeightageForm.invalid;
   }
 
+  stringifyInputValue(val: any) {
+    return JSON.stringify(val);
+  }
+
   replaceCodequestion(prevCodeId: string) {
     const questionControl = this.getCodingQuestionControl(prevCodeId);
     const currentDifficulty = questionControl.get('difficulty')?.value;
@@ -252,14 +261,14 @@ export class CreateContest implements OnInit {
       codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
       description: 'Write a function that returns the sum of two integers.',
-      difficulty: 'Easy',
-      inputParams: ['a', 'b'],
-      inputType: ['number', 'number'],
-      outputFormat: 'number',
+      difficulty: 'EASY',
+      inputParams: ['a', 'b', 'c'],
+      inputType: ['number', 'number', 'intArray'],
+      outputType: 'number',
       testcases: [
         {
           testcaseId: 'TC1',
-          inputValues: [2, 3],
+          inputValues: [2, 3, ['1', '2', '3']],
           expectedOutput: '5',
           weightage: 1,
           testcaseType: 'PUBLIC',
@@ -311,10 +320,10 @@ export class CreateContest implements OnInit {
         codeQuestionId: 'Q8',
         questionName: 'Sum of Four Numbers',
         description: 'Write a function that returns the sum of two integers.',
-        difficulty: 'Easy',
+        difficulty: 'EASY',
         inputParams: ['a', 'b'],
         inputType: ['number', 'number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -337,10 +346,10 @@ export class CreateContest implements OnInit {
         codeQuestionId: 'Q7',
         questionName: 'Reverse anfdksaf String',
         description: 'Create a function that reverses a given string.',
-        difficulty: 'medium',
+        difficulty: 'MEDIUM',
         inputParams: ['str'],
         inputType: ['string'],
-        outputFormat: 'string',
+        outputType: 'string',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -364,10 +373,10 @@ export class CreateContest implements OnInit {
         questionName: 'Find Factorial',
         description:
           'Implement a function tdsiuhfjksdf find the factorial of a non-negative integer.',
-        difficulty: 'difficult',
+        difficulty: 'DIFFICULT',
         inputParams: ['n'],
         inputType: ['number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -397,7 +406,10 @@ export class CreateContest implements OnInit {
   generateMcqSection() {
     console.log(this.mcqQuestionGenerateForm.value);
   }
-  replaceAll(section: string) {
+  replaceAll(section: string, sectionData: Record<number, ContestMCQQuestion>) {
+    console.log(sectionData);
+    let sectionArr = Object.keys(sectionData);
+
     const Reasoning = [
       {
         mcqQuestionId: 'math-004',
@@ -422,6 +434,16 @@ export class CreateContest implements OnInit {
         section: 'Aptitude',
       },
     ];
+    this.contestService
+      .regenerateNMcqQuestions(section, sectionArr.length)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
     this.store.dispatch(ReplaceSection({ section: section, mcqs: Reasoning }));
   }
 
@@ -460,8 +482,19 @@ export class CreateContest implements OnInit {
   replaceMcqQuestion(
     category: string,
 
-    prevMcqId: string
+    prevMcqId: string,
+    currentMcqQuestionId: string
   ) {
+    this.contestService
+      .regenerateMcqQuestion(category, currentMcqQuestionId)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
     const Question = {
       mcqQuestionId: 'sci-003',
       question: 'Hello how are you?',
@@ -687,11 +720,11 @@ export class CreateContest implements OnInit {
         codeQuestionId: 'Q1',
         questionName: 'Sum of Two Numbers',
         description: 'Write a function that returns the sum of two integers.',
-        difficulty: 'Easy',
+        difficulty: 'EASY',
         weightage: 0,
         inputParams: ['a', 'b'],
         inputType: ['number', 'number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -714,11 +747,11 @@ export class CreateContest implements OnInit {
         codeQuestionId: 'Q2',
         questionName: 'Reverse a String',
         description: 'Create a function that reverses a given string.',
-        difficulty: 'medium',
+        difficulty: 'MEDIUM',
         weightage: 0,
         inputParams: ['str'],
         inputType: ['string'],
-        outputFormat: 'string',
+        outputType: 'string',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -744,11 +777,11 @@ export class CreateContest implements OnInit {
         questionName: 'Find Factorial',
         description:
           'Implement a function to find the factorial of a non-negative integer.',
-        difficulty: 'difficult',
+        difficulty: 'DIFFICULT',
         weightage: 0,
         inputParams: ['n'],
         inputType: ['number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',

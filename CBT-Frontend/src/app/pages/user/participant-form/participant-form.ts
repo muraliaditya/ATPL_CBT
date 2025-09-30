@@ -33,7 +33,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
   providers: [MessageService],
 })
 export class ParticipantForm {
-  category: 'Student' | 'Experienced' = 'Experienced';
+  category: 'Student' | 'Experienced' = 'Student';
   participantForm: FormGroup;
   employeeForm: FormGroup;
   highestDegreeOptions: string[] = [

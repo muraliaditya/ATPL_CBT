@@ -279,10 +279,10 @@ export class EditContest {
       codeQuestionId: 'Q5',
       questionName: 'Hi all of you?',
       description: 'Write a function that returns the sum of two integers.',
-      difficulty: 'Easy',
+      difficulty: 'EASY',
       inputParams: ['a', 'b'],
       inputType: ['number', 'number'],
-      outputFormat: 'number',
+      outputType: 'number',
       testcases: [
         {
           testcaseId: 'TC1',
@@ -339,10 +339,10 @@ export class EditContest {
         codeQuestionId: 'Q8',
         questionName: 'Sum of Four Numbers',
         description: 'Write a function that returns the sum of two integers.',
-        difficulty: 'Easy',
+        difficulty: 'EASY',
         inputParams: ['a', 'b'],
         inputType: ['number', 'number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -365,10 +365,10 @@ export class EditContest {
         codeQuestionId: 'Q7',
         questionName: 'Reverse anfdksaf String',
         description: 'Create a function that reverses a given string.',
-        difficulty: 'medium',
+        difficulty: 'MEDIUM',
         inputParams: ['str'],
         inputType: ['string'],
-        outputFormat: 'string',
+        outputType: 'string',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -392,10 +392,10 @@ export class EditContest {
         questionName: 'Find Factorial',
         description:
           'Implement a function tdsiuhfjksdf find the factorial of a non-negative integer.',
-        difficulty: 'difficult',
+        difficulty: 'DIFFICULT',
         inputParams: ['n'],
         inputType: ['number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -720,11 +720,11 @@ export class EditContest {
         codeQuestionId: 'Q1',
         questionName: 'Sum of Two Numbers',
         description: 'Write a function that returns the sum of two integers.',
-        difficulty: 'Easy',
+        difficulty: 'EASY',
         weightage: 0,
         inputParams: ['a', 'b'],
         inputType: ['number', 'number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -747,11 +747,11 @@ export class EditContest {
         codeQuestionId: 'Q2',
         questionName: 'Reverse a String',
         description: 'Create a function that reverses a given string.',
-        difficulty: 'medium',
+        difficulty: 'MEDIUM',
         weightage: 0,
         inputParams: ['str'],
         inputType: ['string'],
-        outputFormat: 'string',
+        outputType: 'string',
         testcases: [
           {
             testcaseId: 'TC1',
@@ -777,11 +777,11 @@ export class EditContest {
         questionName: 'Find Factorial',
         description:
           'Implement a function to find the factorial of a non-negative integer.',
-        difficulty: 'difficult',
+        difficulty: 'EASY',
         weightage: 0,
         inputParams: ['n'],
         inputType: ['number'],
-        outputFormat: 'number',
+        outputType: 'number',
         testcases: [
           {
             testcaseId: 'TC1',

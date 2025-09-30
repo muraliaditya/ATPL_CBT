@@ -34,10 +34,12 @@ export interface ContestCodingQuestion {
   codeQuestionId: string;
   questionName: string;
   description: string;
-  difficulty: 'Easy' | 'difficult' | 'medium';
+  javaBoilerCode?: String;
+  PythonBoilerCode?: string;
+  difficulty: 'EASY' | 'DIFFICULT' | 'MEDIUM';
   inputParams: string[];
   weightage?: number;
   inputType: string[];
-  outputFormat: string;
+  outputType: string;
   testcases: ContestTestcase[];
 }
