@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { AddCode } from '../../admin/add-code/add-code';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Editor } from '../../../components/admin/editor/editor';
@@ -8,7 +7,7 @@ import { Select } from 'primeng/select';
 import { Dialog } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormGroup,FormBuilder,Validators } from '@angular/forms';
+import { FormGroup,FormBuilder,Validators,AbstractControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 import { parameterDuplicateCheck } from '../../../utils/custom-validators/parameter-duplicate';
@@ -22,232 +21,161 @@ import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
   templateUrl: './demo.html',
   styleUrl: './demo.css'
 })
-export class Demo {
-  // types = ['string', 'int', 'boolean'];
-  // showForm = false;
+export class Demo implements OnInit {
+  testForm!: FormGroup;
+  types = ['string', 'int', 'boolean','strArray','intArray','Char'];
+  showForm:boolean = false;
+  saved = false;
+  visible: boolean = false;
+  testCaseForm!: FormGroup;
+  showTestCaseForm = false;
+  testType=['Private','Public'];
 
-  // TestCaseForm: FormGroup;
-  // TestValuesForm: FormGroup;
-  // count = 0;
+  constructor(private fb: FormBuilder) {}
 
-  // constructor(private fb: FormBuilder) {
-  //   this.TestCaseForm = this.fb.group({
-  //     question: ['', Validators.required],
-  //     weightage: ['', Validators.required],
-  //     description: ['', Validators.required],
-  //     count:['',Validators.required],
-  //     inputs: this.fb.array([]),
-  //     output: this.fb.group({
-  //       type: ['', Validators.required],
-  //       method: ['', Validators.required],
-  //     }),
-  //   });
+  ngOnInit(): void {
+    this.testForm = this.fb.group({
+      question: ['', Validators.required],
+      weightage: ['', Validators.required],
+      description: ['', Validators.required],
+      count: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]*$/)]],
+      inputs: this.fb.array([]),
+      output: ['', Validators.required],
+      method: ['', Validators.required]
+    });
+  }
 
-  //   this.TestValuesForm = this.fb.group({
-  //     testInputs: this.fb.array([]),
-  //     expectedOutput: ['', Validators.required]
-  //   });
-  // }
+  get inputs(): FormArray {
+    return this.testForm.get('inputs') as FormArray;
+  }
 
-  // get inputsArray(): FormArray {
-  //   return this.TestCaseForm.get('inputs') as FormArray;
-  // }
+  onGenerate(){
+    const count = this.testForm.get('count')?.value;
+    if (!count || isNaN(count)) return;
+    this.inputs.clear();
+    for (let i = 0; i < count; i++) {
+      this.inputs.push(
+        this.fb.group({
+          type: ['', Validators.required],
+          parameter: ['', [Validators.required]]
+        })
+      );
+    }
+    this.showForm = true;
+  }
 
-  // get testInputsArray(): FormArray {
-  //   return this.TestValuesForm.get('testInputs') as FormArray;
-  // }
-
-  // onGenerate() {
-  //   this.inputsArray.clear();
-  //   this.testInputsArray.clear();
-
-  //   for (let i = 0; i < this.count; i++) {
-  //     const inputGroup = this.fb.group({
-  //       type: ['', Validators.required],
-  //       parameter: ['', Validators.required],
-  //     });
-  //     this.inputsArray.push(inputGroup);
-
-  //     this.testInputsArray.push(this.fb.control('', Validators.required));
-  //   }
-
-  //   this.showForm = true;
-  // }
-  // onTypeChange(index: number) {
-  //   const type = this.inputsArray.at(index).get('type')?.value;
-  //   const ctrl = this.testInputsArray.at(index);
-
-  //   if (type === 'int') {
-  //     ctrl.setValidators([Validators.required, Validators.pattern(/^\d+$/)]);
-  //   } else if (type === 'string') {
-  //     ctrl.setValidators([
-  //       Validators.required,
-  //       Validators.pattern(/^[a-zA-Z ]+$/),
-  //     ]);
-  //   } else if (type === 'boolean') {
-  //     ctrl.setValidators([
-  //       Validators.required,
-  //       Validators.pattern(/^(true|false)$/i),
-  //     ]);
-  //   }
-
-  //   ctrl.updateValueAndValidity();
-  // }
-
-  // onSave() {
-  //   if (this.TestCaseForm.valid && this.TestValuesForm.valid) {
-  //     console.log('Final Data:', {
-  //       config: this.TestCaseForm.value,
-  //       testValues: this.TestValuesForm.value,
-  //     });
+  typesFromMainForm: string[] = [];
+  openTestCaseForm() {
+    console.log('ok')
+    const count = this.testForm.get('count')?.value;
+    if (!count) return;
+    this.testCaseForm = this.fb.group({
+      inputs: this.fb.array([]),
+      output: ['', Validators.required],
+      weightage:['',Validators.required],
+      type:['',Validators.required],
+    });
+    const inputsArray = this.testCaseForm.get('inputs') as FormArray;
+    const typesFromMainForm = this.inputs.value.map((i: any) => i.type);
+      this.typesFromMainForm = typesFromMainForm;
+    for (let i = 0; i < count; i++) {
+      const validatorFn = this.validatorMap[typesFromMainForm[i]] || Validators.required;
+      inputsArray.push(
+        this.fb.group({
+          value: ['', [Validators.required,validatorFn]]
+        })
+      );
+    }
+    const outputType = this.testForm.get('output')?.value || 'string';
+    const outputValidator = this.validatorMap[outputType] || Validators.required;
+    this.testCaseForm.get('output')?.setValidators([Validators.required, outputValidator]);
+    this.testCaseForm.get('output')?.updateValueAndValidity();
+    this.showTestCaseForm = true;
+    this.visible=true;
+  }
+  
+  onTestCaseSubmit() {
+    if (this.testCaseForm.valid) {
+      console.log('Test Case Added:', this.testCaseForm.value);
+    } else {
+      this.testCaseForm.markAllAsTouched();
+    }
+  }
+  //  Custom validator to check for duplicate parameters
+  // duplicateParameterValidator(control: AbstractControl) {
+  //   const currentValue = control.value;
+  //   const params :any= this.inputs.controls.map(c => c.get('parameter')?.value);
+  //   if (parameterDuplicateCheck(params)) {
+  //     return null;
   //   } else {
-  //     this.TestCaseForm.markAllAsTouched();
-  //     this.TestValuesForm.markAllAsTouched();
+  //     return { duplicate: true };
   //   }
   // }
-test:any[]=[];
-saved: boolean = false; 
-save:boolean=false;
-show:boolean=false;
-showForm: boolean = false;
-question='';
-method='';
-description:'' | undefined;
-output='';
-weightage='';
-count:number=0;
-testtype=['Private','Public'];
-types=['string','int','boolean','strArray','Char','intArray'];
 
-onsave() {
-  this.saved = true;
-}
-oncancel() {
-  this.showForm = false;
-  this.inputs = [];
-  this.count = 0;
-}
-onEdit(){
-  this.saved = false;
-}
-inputs:any[]=[];
-ongenerate(){
-  this.inputsArray.clear();
-  this.inputs=[];
-  for(let i = 0; i < this.count; i++)
-  this.inputs.push({
-    type:null,
-    parameter:'',
-})
-this.saved = false;
-this.save=false;
-this.showForm = true;
-}
+  onCancel(): void {
+    this.testForm.reset();
+    this.showForm = false;
+    this.inputs.clear();
+  }
 
-inputval:any[]=[];
-Inputform:any[]=[];
-  testType=['Public','Private'];
-  type:string ='';
-  Question:string='';
-    inputId:string='';
-    outputId:string='';
-    language=['c','python','java','c++'];
+  onSave(): void {
+    if (this.testForm.valid) {
+      console.log('Form Submitted:', this.testForm.value);
+      this.saved = true;
+    } else {
+      this.testForm.markAllAsTouched();
+    }
+  }
+
+  onEdit(): void {
+    this.saved = false;
+  }
+
+  //code editor
+  language=['c','python','java','c++'];
     selectedlanguage:string='c';
     @ViewChild(Editor) Editorref!: Editor;
     languageChange(val:Event){
       this.Editorref.changeLanguage(val.toString());
     }
 
-  TestCase: FormGroup;
-  Main:FormGroup;
-  inputCount: number = 0;
-  constructor(private fb: FormBuilder) {
-    this.TestCase = this.fb.group({
-      inputs: this.fb.array([]),
-      output: ['', Validators.required],
-      type:['',Validators.required],
-      weightage: ['', Validators.required],
-    });
-    this.Main =this.fb.group({
-      question:['', Validators.required],
-      weightage:['', Validators.required],
-      description:['',Validators.required],
-      count:['',Validators.required],
-    })
-
-  }
-  get inputsArray(): FormArray {
-  return this.TestCase.get('inputs') as FormArray;
-}
-get formArray():FormArray{
-   return this.Main.get('inputs') as FormArray
-}
-  visible: boolean = false;
-  showDialog() {
-  this.inputsArray.clear();
-  this.inputs.forEach(input => {
-    let validator = Validators.required;
-    if (input.type === 'int') {
-      validator = Validators.pattern(/^\d+$/);
-    } else if (input.type === 'string') {
-      validator = Validators.pattern(/^[a-zA-Z ]+$/);
-    } else if (input.type=== 'boolean') {
-      validator=Validators.pattern(/^(true|false)$/i);
-    } else if (input.type==='strArray') {
-      validator= StringArrayValidate, Validators.required;
-    } else if(input.type==='intArray'){
-      validator= IntegerArrayValidate, Validators.required;
-    } else if(input.type==='Char'){
-      validator= NaNCheckValidate, Validators.required;
-    }
-    this.inputsArray.push(this.fb.control('', [Validators.required, validator]));
-  });
-  let outputValidator = Validators.required;
-  if (this.output === 'int') {
-    outputValidator = Validators.pattern(/^\d+$/);
-  } else if (this.output === 'string') {
-    outputValidator = Validators.pattern(/^[a-zA-Z ]+$/);
-  } else if (this.output === 'boolean') {
-    outputValidator = Validators.pattern(/^(true|false)$/i);
-  } else if (this.output==='strArray') {
-      outputValidator= StringArrayValidate, Validators.required;
-  } else if(this.output==='intArray'){
-    outputValidator= IntegerArrayValidate, Validators.required;
-  } else if(this.output==='Char'){
-    outputValidator= NaNCheckValidate, Validators.required;
-  }
-  this.TestCase.get('output')?.setValidators(outputValidator);
-  this.TestCase.get('output')?.updateValueAndValidity();
-  this.visible = true;
-}
-    submittedTestCases:any[]=[];
-    reset(){
-      this.TestCase.reset();
-    }
-      currentSection: 'TestCase' | 'Result' = 'TestCase';
+    currentSection: 'TestCase' | 'Result' = 'TestCase';
       sectionchange(section: 'TestCase' | 'Result') {
         this.currentSection = section;
   }
-selectedTestCase: any = null;
-
+  validatorMap: { [key: string]: any } = {
+  int: Validators.pattern(/^\d+$/),
+  string: Validators.pattern(/^[a-zA-Z ]+$/),
+  boolean: Validators.pattern(/^(true|false)$/i),
+  strArray: StringArrayValidate,
+  intArray: IntegerArrayValidate,
+  Char: NaNCheckValidate,
+};
+get testCaseInputs(): FormArray {
+  return this.testCaseForm.get('inputs') as FormArray;
+}
+save=false;
+reset(){
+      this.testCaseForm.reset();
+    }
+    onsave() {
+  this.saved = true;
+}
+submittedTestCases:any[]=[];
 onSubmit() {
-  if (this.TestCase.valid) {
-    const testCase = this.TestCase.value;
+  if (this.testCaseForm.valid) {
+    const testCase = this.testCaseForm.value;
     this.submittedTestCases.push(testCase);
-    this.TestCase.reset();
+    this.testCaseForm.reset();
     this.visible = false;
     this.save = true;
   } else {
-    this.TestCase.markAllAsTouched();
+    this.testCaseForm.markAllAsTouched();
   }
 }
-
+selectedTestCase: any = null;
 viewTestCase(index: number) {
   this.selectedTestCase = this.submittedTestCases[index];
+  this.selectedTestCase.inputValues = this.selectedTestCase.inputs.map((i: any) => i.value);
 }
-onvalid(){
-  if(this.Main.valid){
-  console.log('validated');
   }
-}
-}
