@@ -15,3 +15,8 @@ export interface Participants {
   mcqMarks: number;
   totalMarks: number;
 }
+
+export interface contestResultsResponse {
+  results: Participants[];
+  eligibility: string;
+}

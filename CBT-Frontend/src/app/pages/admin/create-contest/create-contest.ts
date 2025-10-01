@@ -85,7 +85,13 @@ export class CreateContest implements OnInit {
     'Intermediate',
     'Advanced',
   ];
-  McqOptions: string[] = ['Aptitude', 'Reasoning', 'Quant'];
+  McqOptions: string[] = [
+    'Aptitude',
+    'Reasoning',
+    'Verbal',
+    'Technical',
+    'Quantitative',
+  ];
   constructShowSectionCondition(idx: number) {
     if (idx === 0) {
       return true;

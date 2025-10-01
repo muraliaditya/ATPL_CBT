@@ -61,6 +61,14 @@
       </div>
 
       <div
+        class="text-gray-500 text-lg font-semifold w-full text-center mt-4"
+        *ngIf="!originalData.length"
+      >
+        No Data Found
+      </div>
+
+      <div
+        *ngIf="originalData.length"
         class="bg-white rounded-xl mt-5 shadow-sm border border-slate-100 overflow-hidden"
       >
         <div class="overflow-x-auto">

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { ContestMCQQuestion } from '../../models/admin/contest';
-import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -12,7 +11,7 @@ export class CreateContestService {
   private apiUrl = environment.apiUrl;
   private createContestURL = 'api/v1/admin/mcqs';
   private token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTkyODI0MjgsImV4cCI6MTc1OTI4NjAyOH0.sUqjJthkl33W8ZtemstCYzVKSPQWj2wr4zPyh9FQQJ4';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTkzMTYwMzQsImV4cCI6MTc1OTMxOTYzNH0.q-6tfzbZAZ6YZNwzQzL7nu5_icJ6qH0MmfjqjX4g5q0';
   constructor(private _http: HttpClient) {}
 
   regenerateMcqQuestion(sectionName: string, currentQuestionId: string) {

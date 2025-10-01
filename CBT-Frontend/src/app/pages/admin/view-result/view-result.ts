@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Participants } from '../../../models/admin/participant';
+import {
+  contestResultsResponse,
+  Participants,
+} from '../../../models/admin/participant';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -8,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DynamicLayout } from '../../../components/UI/dynamic-layout/dynamic-layout';
 import { Select } from 'primeng/select';
+import { ResultService } from '../../../services/admin/result/result-service';
 
 @Component({
   selector: 'app-view-result',
@@ -48,7 +52,11 @@ export class ViewResult implements OnInit {
     this.filterData();
   }
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private resultService: ResultService
+  ) {}
   resultsData: Participants[] = [];
   originalData: Participants[] = [];
   sortOptions: string[] = ['Total Marks', 'Coding Marks', 'Mcq Marks'];
@@ -96,92 +104,17 @@ export class ViewResult implements OnInit {
     'Designation',
   ];
   boldExpColumns = ['participantId', 'company', 'designation'];
-  experiencedData: Participants[] = [
-    {
-      submissionId: 'SUB-1001',
-      participantId: 'UD-0441',
-      userName: 'John deo',
-      email: 'johndeo@gmail.com',
-      company: 'Maron',
-      overallExperience: 2,
-      designation: 'SDE1',
-      codingMarks: 23,
-      mcqMarks: 23,
-      totalMarks: 56,
-    },
-    {
-      submissionId: 'SUB-1002',
-      participantId: 'UD-0441',
-      userName: 'hello deo',
-      email: 'johndeo@gmail.com',
-      company: 'Maron',
-      designation: 'SDE1',
-      overallExperience: 10,
-      codingMarks: 23,
-      mcqMarks: 23,
-      totalMarks: 40,
-    },
-  ];
-  studentsData = [
-    {
-      submissionId: 'SUB-1001',
-      participantId: 'UD-0441',
-      userName: 'John deo',
-      email: 'john@gmail.com',
-      college: 'LENDI',
-      collegeRegdNo: '21KD1A0566',
-      percentage: 88,
-      codingMarks: 23,
-      mcqMarks: 23,
-      totalMarks: 56,
-    },
-    {
-      submissionId: 'SUB-1002',
-      participantId: 'UD-0442',
-      userName: 'Alice Smith',
-      email: 'alice@gmail.com',
-      college: 'GITAM',
-      collegeRegdNo: '21KD1A0455',
-      percentage: 92,
-      codingMarks: 28,
-      mcqMarks: 24,
-      totalMarks: 62,
-    },
-    {
-      submissionId: 'SUB-1003',
-      participantId: 'UD-0442',
-      userName: 'Alice Smith',
-      email: 'alice@gmail.com',
-      college: 'GITAM',
-      collegeRegdNo: '21KD1A0455',
-      percentage: 50,
-      codingMarks: 35,
-      mcqMarks: 60,
-      totalMarks: 62,
-    },
-    {
-      submissionId: 'SUB-1004',
-      participantId: 'UD-0442',
-      userName: 'Alice Smith',
-      email: 'alice@gmail.com',
-      college: 'GITAM',
-      collegeRegdNo: '21KD1A0455',
-      percentage: 50,
-      codingMarks: 35,
-      mcqMarks: 60,
-      totalMarks: 90,
-    },
-  ];
-  compareCategory() {
+
+  compareCategory(results: Participants[]) {
     if (this.eligibilty === 'Student') {
-      this.resultsData = this.studentsData;
-      this.originalData = this.studentsData;
+      this.resultsData = results;
+      this.originalData = results;
       this.headers = this.headersStudent;
       this.boldColumns = this.boldStudentColumns;
       this.priority = this.priorityStudent;
     } else if (this.eligibilty === 'Experienced') {
-      this.resultsData = this.experiencedData;
-      this.originalData = this.experiencedData;
+      this.resultsData = results;
+      this.originalData = results;
       this.headers = this.headersExp;
       this.priority = this.priorityExp;
       this.boldColumns = this.boldExpColumns;
@@ -234,8 +167,20 @@ export class ViewResult implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.currentContestId = id;
+      this.resultService.getContestResults(this.currentContestId).subscribe({
+        next: (data) => {
+          console.log(data);
+          if (data.eligibility === 'Student') {
+            this.eligibilty = 'Student';
+          } else {
+            this.eligibilty = 'Experienced';
+          }
+          this.compareCategory(data.results);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
     }
-    this.eligibilty = 'Student';
-    this.compareCategory();
   }
 }
