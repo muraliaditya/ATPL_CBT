@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { CommonModule } from '@angular/common';
 import { Contest } from '../../../models/admin/admin';
+import { Managecontest } from '../../../services/managecontest';
 @Component({
   selector: 'app-contest-listing',
   imports: [
@@ -68,6 +69,7 @@ ngOnInit() {
 }
 
 searchContests() {
+  this.managecontest.searchcontest(this.ContestName,this.ContestId,this.choice)
   this.filteredContests = this.contests.filter(contest => {
     const matchName = this.ContestName
       ? contest.name.toLowerCase().includes(this.ContestName.toLowerCase())
@@ -75,7 +77,6 @@ searchContests() {
     const matchId = this.ContestId
       ? contest.id.toLowerCase().includes(this.ContestId.toLowerCase())
       : true;
-
     const matchStatus = this.choice
       ? contest.status.toLowerCase() === this.choice.toLowerCase()
       : true; 
@@ -84,7 +85,8 @@ return matchName && matchId && matchStatus;
 }
 
   openRow: number | null = null;
-  constructor(private eRef: ElementRef) {}
+  constructor(private eRef: ElementRef,
+    private managecontest:Managecontest) {}
 
   toggleMenu(index: number, event: Event) {
     event.stopPropagation();
@@ -117,3 +119,4 @@ return matchName && matchId && matchStatus;
     }
   }
 }
+

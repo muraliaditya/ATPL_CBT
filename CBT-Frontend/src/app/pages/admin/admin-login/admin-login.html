@@ -10,7 +10,7 @@
     <div class="flex flex-col gap-3">
     <p-floatlabel variant="on" class="w-full">
         <input
-          formControlName="name"
+          formControlName="username"
           pInputText
           id="name"
           type="text"
@@ -20,10 +20,10 @@
         <label for="name">Username</label>
       </p-floatlabel>
     <div
-      class="text-sm text-red-500"
-      *ngIf="Login.get('name')?.invalid && Login.get('name')?.touched"
+      class="ml-2 text-sm text-red-500"
+      *ngIf="Login.get('username')?.invalid && Login.get('username')?.touched"
     >
-      <div *ngIf="Login.controls['name'].errors?.['required']">
+      <div *ngIf="Login.controls['username'].errors?.['required']">
             Name is required
           </div>
     </div>
@@ -39,7 +39,7 @@
         <label for="name">Password</label>
       </p-floatlabel>
     <div
-      class="text-sm text-red-500"
+      class="ml-2 text-sm text-red-500"
       *ngIf="Login.get('password')?.invalid && Login.get('password')?.touched"
     >
       <div *ngIf="Login.controls['password'].errors?.['required']">

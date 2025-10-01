@@ -30,6 +30,7 @@ export class Demo implements OnInit {
   testCaseForm!: FormGroup;
   showTestCaseForm = false;
   testType=['Private','Public'];
+  booleanType=['True','False'];
 
   constructor(private fb: FormBuilder) {}
 
