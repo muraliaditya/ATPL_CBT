@@ -5,7 +5,7 @@ import {
 } from '../../../models/admin/contest';
 export const AddMcqSection = createAction(
   '[Contest] AddMcqSection',
-  props<{ mcqs: ContestMCQQuestion[]; section: string }>()
+  props<{ mcqs: ContestMCQQuestion[]; section: string; weightage: number }>()
 );
 
 export const DeleteMCQSection = createAction(

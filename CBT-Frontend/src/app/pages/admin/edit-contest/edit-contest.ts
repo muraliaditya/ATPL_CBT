@@ -429,7 +429,7 @@ export class EditContest {
     const Reasoning = [
       {
         mcqQuestionId: 'math-004',
-        question: 'What is the value of hahah approximately?',
+        questionText: 'What is the value of hahah approximately?',
         option1: '3.12',
         option2: '3.14',
         option3: '3.16',
@@ -440,7 +440,7 @@ export class EditContest {
       },
       {
         mcqQuestionId: 'math-005',
-        question: 'Solve: 5 hahah (2 + 3)',
+        questionText: 'Solve: 5 hahah (2 + 3)',
         option1: '25',
         option2: '20',
         option3: '15',
@@ -489,7 +489,7 @@ export class EditContest {
     let questionId = Math.floor(Math.random() * 100);
     const Question = {
       mcqQuestionId: 'sci-009' + questionId,
-      question: 'Hello how are you?',
+      questionText: 'Hello how are you?',
       option1: 'Oxygen',
       option2: 'Nitrogen',
       option3: 'Carbon Dioxide',
@@ -644,7 +644,7 @@ export class EditContest {
     const mathMcqs: ContestMCQQuestion[] = [
       {
         mcqQuestionId: 'math-001',
-        question: 'What is the value of π (pi) approximately?',
+        questionText: 'What is the value of π (pi) approximately?',
         option1: '3.12',
         option2: '3.14',
         option3: '3.16',
@@ -655,7 +655,7 @@ export class EditContest {
       },
       {
         mcqQuestionId: 'math-002',
-        question: 'Solve: 5 × (2 + 3)',
+        questionText: 'Solve: 5 × (2 + 3)',
         option1: '25',
         option2: '20',
         option3: '15',
@@ -668,7 +668,7 @@ export class EditContest {
     const scienceMcqs: ContestMCQQuestion[] = [
       {
         mcqQuestionId: 'sci-001',
-        question: 'What planet is known as the Red Planet?',
+        questionText: 'What planet is known as the Red Planet?',
         option1: 'Earth',
         option2: 'Mars',
         option3: 'Jupiter',
@@ -679,7 +679,7 @@ export class EditContest {
       },
       {
         mcqQuestionId: 'sci-002',
-        question: 'Which gas do plants absorb from the atmosphere?',
+        questionText: 'Which gas do plants absorb from the atmosphere?',
         option1: 'Oxygen',
         option2: 'Nitrogen',
         option3: 'Carbon Dioxide',
@@ -693,7 +693,7 @@ export class EditContest {
     const extraScienceMcqs: ContestMCQQuestion[] = [
       {
         mcqQuestionId: 'sci-003',
-        question: 'What  is known as the green Planet?',
+        questionText: 'What  is known as the green Planet?',
         option1: 'Earth',
         option2: 'Mars',
         option3: 'Jupiter',
@@ -704,7 +704,7 @@ export class EditContest {
       },
       {
         mcqQuestionId: 'sci-004',
-        question: 'Which  do plants absorb from the atmosphere?',
+        questionText: 'Which  do plants absorb from the atmosphere?',
         option1: 'Oxygen',
         option2: 'Nitrogen',
         option3: 'Carbon Dioxide',
@@ -857,11 +857,13 @@ export class EditContest {
     this.store.dispatch(AcceptAllCodingQuestions());
     this.store.dispatch(AcceptAllCodingQuestions());
 
-    this.store.dispatch(AddMcqSection({ mcqs: mathMcqs, section: 'Aptitude' }));
+    this.store.dispatch(
+      AddMcqSection({ mcqs: mathMcqs, section: 'Aptitude', weightage: 2 })
+    );
     let mcqIDs: string[] = mathMcqs.map((ques) => ques.mcqQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: mcqIDs }));
     this.store.dispatch(
-      AddMcqSection({ mcqs: scienceMcqs, section: 'Reasoning' })
+      AddMcqSection({ mcqs: scienceMcqs, section: 'Reasoning', weightage: 2 })
     );
     mcqIDs = scienceMcqs.map((ques) => ques.mcqQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: mcqIDs }));
@@ -873,7 +875,11 @@ export class EditContest {
       console.log('finalised ques ids', data);
     });
     this.store.dispatch(
-      AddMcqSection({ mcqs: extraScienceMcqs, section: 'Reasoning' })
+      AddMcqSection({
+        mcqs: extraScienceMcqs,
+        section: 'Reasoning',
+        weightage: 2,
+      })
     );
     mcqIDs = extraScienceMcqs.map((ques) => ques.mcqQuestionId);
     this.store.dispatch(acceptIdsIntoRegenerateIds({ Ids: mcqIDs }));

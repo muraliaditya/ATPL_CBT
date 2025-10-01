@@ -404,6 +404,26 @@ export class CreateContest implements OnInit {
     );
   }
   generateMcqSection() {
+    let mcqFormData = this.mcqQuestionGenerateForm.value;
+    let section: string = mcqFormData.mcqSection;
+    let count: number = mcqFormData.count;
+    let marks: number = mcqFormData.marks;
+    this.contestService.regenerateNMcqQuestions(section, count).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.store.dispatch(
+          AddMcqSection({
+            mcqs: data,
+            section: section,
+            weightage: marks,
+          })
+        );
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+
     console.log(this.mcqQuestionGenerateForm.value);
   }
   replaceAll(section: string, sectionData: Record<number, ContestMCQQuestion>) {
@@ -413,7 +433,7 @@ export class CreateContest implements OnInit {
     const Reasoning = [
       {
         mcqQuestionId: 'math-004',
-        question: 'What is the value of hahah approximately?',
+        questionText: 'What is the value of hahah approximately?',
         option1: '3.12',
         option2: '3.14',
         option3: '3.16',
@@ -424,7 +444,7 @@ export class CreateContest implements OnInit {
       },
       {
         mcqQuestionId: 'math-005',
-        question: 'Solve: 5 hahah (2 + 3)',
+        questionText: 'Solve: 5 hahah (2 + 3)',
         option1: '25',
         option2: '20',
         option3: '15',
@@ -438,13 +458,12 @@ export class CreateContest implements OnInit {
       .regenerateNMcqQuestions(section, sectionArr.length)
       .subscribe({
         next: (data) => {
-          console.log(data);
+          this.store.dispatch(ReplaceSection({ section: section, mcqs: data }));
         },
         error: (error) => {
           console.log(error);
         },
       });
-    this.store.dispatch(ReplaceSection({ section: section, mcqs: Reasoning }));
   }
 
   deleteMcqSection(category: string) {
@@ -489,30 +508,18 @@ export class CreateContest implements OnInit {
       .regenerateMcqQuestion(category, currentMcqQuestionId)
       .subscribe({
         next: (data) => {
-          console.log(data);
+          this.store.dispatch(
+            ReplaceMcqQuestion({
+              section: category,
+              prevMcqId: parseInt(prevMcqId),
+              mcq: data,
+            })
+          );
         },
         error: (error) => {
           console.log(error);
         },
       });
-    const Question = {
-      mcqQuestionId: 'sci-003',
-      question: 'Hello how are you?',
-      option1: 'Oxygen',
-      option2: 'Nitrogen',
-      option3: 'Carbon Dioxide',
-      option4: 'Hydrogen',
-      answerKey: 'option3',
-      weightage: 1,
-      section: 'Reasoning',
-    };
-    this.store.dispatch(
-      ReplaceMcqQuestion({
-        section: category,
-        prevMcqId: parseInt(prevMcqId),
-        mcq: Question,
-      })
-    );
   }
 
   get PreferencesArray(): FormArray {
@@ -641,79 +648,6 @@ export class CreateContest implements OnInit {
       this.calculateTotalMcqMarks(data);
       console.log('finalised mcqs data', data);
     });
-    const mathMcqs: ContestMCQQuestion[] = [
-      {
-        mcqQuestionId: 'math-001',
-        question: 'What is the value of π (pi) approximately?',
-        option1: '3.12',
-        option2: '3.14',
-        option3: '3.16',
-        option4: '3.18',
-        answerKey: 'option2',
-        weightage: 2,
-        section: 'Aptitude',
-      },
-      {
-        mcqQuestionId: 'math-002',
-        question: 'Solve: 5 × (2 + 3)',
-        option1: '25',
-        option2: '20',
-        option3: '15',
-        option4: '30',
-        answerKey: 'option1',
-        weightage: 1,
-        section: 'Aptitude',
-      },
-    ];
-    const scienceMcqs: ContestMCQQuestion[] = [
-      {
-        mcqQuestionId: 'sci-001',
-        question: 'What planet is known as the Red Planet?',
-        option1: 'Earth',
-        option2: 'Mars',
-        option3: 'Jupiter',
-        option4: 'Venus',
-        answerKey: 'option2',
-        weightage: 2,
-        section: 'Reasoning',
-      },
-      {
-        mcqQuestionId: 'sci-002',
-        question: 'Which gas do plants absorb from the atmosphere?',
-        option1: 'Oxygen',
-        option2: 'Nitrogen',
-        option3: 'Carbon Dioxide',
-        option4: 'Hydrogen',
-        answerKey: 'option3',
-        weightage: 1,
-        section: 'Reasoning',
-      },
-    ];
-
-    const extraScienceMcqs: ContestMCQQuestion[] = [
-      {
-        mcqQuestionId: 'sci-003',
-        question: 'What  is known as the green Planet?',
-        option1: 'Earth',
-        option2: 'Mars',
-        option3: 'Jupiter',
-        option4: 'Venus',
-        answerKey: 'option2',
-        weightage: 2,
-        section: 'Reasoning',
-      },
-      {
-        mcqQuestionId: 'sci-004',
-        question: 'Which  do plants absorb from the atmosphere?',
-        option1: 'Oxygen',
-        option2: 'Nitrogen',
-        option3: 'Carbon Dioxide',
-        option4: 'Hydrogen',
-        answerKey: 'option3',
-        weightage: 1,
-        section: 'Reasoning',
-      },
-    ];
 
     const codingQuestions: ContestCodingQuestion[] = [
       {
@@ -844,10 +778,6 @@ export class CreateContest implements OnInit {
     this.store.dispatch(AddCodingQuestions({ codeQuestions: codingQuestions }));
     this.store.dispatch(AddCodingQuestions({ codeQuestions: ques }));
 
-    this.store.dispatch(AddMcqSection({ mcqs: mathMcqs, section: 'Aptitude' }));
-    this.store.dispatch(
-      AddMcqSection({ mcqs: scienceMcqs, section: 'Reasoning' })
-    );
     this.finalisedIDs$.subscribe((data) => {
       this.finalisedIds = data;
     });
@@ -855,9 +785,6 @@ export class CreateContest implements OnInit {
       this.finalisedQuestionSet = data;
       console.log('finalised ques ids', data);
     });
-    this.store.dispatch(
-      AddMcqSection({ mcqs: extraScienceMcqs, section: 'Reasoning' })
-    );
 
     this.codingQuestions$.subscribe((data) => {
       console.log('tempcoding Ques', data);

@@ -77,7 +77,7 @@ export const contestReducer = createReducer(
         : state.finalisedMcqQuestions,
     };
   }),
-  on(AddMcqSection, (state, { mcqs, section }) => {
+  on(AddMcqSection, (state, { mcqs, section, weightage }) => {
     let data = { ...state.tempMcqQuestions };
 
     if (!data[section]) {
@@ -93,7 +93,7 @@ export const contestReducer = createReducer(
 
         data[section][maxQuestionId] = {
           ...mcq,
-          weightage: 2,
+          weightage: weightage,
         };
       }
     }

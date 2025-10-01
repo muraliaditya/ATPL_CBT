@@ -12,14 +12,14 @@ export class CreateContestService {
   private apiUrl = environment.apiUrl;
   private createContestURL = 'api/v1/admin/mcqs';
   private token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTkyMzMzMzMsImV4cCI6MTc1OTIzNjkzM30.xn-RWAqv9ewX9v4Di7EQ-vPusZC3t4LvwiFl3Edmttc';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTkyODI0MjgsImV4cCI6MTc1OTI4NjAyOH0.sUqjJthkl33W8ZtemstCYzVKSPQWj2wr4zPyh9FQQJ4';
   constructor(private _http: HttpClient) {}
 
   regenerateMcqQuestion(sectionName: string, currentQuestionId: string) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
     });
-    return this._http.get<Observable<ContestMCQQuestion>>(
+    return this._http.get<ContestMCQQuestion>(
       `${this.apiUrl}/${this.createContestURL}/regenerate?sectionName=${sectionName}&currentQuestionId=${currentQuestionId}`,
       { headers }
     );
@@ -28,7 +28,7 @@ export class CreateContestService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
     });
-    return this._http.get<Observable<ContestMCQQuestion[]>>(
+    return this._http.get<ContestMCQQuestion[]>(
       `${this.apiUrl}/${this.createContestURL}/random?sectionName=${sectionName}&count=${count}`,
       { headers }
     );

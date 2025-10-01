@@ -20,7 +20,7 @@ export interface ContestTestcase {
 
 export interface ContestMCQQuestion {
   mcqQuestionId: string;
-  question: string;
+  questionText: string;
   option1: string;
   option2: string;
   option3: string;
