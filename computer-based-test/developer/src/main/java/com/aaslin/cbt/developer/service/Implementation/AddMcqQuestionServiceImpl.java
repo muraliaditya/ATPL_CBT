@@ -43,7 +43,7 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
             Sections section = sectionRepository.findBySectionIgnoreCase(dto.getSection())
             		.orElseGet(() -> {
                         Sections newSection = new Sections();
-                        newSection.setSectionId(CustomIdGenerator.generateNextId("SECT", lastSectionId)); 
+                        newSection.setSectionId(CustomIdGenerator.generateNextId("SEC", lastSectionId)); 
                         newSection.setSection(dto.getSection());
                         newSection.setIsActive(true);
                         return sectionRepository.save(newSection);

@@ -14,16 +14,18 @@ public class SwaggerWebConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("Computer Based Test")
-                        .version("1.0")
-                        .description("Swagger API Documentation for Computer Based Test Spring Boot Application"))
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT"))
-                )
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                        .addSecuritySchemes("bearerAuth",
+                                new SecurityScheme()
+                                        .name("bearerAuth")
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .in(SecurityScheme.In.HEADER)))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .info(new Info()
+                        .title("Computer Based Test API")
+                        .version("1.0")
+                        .description("Swagger API Documentation with JWT Authentication"));
     }
 }

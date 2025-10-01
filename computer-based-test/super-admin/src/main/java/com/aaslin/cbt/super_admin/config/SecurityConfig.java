@@ -27,14 +27,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**").permitAll()
-               .requestMatchers("/swagger-ui.html", "/swagger-ui/*", "/v3/api-docs/", "/webjars/*").permitAll()
-                .requestMatchers("/api/v1/admin/**").hasRole("SUPER_ADMIN")
-                .requestMatchers("/api/v1/admin/**").hasAnyRole("DEVELOPER", "SUPER_ADMIN")
+             // .requestMatchers("/swagger-ui.html", "/swagger-ui/*", "/v3/api-docs/", "/webjars/*").permitAll()
+            	    .requestMatchers("/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/", "/swagger-resources/**").permitAll()
+                .requestMatchers("/api/v1/admin/**","/api/v1/auth/create-developer").hasRole("SUPER_ADMIN")
+                //.requestMatchers("/api/v1/admin/**").hasAnyRole("DEVELOPER", "SUPER_ADMIN")
                 .requestMatchers("/api/v1/dev/**").hasAnyRole("DEVELOPER", "SUPER_ADMIN")
                 .requestMatchers("/api/v1/participants/**").permitAll()
                 .requestMatchers("/api/v1/contests/CON050/start").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
