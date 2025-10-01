@@ -128,7 +128,7 @@ export class CodeSection implements OnInit, OnChanges {
       ],
     },
     1: {
-      codeStatus: 'COMPILATION_ERROR',
+      codeStatus: 'WRONG ANSWER',
       message: 'Compiled and executed successfully',
       publicTestcasePassed: 2,
       privateTestcasePassed: 2,
@@ -158,7 +158,7 @@ export class CodeSection implements OnInit, OnChanges {
         },
         {
           testcaseId: 't88',
-          status: 'PASSED',
+          status: 'FAILED',
           weightage: 3,
         },
       ],
@@ -236,13 +236,9 @@ export class CodeSection implements OnInit, OnChanges {
   }
   setBoilerPlateCode() {
     if (this.language === 'python') {
-      this.currentCode = this.getCurrentCode()
-        ? this.getCurrentCode()
-        : this.getCurrentQuestion()?.pythonBoilerCode ?? '';
+      this.currentCode = this.getCurrentQuestion()?.pythonBoilerCode ?? '';
     } else if (this.language === 'java') {
-      this.currentCode = this.getCurrentCode()
-        ? this.getCurrentCode()
-        : this.getCurrentQuestion()?.javaBoilerCode ?? '';
+      this.currentCode = this.getCurrentQuestion()?.javaBoilerCode ?? '';
     }
   }
   ngOnInit(): void {

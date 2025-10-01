@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CodingQuestions, McqQuestions } from '../../../models/test/questions';
 import { McqSection } from '../../../components/test-page/mcq-section/mcq-section';
@@ -15,6 +21,8 @@ import { Subscription } from 'rxjs';
 })
 export class TestPage implements OnInit, OnDestroy {
   @ViewChild(CodeSection) codeSectionComponent!: CodeSection;
+  attempts: number = 0;
+
   hours: number = 0;
   minutes: number = 32;
   seconds: number = 34;
@@ -67,8 +75,8 @@ export class TestPage implements OnInit, OnDestroy {
         'Given an array of integers, write a function to find the contiguous subarray which has the largest sum.',
       difficulty: 'Medium',
       javaBoilerCode:
-        'public class Solution {\n  public static void main(String[] args) {\n    // Your code here\n  }\n}',
-      pythonBoilerCode: 'def solve():\n    # Your code here\n    pass',
+        'public class Solution {\n  public static void main(String[] args) {\n \n hello   // Your code here\n  }\n}',
+      pythonBoilerCode: 'def solveeeee():\n    # Your code here\n    pass',
       inputParams: ['a', 'b'],
       inputType: ['int', 'int'],
       outputType: 'int',
@@ -167,6 +175,29 @@ export class TestPage implements OnInit, OnDestroy {
   ];
 
   constructor(private themeService: CodeEditorThemeService) {}
+  goFullScreen() {
+    const el = document.documentElement as any;
+    console.log(el);
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.mozRequestFullScreen) {
+      el.mozRequestFullScreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  }
+
+  // @HostListener('window:blur', [])
+  // onWindowBlur() {
+  //   this.attempts++;
+  //   alert(`You are not allowed to leave! Attempt ${this.attempts}/3`);
+  //   if (this.attempts >= 3) {
+  //     alert('Auto-submit triggered (log only for now).');
+  //     console.log('Auto-submit triggered (log only for now).');
+  //   }
+  // }
 
   changeCurrentCodingQuesNo(idx: number) {
     this.currentCodingQuestionNo = idx;
@@ -214,6 +245,7 @@ export class TestPage implements OnInit, OnDestroy {
       },
     });
     this.currentCodingQuestionNo = 0;
+    this.goFullScreen();
   }
   ngOnDestroy(): void {
     this.themeSubcription.unsubscribe();

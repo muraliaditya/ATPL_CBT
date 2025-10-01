@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface InstructionsHeader {
   instructionHeader: string;
@@ -52,6 +53,8 @@ export class InstructionsPage {
       ],
     },
   ];
+
+  constructor(private router: Router) {}
 
   codingQuestions: number = 3;
   mcqsQuestions: number = 20;
@@ -105,6 +108,19 @@ export class InstructionsPage {
       ],
     },
   ];
+  goFullScreen() {
+    const el = document.documentElement as any;
+    console.log(el);
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.mozRequestFullScreen) {
+      el.mozRequestFullScreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  }
 
   proceedToTest() {
     if (!this.isChecked) {
@@ -112,6 +128,8 @@ export class InstructionsPage {
       this.showCheckBoxMessage = true;
     } else {
       this.showCheckBoxMessage = false;
+      this.goFullScreen();
+      this.router.navigate(['/test']);
     }
   }
 }
