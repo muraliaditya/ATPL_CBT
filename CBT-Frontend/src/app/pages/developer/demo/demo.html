@@ -63,8 +63,8 @@
         <p class="align-center">Output</p>
         <ng-container *ngIf="!saved; else savedView">
         <div class="flex gap-3">
-          <p-floatlabel class="border border-gray-300 bg-white rounded-md py-1" variant="on">
-            <p-select [options]="types" formControlName="output" class="w-50 pt-0 shadow-none"></p-select>
+          <p-floatlabel class="border border-gray-300 bg-white rounded-md py-2" variant="on">
+            <p-select [options]="types" formControlName="output" class="py-1 w-50 pt-0 shadow-none"></p-select>
             <label for="output">Output Type</label>
           </p-floatlabel>
         </div>
@@ -133,12 +133,17 @@
         </ng-template>
     </div>
   </div>
-  <!-- <ng-container *ngIf="typesFromMainForm[i] === 'boolean'; else normalInput">
-          <p-floatlabel variant="on" class="w-full border border-gray-300 rounded-md py-2">
-        <p-select [options]="booleanType" formControlName="output" class="w-full shadow-none"></p-select>
-        <label for="output">Output</label>
-      </p-floatlabel>
-        </ng-container> -->
+  <ng-container *ngIf="testForm.get('output')?.value === 'boolean'; else normalInput">
+  <p-floatlabel variant="on" class="w-full border border-gray-300 rounded-md py-2">
+    <p-select 
+      [options]="booleanType" 
+      formControlName="output" 
+      class="w-full shadow-none">
+    </p-select>
+    <label for="output">Output</label>
+  </p-floatlabel>
+</ng-container>
+
   <ng-template #normalInput>
   <p-floatlabel variant="on" class="w-full">
         <input formControlName="output" pInputText class="w-full" id="output" type="text" autocomplete="off"/>
