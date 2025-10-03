@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.aaslin.cbt.common.model.CodingSubmission;
 import com.aaslin.cbt.common.model.McqAnswer;
-import com.aaslin.cbt.common.model.McqQuestions;
+import com.aaslin.cbt.common.model.McqQuestion;
 import com.aaslin.cbt.common.model.Participant;
 import com.aaslin.cbt.common.model.Submission;
 import com.aaslin.cbt.super_admin.dto.*;
@@ -44,7 +44,7 @@ public class ResultService {
         List<McqAnswer> mcqAnswers = mcqAnswerRepo.findBySubmission_SubmissionId(submissionId);
         Map<String, List<McqQuestionAnswerDTO>> groupedBySection = mcqAnswers.stream()
                 .map(answer -> {
-                    McqQuestions q = answer.getMcqQuestion();
+                    McqQuestion q = answer.getMcqQuestion();
                     String sectionName = (q.getSection() != null) ? q.getSection().getSection() : "Unknown";
                     return McqQuestionAnswerDTO.builder()
                             .mcqQuestionId(q.getMcqQuestionId())

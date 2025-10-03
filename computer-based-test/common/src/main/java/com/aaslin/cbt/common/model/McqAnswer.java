@@ -17,7 +17,7 @@ public class McqAnswer {
 
     @ManyToOne
     @JoinColumn(name = "mcq_question_id")
-    private McqQuestions mcqQuestion;
+    private McqQuestion mcqQuestion;
 
     @ManyToOne
     @JoinColumn(name = "submission_id")

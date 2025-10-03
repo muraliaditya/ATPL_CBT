@@ -2,7 +2,7 @@ package com.aaslin.cbt.participant.dto;
 
 import java.util.List;
 
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.Testcase;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

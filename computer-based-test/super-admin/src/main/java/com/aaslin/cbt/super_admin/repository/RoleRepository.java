@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.aaslin.cbt.common.model.Roles;
+import com.aaslin.cbt.common.model.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Roles, String> {
-    Optional<Roles> findByRole(String role);
+public interface RoleRepository extends JpaRepository<Role, String> {
+    Optional<Role> findByRole(String role);
 }

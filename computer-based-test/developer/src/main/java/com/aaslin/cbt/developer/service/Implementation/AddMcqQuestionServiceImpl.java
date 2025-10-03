@@ -3,10 +3,11 @@ package com.aaslin.cbt.developer.service.Implementation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.Sections;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.Section;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
+import com.aaslin.cbt.developer.mapper.McqQuestionMapper;
 import com.aaslin.cbt.developer.repository.McqQuestionsRepository;
 import com.aaslin.cbt.developer.repository.Sectionrepository;
 import com.aaslin.cbt.developer.service.AddMcqQuestionService;
@@ -22,6 +23,7 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
     private final McqQuestionsRepository mcqQuestionsRepository;
     private final Sectionrepository sectionRepository;
     private final AuditHelper auditHelper;
+    private final McqQuestionMapper mcqQuestionMapper;
 
     @Override
     @Transactional
@@ -31,18 +33,18 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
         }
         
         String lastId = mcqQuestionsRepository.findTopByOrderByMcqQuestionIdDesc()
-                .map(McqQuestions::getMcqQuestionId)
+                .map(McqQuestion::getMcqQuestionId)
                 .orElse(null);
 
         for (AddMcqQuestionRequestDto.McqQuestionDto dto : request.getMcqQuestions()) {
         	
         	String lastSectionId = sectionRepository.findTopByOrderBySectionIdDesc()
-        	        .map(Sections::getSectionId)
+        	        .map(Section::getSectionId)
         	        .orElse(null);
         	
-            Sections section = sectionRepository.findBySectionIgnoreCase(dto.getSection())
+            Section section = sectionRepository.findBySectionIgnoreCase(dto.getSection())
             		.orElseGet(() -> {
-                        Sections newSection = new Sections();
+                        Section newSection = new Section();
                         newSection.setSectionId(CustomIdGenerator.generateNextId("SEC", lastSectionId)); 
                         newSection.setSection(dto.getSection());
                         newSection.setIsActive(true);
@@ -51,7 +53,7 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
 
             lastId = CustomIdGenerator.generateNextId("MCQ", lastId);
 
-            McqQuestions mcq = new McqQuestions();
+            McqQuestion mcq = new McqQuestion();
             mcq.setMcqQuestionId(lastId);
             mcq.setQuestionText(dto.getQuestion());
             mcq.setOption1(dto.getOption1());

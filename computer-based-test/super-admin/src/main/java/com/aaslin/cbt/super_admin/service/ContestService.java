@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import com.aaslin.cbt.common.model.Category;
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.common.model.Contest;
 import com.aaslin.cbt.common.model.MapContestCoding;
 import com.aaslin.cbt.common.model.MapContestMcq;
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionRequest;
 import com.aaslin.cbt.super_admin.dto.ContestDTO;
 import com.aaslin.cbt.super_admin.dto.McqMappingDTO;
@@ -95,7 +95,7 @@ public class ContestService {
             List<MapContestMcq> mappings = new ArrayList<>();
             for (McqSectionDTO sectionDTO : dto.getMcqSections()) {
                 for (McqMappingDTO mcqDTO : sectionDTO.getMcqQuestion()) {
-                    McqQuestions mcq = mcqService.getMcqById(mcqDTO.getMcqQuestionId());
+                    McqQuestion mcq = mcqService.getMcqById(mcqDTO.getMcqQuestionId());
                     MapContestMcq map = new MapContestMcq();
                     map.setContest(contest);
                     map.setMcqQuestion(mcq);
@@ -115,7 +115,7 @@ public class ContestService {
                     throw new RuntimeException("codingQuestionId is required for mapping existing coding questions.");
                 }
 
-                CodingQuestions cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
+                CodingQuestion cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
 
                 MapContestCoding map = new MapContestCoding();
                 String mapId = "MCC" + (++lastMapNumber);
@@ -166,7 +166,7 @@ public class ContestService {
             List<MapContestMcq> mappings = new ArrayList<>();
             for (McqSectionDTO sectionDTO : dto.getMcqSections()) {
                 for (McqMappingDTO mcqDTO : sectionDTO.getMcqQuestion()) {
-                    McqQuestions mcq = mcqService.getMcqById(mcqDTO.getMcqQuestionId());
+                    McqQuestion mcq = mcqService.getMcqById(mcqDTO.getMcqQuestionId());
                     MapContestMcq map = new MapContestMcq();
                     map.setContest(contest);
                     map.setMcqQuestion(mcq);
@@ -187,7 +187,7 @@ public class ContestService {
                     throw new RuntimeException("codingQuestionId is required for mapping existing coding questions.");
                 }
 
-                CodingQuestions cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
+                CodingQuestion cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
 
                 MapContestCoding map = new MapContestCoding();
                 String mapId = "MCC" + (++lastMapNumber);
@@ -247,7 +247,7 @@ public class ContestService {
                 sectionDTO.setSectionWeightage(map.getWeightage());
                 sectionDTO.setMcqQuestions(new ArrayList<>());
             }
-            McqQuestions mcq = map.getMcqQuestion();
+            McqQuestion mcq = map.getMcqQuestion();
             McqQuestionDTO mcqDTO = new McqQuestionDTO();
             mcqDTO.setMcqId(mcq.getMcqQuestionId());
             mcqDTO.setQuestionText(mcq.getQuestionText());
@@ -266,7 +266,7 @@ public class ContestService {
         List<MapContestCoding> codingMappings = mapCodingService.getCodingForContest(contestId);
         List<CodingQuestionRequest> codingReqs = new ArrayList<>();
         for (MapContestCoding map : codingMappings) {
-            CodingQuestions cq = map.getCodingQuestion();
+            CodingQuestion cq = map.getCodingQuestion();
             CodingQuestionRequest req = new CodingQuestionRequest();
             req.setCodingQuestionId(cq.getCodingQuestionId()); 
             req.setQuestion(cq.getQuestion());
@@ -280,10 +280,10 @@ public class ContestService {
             req.setIsActive(cq.getIsActive());
             req.setWeightage(map.getWeightage());
 
-            List<Testcases> testcases = cq.getTestcases();
+            List<Testcase> testcases = cq.getTestcases();
             if (testcases != null) {
                 List<TestcaseRequest> testcaseRequests = new ArrayList<>();
-                for (Testcases testcase : testcases) {
+                for (Testcase testcase : testcases) {
                     TestcaseRequest testcaseRequest = new TestcaseRequest();
                     testcaseRequest.setTestcaseId(testcase.getTestcaseId());
                     testcaseRequest.setInputs(testcase.getInputValues());

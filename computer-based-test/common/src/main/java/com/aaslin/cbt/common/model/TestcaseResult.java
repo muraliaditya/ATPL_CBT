@@ -16,7 +16,7 @@ public class TestcaseResult {
 
     @ManyToOne
     @JoinColumn(name = "testcase_id")
-    private Testcases testcase;
+    private Testcase testcase;
 
     @ManyToOne
     @JoinColumn(name = "coding_submission_id")

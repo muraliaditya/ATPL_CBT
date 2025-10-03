@@ -5,10 +5,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Table(name = "mcq_questions_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class McqQuestions {
+public class McqQuestion {
 
     @Id
     @Column(name = "mcq_question_id", length = 50)
@@ -34,7 +37,7 @@ public class McqQuestions {
 
     @ManyToOne
     @JoinColumn(name = "section_id")
-    private Sections section;
+    private Section section;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_status", length = 20)
@@ -49,6 +52,7 @@ public class McqQuestions {
     private User approvedBy;
 
     @Column(name = "created_at")
+    //@CreationTimestamp
     private LocalDateTime createdAt;
     
     @Column(name="is_active")
@@ -62,6 +66,7 @@ public class McqQuestions {
     private User updatedBy;
 
     @Column(name = "updated_at")
+   // @UpdateTimestamp
     private LocalDateTime updatedAt;
     
     public enum ApprovalStatus {

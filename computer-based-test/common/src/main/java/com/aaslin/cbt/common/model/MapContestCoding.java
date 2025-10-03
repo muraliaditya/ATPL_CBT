@@ -22,7 +22,7 @@ public class MapContestCoding {
 
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
-    private CodingQuestions codingQuestion;
+    private CodingQuestion codingQuestion;
 
     @Column(name = "assigned_at")
     private LocalDateTime assignedAt;

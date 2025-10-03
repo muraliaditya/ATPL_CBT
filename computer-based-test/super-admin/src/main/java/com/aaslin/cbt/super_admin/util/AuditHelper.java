@@ -4,13 +4,12 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.common.model.Contest;
 import com.aaslin.cbt.common.model.MapContestCoding;
 import com.aaslin.cbt.common.model.MapContestMcq;
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.Sections;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.super_admin.repository.UsersRepository;
 
@@ -28,7 +27,7 @@ public class AuditHelper {
         return userRepository.findByUsername(currentUser).orElse(null);
     }
 
-    public void applyAuditForCodingQuestion(CodingQuestions cq) {
+    public void applyAuditForCodingQuestion(CodingQuestion cq) {
         User user = getCurrentUser();
         cq.setUpdatedBy(user);
         cq.setUpdatedAt(LocalDateTime.now());
@@ -39,15 +38,15 @@ public class AuditHelper {
         }
 
         if (user != null && "SUPER_ADMIN".equals(user.getRole().getRole())) {
-            cq.setApprovalStatus(CodingQuestions.ApprovalStatus.APPROVED);
+            cq.setApprovalStatus(CodingQuestion.ApprovalStatus.APPROVED);
             cq.setApprovedBy(user);
         } else {
-            cq.setApprovalStatus(CodingQuestions.ApprovalStatus.PENDING);
+            cq.setApprovalStatus(CodingQuestion.ApprovalStatus.PENDING);
         }
     }
 
     
-    public void applyAuditForMcqQuestion(McqQuestions mcq) {
+    public void applyAuditForMcqQuestion(McqQuestion mcq) {
         User user = getCurrentUser();
         mcq.setUpdatedBy(user);
         mcq.setUpdatedAt(LocalDateTime.now());
@@ -58,10 +57,10 @@ public class AuditHelper {
         }
 
         if (user != null && "SUPER_ADMIN".equals(user.getRole().getRole())) {
-            mcq.setApprovalStatus(McqQuestions.ApprovalStatus.APPROVED);
+            mcq.setApprovalStatus(McqQuestion.ApprovalStatus.APPROVED);
             mcq.setApprovedBy(user);
         } else {
-            mcq.setApprovalStatus(McqQuestions .ApprovalStatus.PENDING);
+            mcq.setApprovalStatus(McqQuestion .ApprovalStatus.PENDING);
         }
     }
     
@@ -100,7 +99,7 @@ public class AuditHelper {
         }
     }
     
-    public void applyAuditForTestcase(Testcases testcase) {
+    public void applyAuditForTestcase(Testcase testcase) {
         User user = getCurrentUser();
         testcase.setUpdatedBy(user);
         testcase.setUpdatedAt(LocalDateTime.now());

@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.common.util.CustomIdGenerator;
 import com.aaslin.cbt.super_admin.dto.*;
 import com.aaslin.cbt.super_admin.exceptions.ResourceNotFoundException;
@@ -65,7 +65,7 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
     public PaginatedCodingQuestionResponse search(String question, int page, int size) {
         int pageIndex = (page > 0) ? page - 1 : 0;
 
-        Page<CodingQuestions> questions = codingQuestionsRepository.searchByQuestion(
+        Page<CodingQuestion> questions = codingQuestionsRepository.searchByQuestion(
                 question, PageRequest.of(pageIndex, size));
 
         List<CodingQuestionSearchResponse> results = questions.getContent().stream()
@@ -83,10 +83,10 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
 
     @Override
     public ApiResponse addQuestion(CodingQuestionRequestss request) {
-        CodingQuestions cq = new CodingQuestions();
+        CodingQuestion cq = new CodingQuestion();
         cq.setQuestion(request.getQuestion());
         cq.setDescription(request.getDescription());
-        cq.setDifficulty(CodingQuestions.Difficulty.valueOf(
+        cq.setDifficulty(CodingQuestion.Difficulty.valueOf(
                 request.getDifficulty() != null ? request.getDifficulty().toUpperCase() : "EASY"
         ));
         cq.setOutputFormat("JSON");
@@ -104,21 +104,21 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
         auditHelper.applyAuditForCodingQuestion(cq);
         String lastCQId = codingQuestionsRepository
                 .findTopByOrderByCodingQuestionIdDesc()
-                .map(CodingQuestions::getCodingQuestionId)
+                .map(CodingQuestion::getCodingQuestionId)
                 .orElse(null);
         cq.setCodingQuestionId(CustomIdGenerator.generateNextId("CQ", lastCQId));
 
         String lastTcIdFromDb = testcasesRepository
                 .findTopByOrderByTestcaseIdDesc()
-                .map(Testcases::getTestcaseId)
+                .map(Testcase::getTestcaseId)
                 .orElse(null);
         AtomicReference<String> lastTcIdRef = new AtomicReference<>(lastTcIdFromDb);
 
-        List<Testcases> testcaseEntities = Optional.ofNullable(request.getTestcases())
+        List<Testcase> testcaseEntities = Optional.ofNullable(request.getTestcases())
             .orElse(Collections.emptyList())
             .stream()
             .map(tcReq -> {
-                Testcases t = new Testcases();
+                Testcase t = new Testcase();
                 String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                 t.setTestcaseId(newId);
                 lastTcIdRef.set(newId);
@@ -127,7 +127,7 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
                 t.setInputValues(toJson(tcReq.getInputs()));
                 t.setExpectedOutput(toJson(tcReq.getOutput()));
                 t.setWeightage(tcReq.getWeightage());
-                t.setTestcaseType(Testcases.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
+                t.setTestcaseType(Testcase.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
                 t.setCreatedAt(LocalDateTime.now());
                 
                 auditHelper.applyAuditForTestcase(t);
@@ -142,12 +142,12 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
 
     @Override
     public ApiResponse updateQuestion(String id, CodingQuestionRequestss request) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coding question not found"));
 
         cq.setQuestion(request.getQuestion());
         cq.setDescription(request.getDescription());
-        cq.setDifficulty(CodingQuestions.Difficulty.valueOf(
+        cq.setDifficulty(CodingQuestion.Difficulty.valueOf(
                 request.getDifficulty() != null ? request.getDifficulty().toUpperCase() : "EASY"
         ));
         cq.setUpdatedAt(LocalDateTime.now());
@@ -159,19 +159,19 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
 
         String lastTCId = testcasesRepository
                 .findTopByOrderByTestcaseIdDesc()
-                .map(Testcases::getTestcaseId)
+                .map(Testcase::getTestcaseId)
                 .orElse(null);
         AtomicReference<String> lastTcIdRef = new AtomicReference<>(lastTCId);
 
-        List<Testcases> updatedTestcases = new ArrayList<>();
+        List<Testcase> updatedTestcases = new ArrayList<>();
         for (TestcaseRequestsss tcReqsss : Optional.ofNullable(request.getTestcases()).orElse(Collections.emptyList())) {
             TestcaseRequest tcReq = convertToTestcaseRequest(tcReqsss); // Convert TestcaseRequestsss to TestcaseRequest
-            Testcases testcase = new Testcases();
+            Testcase testcase = new Testcase();
 
             if (tcReq.getTestcaseId() != null) {
                 testcase = testcasesRepository.findById(tcReq.getTestcaseId()).orElse(null);
                 if (testcase == null) {
-                    testcase = new Testcases();
+                    testcase = new Testcase();
                     String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                     testcase.setTestcaseId(newId);
                     lastTcIdRef.set(newId);
@@ -180,7 +180,7 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
                     testcase.setUpdatedAt(LocalDateTime.now());
                 }
             } else {
-                testcase = new Testcases();
+                testcase = new Testcase();
                 String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                 testcase.setTestcaseId(newId);
                 lastTcIdRef.set(newId);
@@ -191,7 +191,7 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
             testcase.setInputValues(toJson(tcReq.getInputs()));  
             testcase.setExpectedOutput(toJson(tcReq.getOutput())); 
             testcase.setWeightage(tcReq.getWeightage());
-            testcase.setTestcaseType(Testcases.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
+            testcase.setTestcaseType(Testcase.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
             
             auditHelper.applyAuditForTestcase(testcase);
 
@@ -204,14 +204,14 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
     }
 
     @Override
-    public CodingQuestions getById(String id) {
+    public CodingQuestion getById(String id) {
         return codingQuestionsRepository.findById(id)
         		.orElseThrow(() -> new ResourceNotFoundException("Coding question not found"));
     }
 
     @Override
     public ApiResponse deleteQuestion(String id) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coding question not found"));
 
         if (Boolean.FALSE.equals(cq.getIsActive())) {
@@ -227,7 +227,7 @@ public class CodingQuestionServiceImpl implements CodingQuestionsService {
 
     @Override
     public ApiResponse restoreQuestion(String id) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coding question not found"));
 
         if (Boolean.TRUE.equals(cq.getIsActive())) {

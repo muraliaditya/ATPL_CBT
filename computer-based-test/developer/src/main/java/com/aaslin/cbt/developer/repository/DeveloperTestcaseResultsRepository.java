@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.aaslin.cbt.common.model.DeveloperTestcaseResults;
+import com.aaslin.cbt.common.model.DeveloperTestcaseResult;
 
-public interface DeveloperTestcaseResultsRepository extends JpaRepository<DeveloperTestcaseResults , String>{
+public interface DeveloperTestcaseResultsRepository extends JpaRepository<DeveloperTestcaseResult , String>{
 	
-	Optional<DeveloperTestcaseResults> findTopByOrderByDeveloperTestcaseResultIdDesc();
-	Optional<DeveloperTestcaseResults>findByDeveloperCodingSubmission_DeveloperCodingSubmissionIdAndTestcase_TestcaseId(
+	Optional<DeveloperTestcaseResult> findTopByOrderByDeveloperTestcaseResultIdDesc();
+	Optional<DeveloperTestcaseResult>findByDeveloperCodingSubmission_DeveloperCodingSubmissionIdAndTestcase_TestcaseId(
 			String developerCodingSubmissionId,String testcaseId);
 }

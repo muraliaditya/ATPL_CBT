@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.aaslin.cbt.common.model.Sections;
+import com.aaslin.cbt.common.model.Section;
 
 @Repository
-public interface SectionRepository extends JpaRepository<Sections, String> {
-    Optional<Sections> findBySection(String section); 
-    Optional<Sections> findBySectionIgnoreCase(String section);
+public interface SectionRepository extends JpaRepository<Section, String> {
+    Optional<Section> findBySection(String section); 
+    Optional<Section> findBySectionIgnoreCase(String section);
 }

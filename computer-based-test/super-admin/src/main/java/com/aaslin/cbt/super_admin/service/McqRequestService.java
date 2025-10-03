@@ -1,8 +1,8 @@
 package com.aaslin.cbt.super_admin.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.McqQuestions.ApprovalStatus;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.McqQuestion.ApprovalStatus;
 import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.super_admin.dto.McqQuestionDTO;
 import com.aaslin.cbt.super_admin.dto.McqRequestDTO;
@@ -21,7 +21,7 @@ public class McqRequestService {
     private final UsersRepository userRepo;
 
     public List<McqRequestDTO> getAllRequests(String username) {
-        List<McqQuestions> mcqs;
+        List<McqQuestion> mcqs;
 
         if (username != null && !username.isEmpty()) {
             mcqs = mcqRepo.findByCreatedByUsernameAndApprovalStatus(username, ApprovalStatus.PENDING);
@@ -38,20 +38,20 @@ public class McqRequestService {
     @Transactional
     public McqQuestionDTO updateApprovalStatus(String mcqId, String action, String approverId) {
     	
-        McqQuestions mcq = mcqRepo.findById(mcqId)
+        McqQuestion mcq = mcqRepo.findById(mcqId)
                 .orElseThrow(() -> new RuntimeException("MCQ not found"));
    
         User approver = userRepo.findById(approverId)
                 .orElseThrow(() -> new RuntimeException("Approver not found"));
 
-        if (mcq.getApprovalStatus() != McqQuestions.ApprovalStatus.PENDING) {
+        if (mcq.getApprovalStatus() != McqQuestion.ApprovalStatus.PENDING) {
             throw new IllegalStateException("MCQ is already " + mcq.getApprovalStatus());
         }
 
         if ("approve".equalsIgnoreCase(action)) {
-            mcq.setApprovalStatus(McqQuestions.ApprovalStatus.APPROVED);
+            mcq.setApprovalStatus(McqQuestion.ApprovalStatus.APPROVED);
         } else if ("reject".equalsIgnoreCase(action)) {
-            mcq.setApprovalStatus(McqQuestions.ApprovalStatus.REJECTED);
+            mcq.setApprovalStatus(McqQuestion.ApprovalStatus.REJECTED);
         } else {
             throw new IllegalArgumentException("Invalid action: " + action);
         }
@@ -60,7 +60,7 @@ public class McqRequestService {
         mcq.setUpdatedAt(LocalDateTime.now());
         mcq.setUpdatedBy(approver);
 
-        McqQuestions savedMcq = mcqRepo.save(mcq);
+        McqQuestion savedMcq = mcqRepo.save(mcq);
 
         return new McqQuestionDTO(
             savedMcq.getMcqQuestionId(),
@@ -76,7 +76,7 @@ public class McqRequestService {
     }
     @Transactional
     public McqQuestionDTO getMcqDetailsById(String mcqId) {
-        McqQuestions mcq = mcqRepo.findById(mcqId)
+        McqQuestion mcq = mcqRepo.findById(mcqId)
                 .orElseThrow(() -> new RuntimeException("MCQ not found"));
         return new McqQuestionDTO(
             mcq.getMcqQuestionId(),

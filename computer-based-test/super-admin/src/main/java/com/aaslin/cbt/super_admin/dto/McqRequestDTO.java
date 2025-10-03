@@ -1,5 +1,5 @@
 package com.aaslin.cbt.super_admin.dto;
-import com.aaslin.cbt.common.model.McqQuestions;
+import com.aaslin.cbt.common.model.McqQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,6 @@ public class McqRequestDTO {
 	private String mcqId;
 	private String questionText;
 	private String createdBy;
-	private McqQuestions.ApprovalStatus approvalstatus;
+	private McqQuestion.ApprovalStatus approvalstatus;
 
 }

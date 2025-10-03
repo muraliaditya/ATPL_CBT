@@ -28,15 +28,15 @@ public class CompilerServiceImpl implements CompilerService {
     private final SubmissionUtils submissionUtils;
 
     public CompileRunResponseDto compileRun(String userId, String questionId, String languageType, String code) {
-        List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                questionId, Testcases.TestcaseType.PUBLIC);
+        List<Testcase> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
+                questionId, Testcase.TestcaseType.PUBLIC);
 
         List<PublicTestcaseResultDto> results = new ArrayList<>();
         int passed = 0;
 
         questionRepo.findById(questionId).orElseThrow();
 
-        for (Testcases tc : testcases) {
+        for (Testcase tc : testcases) {
             try {
                 String output = dockerExecutor.executeUserCode(
                         languageType,
@@ -69,8 +69,8 @@ public class CompilerServiceImpl implements CompilerService {
         }
 
         String codeStatus = (passed == testcases.size()) 
-                ? DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.SOLVED.name() 
-                : DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.WRONG_ANSWER.name();
+                ? DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.SOLVED.name() 
+                : DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.WRONG_ANSWER.name();
 
         return new CompileRunResponseDto(codeStatus, "Compiled and run successfully", passed, results);
     }
@@ -82,25 +82,25 @@ public class CompilerServiceImpl implements CompilerService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        CodingQuestions question = questionRepo.findById(questionId)
+        CodingQuestion question = questionRepo.findById(questionId)
                 .orElseThrow(() -> new RuntimeException("Question not found with id: " + questionId));
 
         LanguageType lang = languageTypeRepo.findByLanguageType(languageType)
                 .orElseThrow(() -> new RuntimeException("LanguageType not found: " + languageType));
 
         // Check if a submission already exists
-        DeveloperCodingSubmissions submission = submissionRepo
+        DeveloperCodingSubmission submission = submissionRepo
                 .findByUser_UserIdAndCodingQuestion_CodingQuestionId(userId, questionId)
                 .orElse(null);
 
         if (submission == null) {
             // First submission: generate new DCSUB
             String lastSubmissionId = submissionRepo.findTopByOrderByDeveloperCodingSubmissionIdDesc()
-                    .map(DeveloperCodingSubmissions::getDeveloperCodingSubmissionId)
+                    .map(DeveloperCodingSubmission::getDeveloperCodingSubmissionId)
                     .orElse(null);
             String newSubmissionId = CustomIdGenerator.generateNextId("DCSUB", lastSubmissionId);
 
-            submission = new DeveloperCodingSubmissions();
+            submission = new DeveloperCodingSubmission();
             submission.setDeveloperCodingSubmissionId(newSubmissionId);
             submission.setCreatedAt(LocalDateTime.now());
         }
@@ -112,11 +112,11 @@ public class CompilerServiceImpl implements CompilerService {
         submission.setCode(code);
         submission.setSubmittedAt(LocalDateTime.now());
         submission.setUpdatedAt(LocalDateTime.now());
-        submission.setCodeStatus(DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.SOLVED);
+        submission.setCodeStatus(DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.SOLVED);
         submissionRepo.save(submission);
 
         // Fetch all testcases
-        List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionId(questionId);
+        List<Testcase> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionId(questionId);
         if (testcases.isEmpty()) {
             return new SubmitResponseDto("ERROR", "No testcases found for question: " + questionId);
         }
@@ -126,7 +126,7 @@ public class CompilerServiceImpl implements CompilerService {
         int publicPassed = 0;
         int privatePassed = 0;
 
-        for (Testcases tc : testcases) {
+        for (Testcase tc : testcases) {
             try {
                 String output = dockerExecutor.executeUserCode(
                         lang.getLanguageType(),
@@ -139,7 +139,7 @@ public class CompilerServiceImpl implements CompilerService {
                 boolean isPassed = tc.getExpectedOutput().trim().equals(output.trim());
 
                 // Check if DTCR already exists for this submission and testcase
-                DeveloperTestcaseResults result = resultRepo
+                DeveloperTestcaseResult result = resultRepo
                         .findByDeveloperCodingSubmission_DeveloperCodingSubmissionIdAndTestcase_TestcaseId(
                                 submission.getDeveloperCodingSubmissionId(), tc.getTestcaseId())
                         .orElse(null);
@@ -147,11 +147,11 @@ public class CompilerServiceImpl implements CompilerService {
                 if (result == null) {
                     // First time: generate DTCR
                     String lastResultId = resultRepo.findTopByOrderByDeveloperTestcaseResultIdDesc()
-                            .map(DeveloperTestcaseResults::getDeveloperTestcaseResultId)
+                            .map(DeveloperTestcaseResult::getDeveloperTestcaseResultId)
                             .orElse(null);
                     String newResultId = CustomIdGenerator.generateNextId("DTCR", lastResultId);
 
-                    result = new DeveloperTestcaseResults();
+                    result = new DeveloperTestcaseResult();
                     result.setDeveloperTestcaseResultId(newResultId);
                     result.setDeveloperCodingSubmission(submission);
                     result.setTestcase(tc);
@@ -160,13 +160,13 @@ public class CompilerServiceImpl implements CompilerService {
 
                 // Update DTCR
                 result.setTestcaseStatus(isPassed
-                        ? DeveloperTestcaseResults.DeveloperTestcaseStatus.PASSED
-                        : DeveloperTestcaseResults.DeveloperTestcaseStatus.FAILED);
+                        ? DeveloperTestcaseResult.DeveloperTestcaseStatus.PASSED
+                        : DeveloperTestcaseResult.DeveloperTestcaseStatus.FAILED);
                 result.setUpdatedAt(LocalDateTime.now());
                 resultRepo.save(result);
 
                 // Store results for response
-                if (tc.getTestcaseType() == Testcases.TestcaseType.PUBLIC) {
+                if (tc.getTestcaseType() == Testcase.TestcaseType.PUBLIC) {
                     publicResults.add(new PublicTestcaseResultDto(
                             tc.getTestcaseId(),
                             tc.getInputValues(),
@@ -186,17 +186,17 @@ public class CompilerServiceImpl implements CompilerService {
                 }
               } catch (CompilationException ce) {
                     
-                    submission.setCodeStatus(DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.COMPILATION_ERROR);
+                    submission.setCodeStatus(DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.COMPILATION_ERROR);
                     submissionUtils.saveErrorResult(submission, tc, "COMPILATION_ERROR");
                     submissionUtils.addResponseResult(tc, publicResults, privateResults, "COMPILATION_ERROR", "FAILED");
                     
                 } catch (RuntimeExecutionException re) {
-                    submission.setCodeStatus(DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.RUNTIME_ERROR);
+                    submission.setCodeStatus(DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.RUNTIME_ERROR);
                     submissionUtils.saveErrorResult(submission, tc, "RUNTIME_ERROR");
                     submissionUtils.addResponseResult(tc, publicResults, privateResults, "RUNTIME_ERROR", "FAILED");
                     
                 } catch (Exception e) {
-                    submission.setCodeStatus(DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.RUNTIME_ERROR);
+                    submission.setCodeStatus(DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.RUNTIME_ERROR);
                     submissionUtils.saveErrorResult(submission, tc, "ERROR");
                     submissionUtils.addResponseResult(tc, publicResults, privateResults, "ERROR", "FAILED");
                 }
@@ -206,21 +206,21 @@ public class CompilerServiceImpl implements CompilerService {
 
         String codeStatus="";
         String message = "";
-        if(submission.getCodeStatus() == DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.COMPILATION_ERROR) {
-        	codeStatus = DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.COMPILATION_ERROR.name();
+        if(submission.getCodeStatus() == DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.COMPILATION_ERROR) {
+        	codeStatus = DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.COMPILATION_ERROR.name();
         	 message = "Compilation Error: Please fix your code syntax.";
         }
         else if (totalPassed == testcases.size()) {
-            codeStatus = DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.SOLVED.name();
+            codeStatus = DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.SOLVED.name();
             message = "All testcases passed successfully!";
         } 
         else if((totalPassed < testcases.size()) && totalPassed != 0){
-            codeStatus = DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.WRONG_ANSWER.name();
+            codeStatus = DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.WRONG_ANSWER.name();
             message = "Some testcases failed. Please check your logic.";
         }
         else {
         	if(totalPassed == 0) {
-        	codeStatus = DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.RUNTIME_ERROR.name();
+        	codeStatus = DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.RUNTIME_ERROR.name();
         	message = "Runtime Error: Please check input/output handling or infinite loops.";
          }
         }
@@ -228,7 +228,7 @@ public class CompilerServiceImpl implements CompilerService {
 
         submission.setPublicTestcasesPassed(publicPassed);
         submission.setPrivateTestcasesPassed(privatePassed);
-        submission.setCodeStatus(DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus.valueOf(codeStatus));
+        submission.setCodeStatus(DeveloperCodingSubmission.DeveloperCodingSubmissionStatus.valueOf(codeStatus));
         submissionRepo.save(submission);
 
         // Return response

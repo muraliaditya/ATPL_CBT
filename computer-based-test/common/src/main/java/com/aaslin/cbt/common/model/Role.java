@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "roles_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class Roles {
+public class Role {
 
     @Id
     @Column(name = "role_id", length = 50)

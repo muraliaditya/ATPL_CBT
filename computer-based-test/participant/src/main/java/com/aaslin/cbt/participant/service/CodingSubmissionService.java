@@ -14,7 +14,7 @@ import com.aaslin.cbt.common.model.MapContestCoding;
 import com.aaslin.cbt.common.model.Participant;
 import com.aaslin.cbt.common.model.Submission;
 import com.aaslin.cbt.common.model.TestcaseResult;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.participant.dto.SubmissionRequest;
 import com.aaslin.cbt.participant.dto.SubmissionResponse;
 import com.aaslin.cbt.participant.dto.TestcaseResultResponse;
@@ -123,7 +123,7 @@ public class CodingSubmissionService {
 
         result.setCodingSubmission(codingSubmission);
 
-        Testcases testcase = new Testcases();
+        Testcase testcase = new Testcase();
         testcase.setTestcaseId(tc.getTestcaseId());
         result.setTestcase(testcase);
 

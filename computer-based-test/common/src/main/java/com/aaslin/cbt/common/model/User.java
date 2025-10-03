@@ -23,7 +23,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    private Roles role;
+    private Role role;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -40,8 +40,8 @@ public class User {
     private User updatedBy;
 
     @OneToMany(mappedBy = "createdBy")
-    private List<CodingQuestions> createdCodingQuestions;
+    private List<CodingQuestion> createdCodingQuestions;
 
     @OneToMany(mappedBy = "approvedBy")
-    private List<CodingQuestions> approvedCodingQuestions;
+    private List<CodingQuestion> approvedCodingQuestions;
 }

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "coding_questions_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class CodingQuestions {
+public class CodingQuestion {
 
     @Id
     @Column(name = "coding_question_id", length = 50)
@@ -68,7 +68,7 @@ public class CodingQuestions {
     @Column(name = "memory_limit")
     private Long memoryLimit;
 
-    
+     
     @Column(name = "input_type", columnDefinition = "JSON",nullable=false)
     private String inputType; 
 
@@ -91,7 +91,7 @@ public class CodingQuestions {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "codingQuestion",cascade=CascadeType.ALL,orphanRemoval=true, fetch = FetchType.EAGER)
-    private List<Testcases> testcases;
+    private List<Testcase> testcases;
 
     public enum Difficulty { 
     	EASY, MEDIUM, HARD 
