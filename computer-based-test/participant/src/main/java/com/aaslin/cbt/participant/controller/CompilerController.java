@@ -15,7 +15,7 @@ import com.aaslin.cbt.participant.service.CompilerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController("participantCompilerController")
-@RequestMapping("/api/v1/coding")
+@RequestMapping("/api/v1/participant/coding")
 @RequiredArgsConstructor
 public class CompilerController {
 
@@ -27,7 +27,7 @@ public class CompilerController {
 		return compilerService.compileAndRun(request);
 		}
 	
-	@PostMapping("/submission")
+	@PostMapping("/submit")
 	public SubmissionResponse submitCode(@RequestBody SubmissionRequest request) throws Exception {
 		SubmissionResponse response=compilerService.submitCode(request);
 		submissionService.saveCodingSubmission(request, response);

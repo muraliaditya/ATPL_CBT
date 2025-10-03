@@ -2,6 +2,7 @@ package com.aaslin.cbt.common.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -26,6 +27,6 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Contest> contests;
 }
