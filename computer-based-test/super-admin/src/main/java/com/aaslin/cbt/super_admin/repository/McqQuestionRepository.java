@@ -13,20 +13,20 @@ import com.aaslin.cbt.common.model.Section;
 
 public interface McqQuestionRepository extends JpaRepository<McqQuestion,String> {
 	
-	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND is_active=false  ORDER BY RAND() LIMIT :count", nativeQuery = true)
+	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND is_active=true  ORDER BY RAND() LIMIT :count", nativeQuery = true)
 	    List<McqQuestion> findRandomBySection(@Param("sectionId") String sectionId, @Param("count") int count);
 
-	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND mcq_question_id <> :currentQuestionId AND is_active=false ORDER BY RAND() LIMIT 1", nativeQuery = true)
+	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND mcq_question_id <> :currentQuestionId AND is_active=true ORDER BY RAND() LIMIT 1", nativeQuery = true)
 	    McqQuestion findRandomOtherBySection(@Param("sectionId") String sectionId, @Param("currentQuestionId") String currentQuestionId);
 
     
-	    List<McqQuestion> findBySectionAndIsActiveFalse(Section section);
-	    List<McqQuestion> findAllByIsActiveFalse();
+	    List<McqQuestion> findBySectionAndIsActiveTrue(Section section);
+	    List<McqQuestion> findAllByIsActiveTrue();
 	    List<McqQuestion> findBySection(Section section);
 	    List<McqQuestion> findByApprovalStatus(ApprovalStatus approvalStatus);
 	    List<McqQuestion> findByCreatedByUsernameAndApprovalStatus(String username, ApprovalStatus approvalStatus);
 
-	   
+	    
 
     @Query(value = "SELECT MAX(CAST(SUBSTRING(mcq_question_id, 4) AS UNSIGNED)) FROM mcq_questions_cbt", nativeQuery = true)
     int findMaxIdNumber();    

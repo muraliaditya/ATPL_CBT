@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ContestResultDTO {
     private String submissionId;
     private String participantId;
-    private String username;
+    private String userName;
     private String email;
 
     private String college;

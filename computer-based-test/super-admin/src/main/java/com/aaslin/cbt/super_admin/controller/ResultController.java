@@ -12,7 +12,7 @@ import com.aaslin.cbt.super_admin.service.ResultService;
 import lombok.RequiredArgsConstructor;
 
 @RestController	
-@RequestMapping("/api/admin/results")	
+@RequestMapping("/api/v1/admin/results")	
 @RequiredArgsConstructor	
 public class ResultController {
 	    

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.super_admin.dto.ApiResponse;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionRequestss;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionResponse;
@@ -22,7 +20,7 @@ import com.aaslin.cbt.super_admin.dto.GenerateCodingQuestionsRequest;
 import com.aaslin.cbt.super_admin.dto.GeneratedCodingQuestionResponse;
 import com.aaslin.cbt.super_admin.dto.PaginatedCodingQuestionResponse;
 import com.aaslin.cbt.super_admin.service.CodingQuestionGenerationService;
-import com.aaslin.cbt.super_admin.service.CodingQuestionMapper;
+
 import com.aaslin.cbt.super_admin.service.CodingQuestionsService;
 
 import lombok.RequiredArgsConstructor;

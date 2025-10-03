@@ -64,7 +64,7 @@ public class Contest {
     private LocalDateTime createdAt;
     
     @Column(name="is_active")
-    private boolean deleted=false;
+    private boolean isActive=true;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")

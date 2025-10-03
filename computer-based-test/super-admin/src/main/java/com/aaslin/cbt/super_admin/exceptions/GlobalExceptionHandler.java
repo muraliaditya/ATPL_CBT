@@ -18,6 +18,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.CategoryIdNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.ContestNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.McqNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.SectionNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.SubmissionIdNotFoundException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -94,5 +100,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAll(Exception ex, HttpServletRequest request) {
         ex.printStackTrace();
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", request.getRequestURI());
+    }
+    @ExceptionHandler(SectionNotFoundException.class)
+    public ResponseEntity<String> handleSectionNotFound(SectionNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(McqNotFoundException.class)
+    public ResponseEntity<String> handleMcqNotFound(McqNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    
+    @ExceptionHandler(ContestNotFoundException.class)
+    public ResponseEntity<String> handleContestNotFound(ContestNotFoundException ex){
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    
+    @ExceptionHandler(SubmissionIdNotFoundException.class)
+    public ResponseEntity<String> SubmissionNotFoundException(SubmissionIdNotFoundException ex){
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    
+    @ExceptionHandler(CategoryIdNotFoundException.class)
+    public ResponseEntity<String> CategoryNotFoundException(CategoryIdNotFoundException ex){
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
