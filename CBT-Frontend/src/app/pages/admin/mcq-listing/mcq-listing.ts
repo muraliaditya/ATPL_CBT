@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { mcqSections } from '../../../models/admin/admin';
 import { RouterLink } from '@angular/router';
 import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-layout";
+import { ListMcq } from '../../../services/admin/list-mcq';
 @Component({
   selector: 'app-mcq-listing',
   imports: [DynamicLayout,CommonModule, Select, InputTextModule, FloatLabelModule, FormsModule, RouterLink, DynamicLayout],
@@ -14,7 +15,8 @@ import { DynamicLayout } from "../../../components/UI/dynamic-layout/dynamic-lay
   styleUrl: './mcq-listing.css'
 })
 export class MCQListing {
-  Region: string = '';
+  constructor(private mcqlist:ListMcq){};
+  selectedSection: string = '';
   editingId: string | null = null;
   editCache: any = {};
   filteredMcqs: mcqSections[]=[];
@@ -31,7 +33,8 @@ export class MCQListing {
   onDelete(q:mcqSections){
     this.filteredMcqs = this.filteredMcqs.filter(c => c.mcqQuestionId !== q.mcqQuestionId);
   }
-  Section: string[] = ['Geography','Literature','Science'];
+  Section: string[] = ['APTITUDE','REASONING','VERBAL','TECHNICAL','QUANTITATIVE'];
+  prod:any[]=[]
   mcqs: mcqSections[]= [
       {
       mcqQuestionId: 'mcq001',
@@ -42,7 +45,7 @@ export class MCQListing {
       option4: 'Rome',
       answerKey: 'Paris',
       weightage: 2,
-      section: 'Geography',
+      section: 'APTITUDE',
     },
     {
       mcqQuestionId: 'mcq002',
@@ -93,11 +96,20 @@ export class MCQListing {
     this.filteredMcqs = [...this.mcqs];
   }
   onSearch() {
-    const r = (this.Region || '').trim();
+    const r = (this.selectedSection || 'APTITUDE').trim();
     if (!r) {
       this.filteredMcqs = [...this.mcqs];
     } else {
       this.filteredMcqs = this.mcqs.filter(q => q.section === r);
     }
+    this.mcqlist.getMcqsbySectionName(this.selectedSection).subscribe({
+      next:(data)=>{
+        this.prod=data;
+        console.log(data);
+      },
+      error:(err)=>{
+        console.log('error');
+      }
+    });
+    }
   }
-}

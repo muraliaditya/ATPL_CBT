@@ -23,7 +23,8 @@ export class ContestListing {
   status: string[] = ['Completed', 'Active', 'InActive'];
   ContestId = '';
   ContestName = '';
-  contests: Contest[] = [
+  product: any[]=[];
+  contest: Contest[] = [
     {
       id: '#CT-0441',
       name: 'Contest 1',
@@ -65,12 +66,12 @@ export class ContestListing {
 filteredContests: Contest[] = [];
 
 ngOnInit() {
-  this.filteredContests = this.contests;
+  this.filteredContests = this.contest;
 }
 
 searchContests() {
   this.managecontest.searchcontest(this.ContestName,this.ContestId,this.choice)
-  this.filteredContests = this.contests.filter(contest => {
+  this.filteredContests = this.contest.filter(contest => {
     const matchName = this.ContestName
       ? contest.name.toLowerCase().includes(this.ContestName.toLowerCase())
       : true;
@@ -105,7 +106,7 @@ return matchName && matchId && matchStatus;
 
   onDelete(contest: Contest) {
     if (confirm(`Delete ${contest.id}?`)) {
-      this.contests = this.contests.filter((c) => c.id !== contest.id);
+      this.contest = this.contest.filter((c) => c.id !== contest.id);
     }
     this.openRow = null;
   }

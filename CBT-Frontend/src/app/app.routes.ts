@@ -25,7 +25,6 @@ import { DeveloperQuestion } from './pages/developer/developer-question/develope
 import { AddMcqQuestion } from './pages/admin/add-mcq-question/add-mcq-question';
 import { Editor } from './components/admin/editor/editor';
 import { CodeQuestion } from './pages/developer/code-question/code-question';
-import { Demo } from './pages/developer/demo/demo';
 export const routes: Routes = [
   {
     path: '',
@@ -160,11 +159,6 @@ export const routes: Routes = [
         path:'developer-codequestion',
         component:CodeQuestion,
       },
-      {
-        path:'demo',
-        component:Demo
-      }
-
     ],
   },
 ];

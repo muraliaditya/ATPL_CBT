@@ -8,10 +8,11 @@ import { Contest } from '../models/admin/admin';
   providedIn: 'root'
 })
 export class Managecontest {
+  // product:any[]=[]
   private apiUrl = environment.apiUrl;
-  private ManageContest = 'api/v1/admin/mcqs';
+  private ManageContest = 'api/v1/admin/contests';
   private token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTkyODI0MjgsImV4cCI6MTc1OTI4NjAyOH0.sUqjJthkl33W8ZtemstCYzVKSPQWj2wr4zPyh9FQQJ4';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdXBlckFkbWluNDIiLCJpYXQiOjE3NTk0NzIyMTQsImV4cCI6MTc1OTQ3NTgxNH0.Q58oUgLYPtvRUR4O1nVf7kjYdcyId9sIHVSeRRvVCco';
   constructor(private _http: HttpClient) {}
  buildUrlWithParams(
   baseUrl: string,
@@ -37,13 +38,20 @@ export class Managecontest {
     : `${baseUrl}?${params.join("&")}`;
 }
   searchcontest(ContestName: string, ContestId: string,choice:string) {
-    console.log('d')
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
     });
     let baseurl=`${this.apiUrl}/${this.ManageContest}/search`;
     let values=[ContestName,ContestId,choice]
     let paramNames=['ContestName','ContestId','choice']
+    // this._http.get<any>('http://localhost:8080/api/v1/admin/contests')
+    // .subscribe({next:(data)=>{
+    //   this.product=data;
+    // },
+    // error:(err)=>{
+    // console.log('error');
+    // },
+    // });
     console.log(this.buildUrlWithParams(baseurl,values,paramNames))
     return this._http.get<Contest>(
       `${this.apiUrl}/${this.ManageContest}/search?ContestName=${ContestName}&ContestId=${ContestId}&choice=${choice}`,

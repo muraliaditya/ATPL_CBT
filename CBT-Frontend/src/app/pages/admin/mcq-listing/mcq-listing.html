@@ -5,7 +5,7 @@
             <div class="flex justify-between">
     <div class="flex gap-3">
     <p-floatlabel class="w-full md:w-56" variant="on">
-            <p-select [options]="Section" [(ngModel)]="Region" class="w-40 pt-0" />
+            <p-select [options]="Section" [(ngModel)]="selectedSection" class="w-40 pt-0" />
         <label for="on_label">Category</label>
     </p-floatlabel>
     <button (click)="onSearch()" class=" bg-blue-500 text-white rounded-lg px-3">Search</button>
@@ -13,7 +13,7 @@
     <button routerLink="/admin/mcqs/Add-McqQuestions" class="bg-blue-500 text-white rounded-lg px-3 py-1">Add Question</button>
     </div> 
     <div  class="flex flex-col gap-2">
-    <div  *ngFor="let q of filteredMcqs; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
+    <div  *ngFor="let q of prod; let i = index;" class="mcq-box p-5 border border-gray-200 rounded-lg shadow-md">
     <div *ngIf="editingId !== q.mcqQuestionId; else editMode">
     <div class="flex flex-1 gap-3">
     <p><span class="font-bold">{{ i + 1 }}.</span> {{ q.question }}</p>
@@ -45,7 +45,7 @@
     </p-floatlabel>
     <p-floatlabel class="w-full md:w-70" variant="on">
             <p-select [options]="Section" [(ngModel)]="q.section" class="w-50 pt-0" />
-        <label for="on_label">q.category</label>
+        <label for="on_label">q.section</label>
     </p-floatlabel>
     </div>
     <div class="flex flex-col gap-2 w-45">

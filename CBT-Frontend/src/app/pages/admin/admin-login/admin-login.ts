@@ -5,6 +5,7 @@ import { FormsModule,FormGroup,FormBuilder, Validators } from '@angular/forms';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { Loginportal } from '../../../services/admin/loginportal';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-login',
   imports: [CommonModule,ReactiveFormsModule,FormsModule,FloatLabel,InputTextModule],
@@ -17,6 +18,7 @@ Login!: FormGroup;
 Username='';
 Password='';
   constructor(private fb: FormBuilder,
+    private router: Router,
     private login:Loginportal) {}
   ngOnInit(): void {
     this.Login = this.fb.group({
@@ -30,6 +32,18 @@ Password='';
       next:(res)=>{
         console.log('login',res);
         this.message = res.message;
+        localStorage.setItem('accessToken',JSON.stringify(res.accessToken));
+        const saved=JSON.parse(localStorage.getItem('accessToken')!);
+        console.log('access',saved);
+        if(res.role=='SUPER_ADMIN'){
+          this.router.navigate(['/admin/contest/manage-contestsList']);
+        }
+        else if(res.role=='Developer'){
+          this.router.navigate(['/developer/developer-dashboard']);
+        }
+        else{
+          alert('Invalid Credentials');
+        }
       },
       error:(err)=>{
         console.log('failed',err)
