@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.aaslin.cbt.common.model.CodingQuestion;
 
+
 @Repository
 public interface CodingQuestionsRepository extends JpaRepository<CodingQuestion, String> {
 
@@ -44,5 +45,7 @@ public interface CodingQuestionsRepository extends JpaRepository<CodingQuestion,
     List<CodingQuestion> findRandom(@Param("count") int count);
 
     List<CodingQuestion> findByIsActiveFalse();   
+    List<CodingQuestion> findByApprovalStatus(CodingQuestion.ApprovalStatus pending);
+    List<CodingQuestion> findByCreatedByUsernameAndApprovalStatus(String username, CodingQuestion.ApprovalStatus pending);
 
 }

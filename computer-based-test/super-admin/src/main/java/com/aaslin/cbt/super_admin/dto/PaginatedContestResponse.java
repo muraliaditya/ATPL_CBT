@@ -2,22 +2,20 @@ package com.aaslin.cbt.super_admin.dto;
 
 import java.util.List;
 
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaginatedContestResponse {
-    private int page;
-    private int size;
-    private long totalElements;
+    private int pageNo;
+    private int pageSize;
+    private long totalRecords;
     private int totalPages;
     private List<ContestDTO> contests;
 
-    public PaginatedContestResponse(int page, int size, long totalElements, int totalPages, List<ContestDTO> contests) {
-        this.page = page;
-        this.size = size;
-        this.totalElements = totalElements;
-        this.totalPages = totalPages;
-        this.contests = contests;
-    }
+   
 }
+    
 

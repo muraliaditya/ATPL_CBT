@@ -1,56 +1,90 @@
-	package com.aaslin.cbt.participant.controller;
+package com.aaslin.cbt.participant.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.aaslin.cbt.participant.dto.ContestDetailsResponse;
-import com.aaslin.cbt.participant.dto.ContestEligibilityResponse;
-import com.aaslin.cbt.participant.dto.ContestStartResponse;
-import com.aaslin.cbt.participant.dto.TestSubmissionRequest;
-import com.aaslin.cbt.participant.dto.TestSubmissionResponse;
-import com.aaslin.cbt.participant.security.JwtUtil;
+import com.aaslin.cbt.participant.dto.*;
+import com.aaslin.cbt.participant.exception.CustomException;
+import com.aaslin.cbt.participant.exception.ErrorResponse;
 import com.aaslin.cbt.participant.service.ContestService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("participantContestController")
-@RequestMapping("/api/v1/contests")
+
+/**@author ATPLD14
+ * 
+ */
+@RestController("participant")
+@RequestMapping("/api/v1/participant/contests")
 public class ContestController {
 
-	private final ContestService service;
+    private final ContestService service;
 
-	public ContestController(ContestService service) {
-		super();
-		this.service = service;
-	}
-	
-	@GetMapping("/{contestId}/eligibility")
-	public ContestEligibilityResponse getEligiblity(@PathVariable String contestId) {
-		return service.checkEligibility(contestId);
-	}
-	
-	@GetMapping("/{contestId}/basic-info")
-	public ContestDetailsResponse contestDetails(@PathVariable String contestId) {
-		return service.getContestInfo(contestId);
-	}
-	
-	@GetMapping("/{contestId}/start")
-	public ResponseEntity<ContestStartResponse> startContest(@PathVariable String contestId){
-//	String token=authHeader.replace("Bearer","");
-//	String participantId=JwtUtil.validateTokenAndGetParticipantId(token);,@RequestHeader("Authorization") String authHeader
-	ContestStartResponse response=service.startContest(contestId);
-	return ResponseEntity.ok(response);
-	}
-	
-	@PostMapping("/{contestId}/submit")
-	public ResponseEntity<TestSubmissionResponse> submitTest(@PathVariable String contestId,@RequestBody TestSubmissionRequest request){
-		TestSubmissionResponse response=service.saveTestSubmission(request);
-		return ResponseEntity.ok(response);
-	}
+    public ContestController(ContestService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/{contestId}/eligibility")
+    public ResponseEntity<?> getEligibility(@PathVariable String contestId) {
+        try {
+            ContestEligibilityResponse response = service.checkEligibility(contestId);
+            return ResponseEntity.ok(response);
+        } catch (CustomException.ContestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(500, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{contestId}/basic-info")
+    public ResponseEntity<?> contestDetails(@PathVariable String contestId) {
+        try {
+            ContestDetailsResponse response = service.getContestInfo(contestId);
+            return ResponseEntity.ok(response);
+        } catch (CustomException.ContestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(500, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{contestId}/start")
+    public ResponseEntity<?> startContest(@PathVariable String contestId) {
+        try {
+            ContestStartResponse response = service.startContest(contestId);
+            return ResponseEntity.ok(response);
+        } catch (CustomException.ContestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(500, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{contestId}/submit")
+    public ResponseEntity<?> submitTest(@PathVariable String contestId,@RequestBody TestSubmissionRequest request) {
+        try {
+            request.setContestId(contestId);
+            TestSubmissionResponse response = service.saveTestSubmission(request);
+            return ResponseEntity.ok(response);
+        } catch (CustomException.SubmissionNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, e.getMessage()));
+        } catch (CustomException.MCQNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, e.getMessage()));
+        } catch (CustomException.InternalServerException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(500, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(500, e.getMessage()));
+        }
+    }
+
+    
 }
-

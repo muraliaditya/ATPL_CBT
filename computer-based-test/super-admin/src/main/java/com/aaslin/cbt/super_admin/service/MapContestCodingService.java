@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.aaslin.cbt.common.model.Contest;
 import com.aaslin.cbt.common.model.MapContestCoding;
-import com.aaslin.cbt.super_admin.exceptions.ContestNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.ContestNotFoundException;
 import com.aaslin.cbt.super_admin.repository.MapContestCodingRepository;
 import com.aaslin.cbt.super_admin.util.AuditHelper;
 

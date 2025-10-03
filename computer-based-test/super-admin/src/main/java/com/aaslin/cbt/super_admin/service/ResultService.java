@@ -12,6 +12,7 @@ import com.aaslin.cbt.common.model.McqQuestion;
 import com.aaslin.cbt.common.model.Participant;
 import com.aaslin.cbt.common.model.Submission;
 import com.aaslin.cbt.super_admin.dto.*;
+import com.aaslin.cbt.super_admin.exceptions.CustomExceptions.SubmissionIdNotFoundException;
 import com.aaslin.cbt.super_admin.repository.*;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class ResultService {
     public ResultResponseDTO getResult(String submissionId, String participantId, String contestId) {
         Submission submission = submissionRepo.findBySubmissionIdAndParticipant_ParticipantIdAndContest_ContestId(
                 submissionId, participantId, contestId)
-                .orElseThrow(() -> new RuntimeException("Result not found for given submission"));
+                .orElseThrow(() -> new SubmissionIdNotFoundException(submissionId));
 
         Participant participant = submission.getParticipant();
         ParticipantInfoDTO participantInfo = ParticipantInfoDTO.builder()
@@ -87,6 +88,7 @@ public class ResultService {
         	    .map((CodingSubmission cs) -> CodingSubmissionDTO.builder()
         	        .codingSubmissionId(cs.getCodingSubmissionId())
         	        .codingQuestionId(cs.getCodingQuestion().getCodingQuestionId())
+        	        .languageUsed(cs.getLanguageTypeId().getLanguageType())
         	        .code(cs.getCode())
         	        .score(cs.getScore())
         	        .publicTestcasesPassed(cs.getPublicTestcasesPassed())

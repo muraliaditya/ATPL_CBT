@@ -10,10 +10,6 @@ import java.util.List;
 
 import com.aaslin.cbt.common.model.CodingQuestion;
 
-import com.aaslin.cbt.common.model.CodingQuestion;
-import com.aaslin.cbt.super_admin.dto.ApiResponse;
-import com.aaslin.cbt.super_admin.dto.CodingQuestionRequestss;
-import com.aaslin.cbt.super_admin.dto.PaginatedCodingQuestionResponse;
 
 
 public interface CodingQuestionsService {

@@ -17,8 +17,8 @@ public class McqQuestionDTO {
     private String option2;
     private String option3;
     private String option4;
-    private String correctAnswer;  
-    private String sectionName;
+    private String answerKey;  
+    private String section;
     private Integer weightage;
 	
 }

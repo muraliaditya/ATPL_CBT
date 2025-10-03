@@ -14,7 +14,7 @@ import com.aaslin.cbt.participant.security.JwtUtil;
 import com.aaslin.cbt.participant.service.ParticipantService;
 
 @RestController
-@RequestMapping("/api/v1/participants")
+@RequestMapping("/api/v1/participant")
 public class ParticipantController {
 
 	private final ParticipantService participantService;
@@ -24,7 +24,7 @@ public class ParticipantController {
 		this.participantService = participantService;
 	}
 	
-	@PostMapping
+	@PostMapping("/register")
 	public ResponseEntity<ParticipantResponse> register(@RequestParam String contestId,@RequestBody ParticipantRequest request){
 		ParticipantResponse response=participantService.registerParticipant(contestId, request);
 		String token=JwtUtil.generateToken(response.getParticipantId(), contestId);
