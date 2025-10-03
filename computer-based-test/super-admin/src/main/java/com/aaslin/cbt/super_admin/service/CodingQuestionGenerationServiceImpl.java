@@ -3,6 +3,7 @@ package com.aaslin.cbt.super_admin.service;
 import com.aaslin.cbt.common.model.CodingQuestions;
 import com.aaslin.cbt.common.model.Testcases;
 import com.aaslin.cbt.super_admin.dto.*;
+import com.aaslin.cbt.super_admin.exceptions.CodingQuestionNotFoundException;
 import com.aaslin.cbt.super_admin.repository.CodingQuestionsRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,12 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenerationService {
 
     private final CodingQuestionsRepository codingQuestionsRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     private List<String> parseStringListJson(String json) {
         try {
@@ -34,7 +36,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
             if (json == null || json.isEmpty()) return null;
             return objectMapper.readValue(json, Object.class);
         } catch (Exception e) {
-            return json; 
+            return json;
         }
     }
 
@@ -58,7 +60,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
                 tr.setExpectedOutput(parseJsonToObject(tc.getExpectedOutput()));
                 tr.setTestcaseType(tc.getTestcaseType() != null ? tc.getTestcaseType().name() : null);
                 tr.setWeightage(tc.getWeightage());
-                tr.setDescription(null);
+                tr.setDescription(tc.getDescription());
                 tlist.add(tr);
             }
         }
@@ -75,7 +77,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
                 String diff = Optional.ofNullable(p.getPreference()).orElse("EASY").toUpperCase();
                 CodingQuestions cq = codingQuestionsRepository.findRandomByDifficulty(diff);
                 if (cq == null) {
-                    throw new RuntimeException("No question found for difficulty: " + diff);
+                    throw new CodingQuestionNotFoundException("No question found for difficulty: " + diff);
                 }
                 out.add(mapToResponse(cq));
             }
@@ -96,7 +98,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
         String diff = Optional.ofNullable(preference).orElse("EASY").toUpperCase();
         CodingQuestions cq = codingQuestionsRepository.findRandomByDifficultyExcluding(diff, questionId);
         if (cq == null) {
-            throw new RuntimeException("No alternative available for difficulty: " + diff);
+            throw new CodingQuestionNotFoundException("No alternative available for difficulty: " + diff);
         }
         return mapToResponse(cq);
     }

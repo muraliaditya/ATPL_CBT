@@ -43,6 +43,5 @@ public interface CodingQuestionsRepository extends JpaRepository<CodingQuestions
                    "WHERE c.is_active = true ORDER BY RAND() LIMIT :count", nativeQuery = true)
     List<CodingQuestions> findRandom(@Param("count") int count);
 
-    List<CodingQuestions> findByIsActiveFalse();   
-
+    List<CodingQuestions> findByIsActiveFalse();
 }

@@ -14,7 +14,7 @@ public interface ContestRepository extends JpaRepository<Contest,String> {
 	
 	@Query("SELECT MAX(CAST(SUBSTRING(c.contestId, 4) AS int)) FROM Contest c")
 	Integer findMaxContestNumber();
-	List<Contest> findByDeletedFalse();
+	List<Contest> findByDeletedTrue();
 	Optional<Contest> findTopByOrderByContestIdDesc();
 
 	 boolean existsByContestName(String contestName);

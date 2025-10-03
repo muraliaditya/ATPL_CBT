@@ -6,8 +6,10 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
-@Table(name = "testcases_cbt")
+@Table(name = "testcase_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Testcases {
 
@@ -17,6 +19,7 @@ public class Testcases {
 
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
+    @JsonBackReference
     private CodingQuestions codingQuestion;
   
     @Column(name = "input_values", columnDefinition = "JSON")

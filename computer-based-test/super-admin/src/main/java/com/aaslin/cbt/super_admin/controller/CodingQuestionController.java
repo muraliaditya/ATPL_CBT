@@ -1,4 +1,6 @@
 package com.aaslin.cbt.super_admin.controller;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,9 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aaslin.cbt.common.model.CodingQuestions;
 import com.aaslin.cbt.super_admin.dto.ApiResponse;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionRequestss;
+import com.aaslin.cbt.super_admin.dto.CodingQuestionResponse;
+import com.aaslin.cbt.super_admin.dto.GenerateCodingQuestionsRequest;
+import com.aaslin.cbt.super_admin.dto.GeneratedCodingQuestionResponse;
 import com.aaslin.cbt.super_admin.dto.PaginatedCodingQuestionResponse;
+import com.aaslin.cbt.super_admin.service.CodingQuestionGenerationService;
+import com.aaslin.cbt.super_admin.service.CodingQuestionMapper;
 import com.aaslin.cbt.super_admin.service.CodingQuestionsService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,15 +34,21 @@ import lombok.RequiredArgsConstructor;
 public class CodingQuestionController {
 
     private final CodingQuestionsService codingQuestionsService;
+    private final CodingQuestionGenerationService generationService;
+
 
     
     @GetMapping("/search")
     public ResponseEntity<PaginatedCodingQuestionResponse> search(
-            @RequestParam String question,
+            @RequestParam(required=false) String question,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
+          String quesSearch="";
+          if(question!=null) {
+        	  quesSearch=question;
+          }
 
-        PaginatedCodingQuestionResponse response = codingQuestionsService.search(question, page, size);
+        PaginatedCodingQuestionResponse response = codingQuestionsService.search(quesSearch, page, size);
         return ResponseEntity.ok(response);
     }
 
@@ -65,4 +79,26 @@ public class CodingQuestionController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{questionId}")
+    public ResponseEntity<CodingQuestionResponse> getQuestionById(@PathVariable String questionId) {
+        CodingQuestionResponse dto = codingQuestionsService.getQuestionById(questionId);
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @PostMapping("/generate")
+    public ResponseEntity<List<GeneratedCodingQuestionResponse>> generate(@RequestBody GenerateCodingQuestionsRequest request) {
+        List<GeneratedCodingQuestionResponse> result = generationService.generateQuestions(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/generate")
+    public ResponseEntity<GeneratedCodingQuestionResponse> regenerate(
+            @RequestParam("preference") String preference,
+            @RequestParam("questionid") String questionId) {
+        GeneratedCodingQuestionResponse result = generationService.regenerateQuestion(preference, questionId);
+        return ResponseEntity.ok(result);
+    }
+
+    
 }

@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class TestcaseResponse {
     private String testcaseId;
-    private Object inputValues;
-    private Object expectedOutput;
+    private Object inputValues;       // <-- needed for setInputValues()
+    private Object expectedOutput;    // <-- needed for setExpectedOutput()
     private String testcaseType;
-    private String description;
     private Integer weightage;
+    private String description;       // <-- needed for setDescription()
 }

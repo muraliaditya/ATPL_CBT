@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "coding_questions_cbt")
@@ -91,6 +92,7 @@ public class CodingQuestions {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "codingQuestion",cascade=CascadeType.ALL,orphanRemoval=true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Testcases> testcases;
 
     public enum Difficulty { 

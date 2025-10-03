@@ -1,32 +1,22 @@
 package com.aaslin.cbt.super_admin.service;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import com.aaslin.cbt.common.model.Category;
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Contest;
-import com.aaslin.cbt.common.model.MapContestCoding;
-import com.aaslin.cbt.common.model.MapContestMcq;
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.Testcases;
-import com.aaslin.cbt.super_admin.dto.CodingQuestionRequest;
-import com.aaslin.cbt.super_admin.dto.ContestDTO;
-import com.aaslin.cbt.super_admin.dto.McqMappingDTO;
-import com.aaslin.cbt.super_admin.dto.McqQuestionDTO;
-import com.aaslin.cbt.super_admin.dto.McqSectionDTO;
-import com.aaslin.cbt.super_admin.dto.PaginatedContestResponse;
-import com.aaslin.cbt.super_admin.dto.TestcaseRequest;
+
+import com.aaslin.cbt.common.model.*;
+import com.aaslin.cbt.super_admin.dto.*;
+import com.aaslin.cbt.super_admin.exceptions.CategoryNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.ContestNotFoundException;
+import com.aaslin.cbt.super_admin.exceptions.CodingQuestionNotFoundException;
 import com.aaslin.cbt.super_admin.idgenerator.ContestIdGenerator;
 import com.aaslin.cbt.super_admin.repository.CategoryRepository;
 import com.aaslin.cbt.super_admin.repository.ContestRepository;
 import com.aaslin.cbt.super_admin.util.AuditHelper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ContestService {
+
     private final ContestRepository contestRepo;
     private final McqQuestionService mcqService;
     private final MapContestMcqService mapService;
@@ -41,12 +32,9 @@ public class ContestService {
     private final CodingQuestionsService codingQuestionsService;
     private final MapContestCodingService mapCodingService;
     private final AuditHelper auditHelper;
-    
-
 
     public PaginatedContestResponse searchContests(String contestName, int page, int size) {
         int pageIndex = (page > 0) ? page - 1 : 0;
-
         Page<Contest> contestsPage = contestRepo.findByContestNameContainingIgnoreCaseAndDeletedFalse(
                 contestName, PageRequest.of(pageIndex, size));
 
@@ -63,11 +51,11 @@ public class ContestService {
         );
     }
 
-
     public String createContest(ContestDTO dto) {
         Contest contest = new Contest();
         Integer lastId = contestRepo.findMaxContestNumber();
         if (lastId == null) lastId = 0;
+
         contest.setContestId(ContestIdGenerator.generateContestId(lastId));
         contest.setContestName(dto.getContestName());
         contest.setStartTime(dto.getStartTime());
@@ -81,16 +69,16 @@ public class ContestService {
         contest.setStatus(dto.getStatus());
         contest.setCreatedAt(LocalDateTime.now());
         contest.setDeleted(false);
+
         if (dto.getCategoryName() != null) {
             Category category = categoryRepo.findByCategoryName(dto.getCategoryName())
-                    .orElseThrow(() -> new RuntimeException("Category not found: " + dto.getCategoryName()));
+                    .orElseThrow(() -> new CategoryNotFoundException("Category not found: " + dto.getCategoryName()));
             contest.setCategory(category);
         }
-        
+
         auditHelper.applyAuditForContest(contest);
-        
         contestRepo.save(contest);
-        
+
         if (dto.getMcqSections() != null) {
             List<MapContestMcq> mappings = new ArrayList<>();
             for (McqSectionDTO sectionDTO : dto.getMcqSections()) {
@@ -106,15 +94,15 @@ public class ContestService {
             }
             mapService.mapMcqsToContest(contest, mappings);
         }
+
         if (dto.getCodingQuestions() != null) {
             List<MapContestCoding> codingMappings = new ArrayList<>();
             Integer lastMapNumber = mapCodingService.getLastMapNumber();
 
             for (CodingQuestionRequest cqReq : dto.getCodingQuestions()) {
                 if (cqReq.getCodingQuestionId() == null) {
-                    throw new RuntimeException("codingQuestionId is required for mapping existing coding questions.");
+                    throw new CodingQuestionNotFoundException("codingQuestionId is required for mapping.");
                 }
-
                 CodingQuestions cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
 
                 MapContestCoding map = new MapContestCoding();
@@ -131,14 +119,13 @@ public class ContestService {
             mapCodingService.mapCodingsToContest(contest, codingMappings);
         }
 
-        
         return "Contest created successfully";
     }
 
     @Transactional
     public String updateContest(String contestId, ContestDTO dto) {
         Contest contest = contestRepo.findById(contestId)
-                .orElseThrow(() -> new RuntimeException("Contest not found"));
+                .orElseThrow(() -> new ContestNotFoundException("Contest not found: " + contestId));
 
         contest.setContestName(dto.getContestName());
         contest.setStartTime(dto.getStartTime());
@@ -151,15 +138,14 @@ public class ContestService {
         contest.setTotalTechnicalMcqs(dto.getTotalTechnicalMcqs());
         contest.setTotalVerbalMcqs(dto.getTotalVerbalMcqs());
         contest.setTotalReasoningMcqs(dto.getTotalReasoningMcqs());
+
         if (dto.getCategoryName() != null) {
             Category category = categoryRepo.findByCategoryName(dto.getCategoryName())
-                    .orElseThrow(() -> new RuntimeException("Category not found: " + dto.getCategoryName()));
+                    .orElseThrow(() -> new CategoryNotFoundException("Category not found: " + dto.getCategoryName()));
             contest.setCategory(category);
         }
-        
 
         auditHelper.applyAuditForContest(contest);
-        
         contestRepo.save(contest);
 
         if (dto.getMcqSections() != null) {
@@ -184,9 +170,8 @@ public class ContestService {
 
             for (CodingQuestionRequest cqReq : dto.getCodingQuestions()) {
                 if (cqReq.getCodingQuestionId() == null) {
-                    throw new RuntimeException("codingQuestionId is required for mapping existing coding questions.");
+                    throw new CodingQuestionNotFoundException("codingQuestionId is required for mapping.");
                 }
-
                 CodingQuestions cq = codingQuestionsService.getById(cqReq.getCodingQuestionId());
 
                 MapContestCoding map = new MapContestCoding();
@@ -202,14 +187,14 @@ public class ContestService {
             }
             mapCodingService.mapCodingsToContest(contest, codingMappings);
         }
-        
+
         return "Contest updated successfully";
     }
 
     @Transactional
     public String deleteContest(String contestId) {
         Contest contest = contestRepo.findById(contestId)
-                .orElseThrow(() -> new RuntimeException("Contest not found"));
+                .orElseThrow(() -> new ContestNotFoundException("Contest not found: " + contestId));
 
         contest.setDeleted(true);
         contest.setUpdatedAt(LocalDateTime.now());
@@ -221,17 +206,15 @@ public class ContestService {
     }
 
     public List<ContestDTO> getAllContests() {
-        List<Contest> contests = contestRepo.findByDeletedFalse();
-        List<ContestDTO> dtos = new ArrayList<>();
-        for (Contest contest : contests) {
-            dtos.add(toDTO(contest));
-        }
-        return dtos;
+        return contestRepo.findByDeletedTrue()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     public ContestDTO getContestById(String contestId) {
         Contest contest = contestRepo.findById(contestId)
-                .orElseThrow(() -> new RuntimeException("Contest not found"));
+                .orElseThrow(() -> new ContestNotFoundException("Contest not found: " + contestId));
 
         ContestDTO dto = toDTO(contest);
 
@@ -260,7 +243,6 @@ public class ContestService {
             sectionDTO.getMcqQuestions().add(mcqDTO);
             sectionMap.put(sectionName, sectionDTO);
         }
-
         dto.setMcqSections(new ArrayList<>(sectionMap.values()));
 
         List<MapContestCoding> codingMappings = mapCodingService.getCodingForContest(contestId);
@@ -268,7 +250,7 @@ public class ContestService {
         for (MapContestCoding map : codingMappings) {
             CodingQuestions cq = map.getCodingQuestion();
             CodingQuestionRequest req = new CodingQuestionRequest();
-            req.setCodingQuestionId(cq.getCodingQuestionId()); 
+            req.setCodingQuestionId(cq.getCodingQuestionId());
             req.setQuestion(cq.getQuestion());
             req.setDescription(cq.getDescription());
             req.setDifficulty(cq.getDifficulty() != null ? cq.getDifficulty().name() : "EASY");
@@ -292,13 +274,13 @@ public class ContestService {
                 }
                 req.setTestcases(testcaseRequests);
             }
-            
             codingReqs.add(req);
         }
         dto.setCodingQuestions(codingReqs);
 
         return dto;
     }
+
     private ContestDTO toDTO(Contest contest) {
         ContestDTO dto = new ContestDTO();
         dto.setContestId(contest.getContestId());
