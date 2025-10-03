@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.developer.Dto.CodingQuestionDto;
 import com.aaslin.cbt.developer.Dto.CodingQuestionResponse;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
@@ -28,13 +28,13 @@ public class CodingQuestionPageServiceImpl implements CodingQuestionService {
         int pageSize = (size > 0) ? size : 10;
 
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
-        Page<CodingQuestions> questions;
+        Page<CodingQuestion> questions;
 
-        CodingQuestions.Difficulty difficultyEnum = null;
+        CodingQuestion.Difficulty difficultyEnum = null;
         
         if (difficulty != null && !difficulty.isEmpty()) {
             try {
-                difficultyEnum = CodingQuestions.Difficulty.valueOf(difficulty.toUpperCase());
+                difficultyEnum = CodingQuestion.Difficulty.valueOf(difficulty.toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Invalid difficulty level: " + difficulty);
             }
@@ -43,19 +43,19 @@ public class CodingQuestionPageServiceImpl implements CodingQuestionService {
         //question and difficulty
         if (difficultyEnum != null && question != null && !question.isEmpty()) {
             questions = codingQuestionRepo.findByQuestionContainingIgnoreCaseAndDifficultyAndApprovalStatus(
-                    question, difficultyEnum, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+                    question, difficultyEnum, CodingQuestion.ApprovalStatus.APPROVED, pageable);
         
         } else if (difficultyEnum != null) {
             questions = codingQuestionRepo.findByDifficultyAndApprovalStatus(
-                    difficultyEnum, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+                    difficultyEnum, CodingQuestion.ApprovalStatus.APPROVED, pageable);
 
         } else if (question != null && !question.isEmpty()) {
             questions = codingQuestionRepo.findByQuestionContainingIgnoreCaseAndApprovalStatus(
-                    question, CodingQuestions.ApprovalStatus.APPROVED, pageable);
+                    question, CodingQuestion.ApprovalStatus.APPROVED, pageable);
 
         } else {
             questions = codingQuestionRepo.findByApprovalStatus(
-                    CodingQuestions.ApprovalStatus.APPROVED, pageable);
+                    CodingQuestion.ApprovalStatus.APPROVED, pageable);
         }
 
         List<CodingQuestionDto> dtoList = questions.stream()

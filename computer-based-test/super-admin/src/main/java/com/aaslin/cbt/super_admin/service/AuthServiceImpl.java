@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.Roles;
+import com.aaslin.cbt.common.model.Role;
 import com.aaslin.cbt.common.model.User;
 import com.aaslin.cbt.super_admin.dto.CreateUserRequest;
 import com.aaslin.cbt.super_admin.dto.CreateUserResponse;
@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
                                           "ERROR", "SUPER_ADMIN", null);
         }
 
-        Roles role = roleRepository.findByRole("SUPER_ADMIN")
+        Role role = roleRepository.findByRole("SUPER_ADMIN")
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         String lastId = userRepository.findLastSuperAdminId();
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        Roles role = roleRepository.findByRole("DEVELOPER")
+        Role role = roleRepository.findByRole("DEVELOPER")
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         

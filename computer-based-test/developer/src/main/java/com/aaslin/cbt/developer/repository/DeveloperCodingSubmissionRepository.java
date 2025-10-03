@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.aaslin.cbt.common.model.DeveloperCodingSubmissions;
-import com.aaslin.cbt.common.model.DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus;
+import com.aaslin.cbt.common.model.DeveloperCodingSubmission;
+import com.aaslin.cbt.common.model.DeveloperCodingSubmission.DeveloperCodingSubmissionStatus;
 import com.aaslin.cbt.developer.Dto.TopDevelopersDto;
 
-public interface DeveloperCodingSubmissionRepository extends JpaRepository<DeveloperCodingSubmissions,String>{
+public interface DeveloperCodingSubmissionRepository extends JpaRepository<DeveloperCodingSubmission,String>{
 	@Query("""
 		       SELECT new com.aaslin.cbt.developer.Dto.TopDevelopersDto(
 		           dcs.user.userId,
@@ -24,6 +24,6 @@ public interface DeveloperCodingSubmissionRepository extends JpaRepository<Devel
 		       ORDER BY COUNT(DISTINCT dcs.codingQuestion.codingQuestionId) DESC
 		       """)
 		List<TopDevelopersDto> findTopDevelopers(@Param("status") DeveloperCodingSubmissionStatus status);
-	    Optional<DeveloperCodingSubmissions> findTopByOrderByDeveloperCodingSubmissionIdDesc();
-	    Optional<DeveloperCodingSubmissions>findByUser_UserIdAndCodingQuestion_CodingQuestionId(String userId, String questionId);
+	    Optional<DeveloperCodingSubmission> findTopByOrderByDeveloperCodingSubmissionIdDesc();
+	    Optional<DeveloperCodingSubmission>findByUser_UserIdAndCodingQuestion_CodingQuestionId(String userId, String questionId);
 }

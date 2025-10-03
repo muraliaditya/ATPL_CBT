@@ -7,33 +7,33 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 
-public interface CodingQuestionRepository extends JpaRepository<CodingQuestions, String> {
+public interface CodingQuestionRepository extends JpaRepository<CodingQuestion, String> {
 
     // Default list (all approved questions, paginated)
-    Page<CodingQuestions> findByApprovalStatus(CodingQuestions.ApprovalStatus APPROVED, Pageable pageable);
+    Page<CodingQuestion> findByApprovalStatus(CodingQuestion.ApprovalStatus APPROVED, Pageable pageable);
 
     // Search and Pagination
-    Page<CodingQuestions> findByQuestionContainingIgnoreCaseAndApprovalStatus(String question, CodingQuestions.ApprovalStatus status, Pageable pageable);
+    Page<CodingQuestion> findByQuestionContainingIgnoreCaseAndApprovalStatus(String question, CodingQuestion.ApprovalStatus status, Pageable pageable);
     
     //Difficulty search
-    Page<CodingQuestions> findByDifficultyAndApprovalStatus(CodingQuestions.Difficulty difficulty, CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
+    Page<CodingQuestion> findByDifficultyAndApprovalStatus(CodingQuestion.Difficulty difficulty, CodingQuestion.ApprovalStatus approvalStatus,Pageable pageable);
 
     //difficulty and question search
-    Page<CodingQuestions> findByQuestionContainingIgnoreCaseAndDifficultyAndApprovalStatus(String question,CodingQuestions.Difficulty difficulty,CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
+    Page<CodingQuestion> findByQuestionContainingIgnoreCaseAndDifficultyAndApprovalStatus(String question,CodingQuestion.Difficulty difficulty,CodingQuestion.ApprovalStatus approvalStatus,Pageable pageable);
     
     //Fetch top 10 recently added questions
     //List<CodingQuestions> findTop10ByApprovalStatusOrderByCreatedAtDesc(CodingQuestions.ApprovalStatus status);
     
     // dynamic limit using Pageable to fetch recently added questions
-    List<CodingQuestions> findByApprovalStatusOrderByCreatedAtDesc(CodingQuestions.ApprovalStatus approvalStatus,Pageable pageable);
+    List<CodingQuestion> findByApprovalStatusOrderByCreatedAtDesc(CodingQuestion.ApprovalStatus approvalStatus,Pageable pageable);
     
     //Fetch questions by Id
-    Optional<CodingQuestions> findByCodingQuestionIdAndApprovalStatus(String codingQuestionId, CodingQuestions.ApprovalStatus status);
+    Optional<CodingQuestion> findByCodingQuestionIdAndApprovalStatus(String codingQuestionId, CodingQuestion.ApprovalStatus status);
     
-    Optional<CodingQuestions> findTopByOrderByCodingQuestionIdDesc();
+    Optional<CodingQuestion> findTopByOrderByCodingQuestionIdDesc();
     
-    Long countByApprovalStatus(CodingQuestions.ApprovalStatus approvalStatus);
+    Long countByApprovalStatus(CodingQuestion.ApprovalStatus approvalStatus);
 }
 

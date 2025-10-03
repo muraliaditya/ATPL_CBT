@@ -11,18 +11,18 @@ import lombok.Setter;
 @Entity
 @Table(name = "developer_testcase_results_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class DeveloperTestcaseResults {
+public class DeveloperTestcaseResult {
     @Id
     @Column(name = "developer_testcase_result_id", length = 50)
     private String developerTestcaseResultId;
 
     @ManyToOne
     @JoinColumn(name = "developer_coding_submission_id")
-    private DeveloperCodingSubmissions developerCodingSubmission;
+    private DeveloperCodingSubmission developerCodingSubmission;
 
     @ManyToOne
     @JoinColumn(name = "testcase_id")
-    private Testcases testcase;
+    private Testcase testcase;
 
     @Enumerated(EnumType.STRING)
     private DeveloperTestcaseStatus testcaseStatus;

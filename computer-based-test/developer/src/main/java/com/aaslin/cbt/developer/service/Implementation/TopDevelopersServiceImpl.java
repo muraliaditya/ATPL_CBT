@@ -2,8 +2,8 @@ package com.aaslin.cbt.developer.service.Implementation;
 
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.DeveloperCodingSubmissions.DeveloperCodingSubmissionStatus;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.DeveloperCodingSubmission.DeveloperCodingSubmissionStatus;
 import com.aaslin.cbt.developer.Dto.TopDevelopersDto;
 import com.aaslin.cbt.developer.Dto.TopDevelopersResponseDto;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
@@ -33,7 +33,7 @@ public class TopDevelopersServiceImpl implements TopDevelopersService {
                 .toList();
 
         Long totalQuestions = codingQuestionsRepository
-                .countByApprovalStatus(CodingQuestions.ApprovalStatus.APPROVED);
+                .countByApprovalStatus(CodingQuestion.ApprovalStatus.APPROVED);
 
         return new TopDevelopersResponseDto(topDevelopers, totalQuestions);
     }

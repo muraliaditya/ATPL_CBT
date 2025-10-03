@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.aaslin.cbt.common.model.McqQuestions;
+import com.aaslin.cbt.common.model.McqQuestion;
 
-public interface McqQuestionsRepository extends JpaRepository<McqQuestions, String> {
+public interface McqQuestionsRepository extends JpaRepository<McqQuestion, String> {
 
-	Optional<McqQuestions> findTopByOrderByMcqQuestionIdDesc();
+	Optional<McqQuestion> findTopByOrderByMcqQuestionIdDesc();
 }

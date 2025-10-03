@@ -6,8 +6,8 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionRequestDto;
 import com.aaslin.cbt.developer.Dto.AddCodingQuestionResponse;
 import com.aaslin.cbt.developer.Dto.AddTestcaseRequestDto;
@@ -37,15 +37,15 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
         }
 
         String lastQuestionId = codingQuestionRepo.findTopByOrderByCodingQuestionIdDesc()
-                .map(CodingQuestions::getCodingQuestionId)
+                .map(CodingQuestion::getCodingQuestionId)
                 .orElse(null);
         String newQuestionId = CustomIdGenerator.generateNextId("CQ", lastQuestionId);
 
-        CodingQuestions question = new CodingQuestions();
+        CodingQuestion question = new CodingQuestion();
         question.setCodingQuestionId(newQuestionId);
         question.setQuestion(request.getQuestion());
         question.setDescription(request.getDescription());
-        question.setDifficulty(CodingQuestions.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
+        question.setDifficulty(CodingQuestion.Difficulty.valueOf(request.getDifficulty().toUpperCase()));
         question.setMethodName(request.getMethodName());
         question.setExecutionTimeLimit(request.getExecutionTimeLimit());
         question.setMemoryLimit(request.getMemoryLimit());
@@ -79,11 +79,11 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
             }
 
             String lastTestcaseId = testcaseRepo.findTopByOrderByTestcaseIdDesc()
-                    .map(Testcases::getTestcaseId)
+                    .map(Testcase::getTestcaseId)
                     .orElse(null);
             String newTestcaseId = CustomIdGenerator.generateNextId("TC", lastTestcaseId);
 
-            Testcases tc = new Testcases();
+            Testcase tc = new Testcase();
             tc.setTestcaseId(newTestcaseId);
             tc.setCodingQuestion(question);
 
@@ -98,7 +98,7 @@ public class AddCodingQuestionServiceImpl implements AddCodingQuestionService {
                 throw new RuntimeException("Failed to serialize testcase data", e);
             }
 
-            tc.setTestcaseType(Testcases.TestcaseType.valueOf(tcDto.getTestcaseType().toUpperCase()));
+            tc.setTestcaseType(Testcase.TestcaseType.valueOf(tcDto.getTestcaseType().toUpperCase()));
             tc.setWeightage(tcDto.getWeightage());
             tc.setDescription(tcDto.getDescription());
             tc.setExpectedOutput(tcDto.getExpectedOutput());

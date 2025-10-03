@@ -95,10 +95,10 @@ public class ContestService {
         Contest contest = contestRepo.findById(contestId)
                 .orElseThrow(() -> new RuntimeException("Contest not found"));
 
-        Map<Sections, List<McqQuestions>> mcqBySection =
+        Map<Section, List<McqQuestion>> mcqBySection =
                 mcqRepository.findMcqQuestionsByContestId(contestId)
                         .stream()
-                        .collect(Collectors.groupingBy(McqQuestions::getSection));
+                        .collect(Collectors.groupingBy(McqQuestion::getSection));
 
         List<MCQSection> mcqSections = mcqBySection.entrySet().stream()
                 .map(entry -> new MCQSection(
@@ -312,7 +312,7 @@ public class ContestService {
 
                     MapContestMcq mapContestMcq = mcqRepository.findById(mcqId)
                             .orElseThrow(() -> new RuntimeException("MCQ not found: " + mcqId));
-                    McqQuestions question = mapContestMcq.getMcqQuestion();
+                    McqQuestion question = mapContestMcq.getMcqQuestion();
 
                     boolean correct = question.getAnswerKey() != null &&
                             question.getAnswerKey().equalsIgnoreCase(selectedOption);

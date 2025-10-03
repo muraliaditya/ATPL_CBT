@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.super_admin.dto.ApiResponse;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionRequestss;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionResponse;

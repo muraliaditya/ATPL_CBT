@@ -8,14 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.common.model.MapContestCoding;
 
 @Repository("participantCodingQuestionsRepository")
 public interface CodingQuestionsRepository extends JpaRepository<MapContestCoding,String> {
 	
 	@Query("SELECT m.codingQuestion FROM MapContestCoding m where m.contest.contestId= :contestId")
-	 List<CodingQuestions> findCodingQuestionsByContestId(@Param("contestId")String contestId);
+	 List<CodingQuestion> findCodingQuestionsByContestId(@Param("contestId")String contestId);
 	
 	
 	@Query("SELECT m FROM MapContestCoding m WHERE m.codingQuestion.id=:questionId AND m.contest.contestId= :contestId")

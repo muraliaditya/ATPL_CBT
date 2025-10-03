@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.common.util.CustomIdGenerator;
 import com.aaslin.cbt.super_admin.dto.*;
 import com.aaslin.cbt.super_admin.exceptions.CodingQuestionNotFoundException;
@@ -105,7 +105,7 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
     public PaginatedCodingQuestionResponse search(String question, int page, int size) {
         int pageIndex = (page > 0) ? page - 1 : 0;
 
-        Page<CodingQuestions> questions = codingQuestionsRepository.searchByQuestion(
+        Page<CodingQuestion> questions = codingQuestionsRepository.searchByQuestion(
                 question, PageRequest.of(pageIndex, size));
 
         List<CodingQuestionSearchResponse> results = questions.getContent().stream()
@@ -123,10 +123,10 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
     @Override
     public ApiResponse addQuestion(CodingQuestionRequestss request) {
-        CodingQuestions cq = new CodingQuestions();
+        CodingQuestion cq = new CodingQuestion();
         cq.setQuestion(request.getQuestion());
         cq.setDescription(request.getDescription());
-        cq.setDifficulty(CodingQuestions.Difficulty.valueOf(
+        cq.setDifficulty(CodingQuestion.Difficulty.valueOf(
                 request.getDifficulty() != null ? request.getDifficulty().toUpperCase() : "EASY"
         ));
         cq.setOutputFormat("JSON");
@@ -145,21 +145,21 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
         String lastCQId = codingQuestionsRepository
                 .findTopByOrderByCodingQuestionIdDesc()
-                .map(CodingQuestions::getCodingQuestionId)
+                .map(CodingQuestion::getCodingQuestionId)
                 .orElse(null);
         cq.setCodingQuestionId(CustomIdGenerator.generateNextId("CQ", lastCQId));
 
         String lastTcIdFromDb = testcasesRepository
                 .findTopByOrderByTestcaseIdDesc()
-                .map(Testcases::getTestcaseId)
+                .map(Testcase::getTestcaseId)
                 .orElse(null);
         AtomicReference<String> lastTcIdRef = new AtomicReference<>(lastTcIdFromDb);
 
-        List<Testcases> testcaseEntities = Optional.ofNullable(request.getTestcases())
+        List<Testcase> testcaseEntities = Optional.ofNullable(request.getTestcases())
             .orElse(Collections.emptyList())
             .stream()
             .map(tcReq -> {
-                Testcases t = new Testcases();
+                Testcase t = new Testcase();
                 String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                 t.setTestcaseId(newId);
                 lastTcIdRef.set(newId);
@@ -176,7 +176,7 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
                 t.setExpectedOutput(toJson(tcReq.getOutput()));
 
                 t.setWeightage(tcReq.getWeightage());
-                t.setTestcaseType(Testcases.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
+                t.setTestcaseType(Testcase.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
                 t.setCreatedAt(LocalDateTime.now());
 
                 auditHelper.applyAuditForTestcase(t);
@@ -192,12 +192,14 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
     @Override
     public ApiResponse updateQuestion(String id, CodingQuestionRequestss request) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new CodingQuestionNotFoundException("Coding question not found with id: " + id));
+
 
         cq.setQuestion(request.getQuestion());
         cq.setDescription(request.getDescription());
-        cq.setDifficulty(CodingQuestions.Difficulty.valueOf(
+        cq.setDifficulty(CodingQuestion.Difficulty.valueOf(
                 request.getDifficulty() != null ? request.getDifficulty().toUpperCase() : "EASY"
         ));
         cq.setUpdatedAt(LocalDateTime.now());
@@ -211,20 +213,26 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
         String lastTCId = testcasesRepository
                 .findTopByOrderByTestcaseIdDesc()
-                .map(Testcases::getTestcaseId)
+                .map(Testcase::getTestcaseId)
                 .orElse(null);
         AtomicReference<String> lastTcIdRef = new AtomicReference<>(lastTCId);
 
-        List<Testcases> updatedTestcases = new ArrayList<>();
+        List<Testcase> updatedTestcases = new ArrayList<>();
         for (TestcaseRequestsss tcReqsss : Optional.ofNullable(request.getTestcases()).orElse(Collections.emptyList())) {
+
             TestcaseRequest tcReq = convertToTestcaseRequest(tcReqsss);
-            Testcases testcase = new Testcases();
+            Testcase testcase = new Testcase();
+
+        
+
 
             if (tcReq.getTestcaseId() != null) {
                 testcase = testcasesRepository.findById(tcReq.getTestcaseId()).orElse(null);
                 if (testcase == null) {
+
                     // create new if id not found
-                    testcase = new Testcases();
+                    testcase = new Testcase();
+
                     String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                     testcase.setTestcaseId(newId);
                     lastTcIdRef.set(newId);
@@ -233,7 +241,7 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
                     testcase.setUpdatedAt(LocalDateTime.now());
                 }
             } else {
-                testcase = new Testcases();
+                testcase = new Testcase();
                 String newId = CustomIdGenerator.generateNextId("TC", lastTcIdRef.get());
                 testcase.setTestcaseId(newId);
                 lastTcIdRef.set(newId);
@@ -255,7 +263,9 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
             }
 
             testcase.setWeightage(tcReq.getWeightage());
-            testcase.setTestcaseType(Testcases.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
+
+            testcase.setTestcaseType(Testcase.TestcaseType.valueOf(tcReq.getTestcaseType().toUpperCase()));
+
             auditHelper.applyAuditForTestcase(testcase);
             testcase.setCodingQuestion(cq);
 
@@ -288,14 +298,14 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
     }
 
     @Override
-    public CodingQuestions getById(String id) {
+    public CodingQuestion getById(String id) {
         return codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new CodingQuestionNotFoundException("Coding question not found with id: " + id));
     }
 
     @Override
     public CodingQuestionResponse getQuestionById(String id) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
             .orElseThrow(() -> new CodingQuestionNotFoundException("Coding question not found with id: " + id));
 
         CodingQuestionResponse dto = CodingQuestionMapper.toResponse(cq);
@@ -309,8 +319,10 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
     @Override
     public ApiResponse deleteQuestion(String id) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new CodingQuestionNotFoundException("Coding question not found with id: " + id));
+
 
         if (Boolean.FALSE.equals(cq.getIsActive())) {
             return new ApiResponse("Coding question already deleted", "failed");
@@ -325,8 +337,10 @@ public class CodingQuestionServiceImpl implements com.aaslin.cbt.super_admin.ser
 
     @Override
     public ApiResponse restoreQuestion(String id) {
-        CodingQuestions cq = codingQuestionsRepository.findById(id)
+
+        CodingQuestion cq = codingQuestionsRepository.findById(id)
                 .orElseThrow(() -> new CodingQuestionNotFoundException("Coding question not found with id: " + id));
+
 
         if (Boolean.TRUE.equals(cq.getIsActive())) {
             return new ApiResponse("Coding question is already active", "failed");

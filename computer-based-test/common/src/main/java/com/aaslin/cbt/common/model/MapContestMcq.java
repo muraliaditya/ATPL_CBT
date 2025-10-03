@@ -21,7 +21,7 @@ public class MapContestMcq {
 
     @ManyToOne
     @JoinColumn(name = "mcq_question_id")
-    private McqQuestions mcqQuestion;
+    private McqQuestion mcqQuestion;
 
     @Column(name = "assigned_at")
     private LocalDateTime assignedAt;

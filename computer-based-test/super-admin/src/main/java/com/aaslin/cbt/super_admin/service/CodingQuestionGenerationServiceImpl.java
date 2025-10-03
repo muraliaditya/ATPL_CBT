@@ -1,7 +1,7 @@
 package com.aaslin.cbt.super_admin.service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.super_admin.dto.*;
 import com.aaslin.cbt.super_admin.exceptions.CodingQuestionNotFoundException;
 import com.aaslin.cbt.super_admin.repository.CodingQuestionsRepository;
@@ -40,7 +40,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
         }
     }
 
-    private GeneratedCodingQuestionResponse mapToResponse(CodingQuestions cq) {
+    private GeneratedCodingQuestionResponse mapToResponse(CodingQuestion cq) {
         GeneratedCodingQuestionResponse dto = new GeneratedCodingQuestionResponse();
         dto.setCodingQuestionId(cq.getCodingQuestionId());
         dto.setQuestionName(cq.getQuestion());
@@ -53,7 +53,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
 
         List<TestcaseResponse> tlist = new ArrayList<>();
         if (cq.getTestcases() != null) {
-            for (Testcases tc : cq.getTestcases()) {
+            for (Testcase tc : cq.getTestcases()) {
                 TestcaseResponse tr = new TestcaseResponse();
                 tr.setTestcaseId(tc.getTestcaseId());
                 tr.setInputValues(parseJsonToObject(tc.getInputValues()));
@@ -75,7 +75,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
         if (request.getPreferences() != null && !request.getPreferences().isEmpty()) {
             for (GenerateCodingQuestionsRequest.Preference p : request.getPreferences()) {
                 String diff = Optional.ofNullable(p.getPreference()).orElse("EASY").toUpperCase();
-                CodingQuestions cq = codingQuestionsRepository.findRandomByDifficulty(diff);
+                CodingQuestion cq = codingQuestionsRepository.findRandomByDifficulty(diff);
                 if (cq == null) {
                     throw new CodingQuestionNotFoundException("No question found for difficulty: " + diff);
                 }
@@ -86,7 +86,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
 
         int cnt = Optional.ofNullable(request.getCount()).orElse(1);
         for (int i = 0; i < cnt; i++) {
-            CodingQuestions cq = codingQuestionsRepository.findRandomByDifficulty("EASY");
+            CodingQuestion cq = codingQuestionsRepository.findRandomByDifficulty("EASY");
             if (cq == null) break;
             out.add(mapToResponse(cq));
         }
@@ -96,7 +96,7 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
     @Override
     public GeneratedCodingQuestionResponse regenerateQuestion(String preference, String questionId) {
         String diff = Optional.ofNullable(preference).orElse("EASY").toUpperCase();
-        CodingQuestions cq = codingQuestionsRepository.findRandomByDifficultyExcluding(diff, questionId);
+        CodingQuestion cq = codingQuestionsRepository.findRandomByDifficultyExcluding(diff, questionId);
         if (cq == null) {
             throw new CodingQuestionNotFoundException("No alternative available for difficulty: " + diff);
         }

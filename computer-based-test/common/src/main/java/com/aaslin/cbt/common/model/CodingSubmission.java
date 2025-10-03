@@ -23,7 +23,7 @@ public class CodingSubmission {
 
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
-    private CodingQuestions codingQuestion;
+    private CodingQuestion codingQuestion;
 
     @ManyToOne
     @JoinColumn(name = "language_type_id")

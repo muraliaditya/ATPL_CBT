@@ -12,14 +12,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "developer_coding_submissions_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class DeveloperCodingSubmissions {
+public class DeveloperCodingSubmission {
     @Id
     @Column(name = "developer_coding_submission_id", length = 50)
     private String developerCodingSubmissionId;
 
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
-    private CodingQuestions codingQuestion;
+    private CodingQuestion codingQuestion;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -54,7 +54,7 @@ public class DeveloperCodingSubmissions {
     private DeveloperCodingSubmissionStatus codeStatus;
 
     @OneToMany(mappedBy = "developerCodingSubmission")
-    private List<DeveloperTestcaseResults> developerTestcaseResults;
+    private List<DeveloperTestcaseResult> developerTestcaseResults;
 
     public enum DeveloperCodingSubmissionStatus {
     	SOLVED, PARTIALLY_SOLVED, COMPILATION_ERROR, RUNTIME_ERROR, WRONG_ANSWER

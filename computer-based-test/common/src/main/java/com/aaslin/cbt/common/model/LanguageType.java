@@ -23,5 +23,5 @@ public class LanguageType {
     private List<CodingSubmission> codingSubmissions;
 
     @OneToMany(mappedBy = "languageTypeId")
-    private List<DeveloperCodingSubmissions> developerCodingSubmissions;
+    private List<DeveloperCodingSubmission> developerCodingSubmissions;
 }

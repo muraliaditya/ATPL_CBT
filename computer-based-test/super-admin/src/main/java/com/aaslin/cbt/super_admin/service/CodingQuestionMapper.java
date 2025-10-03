@@ -1,7 +1,7 @@
 package com.aaslin.cbt.super_admin.service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.super_admin.dto.CodingQuestionResponse;
 import com.aaslin.cbt.super_admin.dto.TestcaseResponse;
 
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CodingQuestionMapper {
 
-    public static CodingQuestionResponse toResponse(CodingQuestions cq) {
+    public static CodingQuestionResponse toResponse(CodingQuestion cq) {
         CodingQuestionResponse dto = new CodingQuestionResponse();
         dto.setCodingQuestionId(cq.getCodingQuestionId());
         dto.setQuestion(cq.getQuestion());

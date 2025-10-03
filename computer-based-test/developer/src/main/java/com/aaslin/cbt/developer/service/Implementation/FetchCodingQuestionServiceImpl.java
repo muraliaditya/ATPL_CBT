@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.CodingQuestion;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.developer.Dto.FetchCodingQuestionDto;
 import com.aaslin.cbt.developer.Dto.FetchTestcaseDto;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
@@ -30,11 +30,11 @@ public class FetchCodingQuestionServiceImpl implements FetchCodingQuestionServic
 	@Override
 	public FetchCodingQuestionDto getQuestionById(String questionId) {
 		
-		CodingQuestions question = codingQuestionRepo.
-				findByCodingQuestionIdAndApprovalStatus(questionId, CodingQuestions.ApprovalStatus.APPROVED)
+		CodingQuestion question = codingQuestionRepo.
+				findByCodingQuestionIdAndApprovalStatus(questionId, CodingQuestion.ApprovalStatus.APPROVED)
 				.orElseThrow(()-> new RuntimeException("Question not found or not approved"));
 	    
-	    List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(questionId,Testcases.TestcaseType.PUBLIC);
+	    List<Testcase> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(questionId,Testcase.TestcaseType.PUBLIC);
 	    
         List<FetchTestcaseDto> testcaseDtos = testcases.stream()
                 .map(tc -> new FetchTestcaseDto(

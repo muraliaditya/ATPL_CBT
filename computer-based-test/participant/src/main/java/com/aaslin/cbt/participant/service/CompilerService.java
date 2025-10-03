@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aaslin.cbt.common.model.CodingSubmission;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.participant.dto.CompileRunRequest;
 import com.aaslin.cbt.participant.dto.CompileRunResponse;
 import com.aaslin.cbt.participant.dto.SubmissionRequest;
@@ -37,13 +37,13 @@ public class CompilerService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public CompileRunResponse compileAndRun(CompileRunRequest request) {
-        List<Testcases> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                request.getQuestionId(), Testcases.TestcaseType.PUBLIC);
+        List<Testcase> testcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
+                request.getQuestionId(), Testcase.TestcaseType.PUBLIC);
 
         List<TestcaseResultResponse> results = new ArrayList<>();
         int passedCount = 0;
 
-        for (Testcases tc : testcases) {
+        for (Testcase tc : testcases) {
             try {
                 String stdin = flattenInput(tc.getInputValues());
                 String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
@@ -85,10 +85,10 @@ public class CompilerService {
                     : customIdGenerator.generateCodingSubmissionId();
         }
 
-        List<Testcases> publicTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                questionId, Testcases.TestcaseType.PUBLIC);
-        List<Testcases> privateTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
-                questionId, Testcases.TestcaseType.PRIVATE);
+        List<Testcase> publicTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
+                questionId, Testcase.TestcaseType.PUBLIC);
+        List<Testcase> privateTestcases = testcaseRepo.findByCodingQuestion_CodingQuestionIdAndTestcaseType(
+                questionId, Testcase.TestcaseType.PRIVATE);
 
         List<TestcaseResultResponse> publicResults = new ArrayList<>();
         List<TestcaseResultResponse> privateResults = new ArrayList<>();
@@ -113,7 +113,7 @@ public class CompilerService {
             return cleaned;
         };
 
-        for (Testcases tc : publicTestcases) {
+        for (Testcase tc : publicTestcases) {
             String stdin = flattenInput(tc.getInputValues());
             String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
             boolean passed = normalizeOutput.apply(actualOutput).equals(normalizeOutput.apply(tc.getExpectedOutput()));
@@ -127,7 +127,7 @@ public class CompilerService {
                     tc.getExpectedOutput(), actualOutput, passed ? "PASSED" : "FAILED", tc.getWeightage()));
         }
 
-        for (Testcases tc : privateTestcases) {
+        for (Testcase tc : privateTestcases) {
             String stdin = flattenInput(tc.getInputValues());
             String actualOutput = dockerExecutor.runTemporaryCode(request.getLanguageType(), request.getCode(), stdin);
             boolean passed = normalizeOutput.apply(actualOutput).equals(normalizeOutput.apply(tc.getExpectedOutput()));

@@ -1,6 +1,6 @@
 package com.aaslin.cbt.developer.Dto;
 
-import com.aaslin.cbt.common.model.CodingQuestions.Difficulty;
+import com.aaslin.cbt.common.model.CodingQuestion.Difficulty;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

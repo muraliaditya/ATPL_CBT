@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "sections_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class Sections {
+public class Section {
 	
 	 @Id
 	 @Column(name = "section_id", length = 50)
@@ -28,5 +28,5 @@ public class Sections {
 	 private Boolean isActive=true;
 	 
 	 @OneToMany(mappedBy = "section")
-	 private List<McqQuestions> mcqQuestions;
+	 private List<McqQuestion> mcqQuestions;
 }

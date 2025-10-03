@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "testcase_cbt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class Testcases {
+public class Testcase {
 
     @Id
     @Column(name = "testcase_id", length = 50)
@@ -19,8 +19,9 @@ public class Testcases {
 
     @ManyToOne
     @JoinColumn(name = "coding_question_id")
+
     @JsonBackReference
-    private CodingQuestions codingQuestion;
+    private CodingQuestion codingQuestion;
   
     @Column(name = "input_values", columnDefinition = "JSON")
     private String inputValues; 
@@ -56,7 +57,7 @@ public class Testcases {
     private List<TestcaseResult> testcaseResults;
 
     @OneToMany(mappedBy = "testcase")
-    private List<DeveloperTestcaseResults> developerTestcaseResults;
+    private List<DeveloperTestcaseResult> developerTestcaseResults;
     
     public enum TestcaseType {
     	PUBLIC, PRIVATE 

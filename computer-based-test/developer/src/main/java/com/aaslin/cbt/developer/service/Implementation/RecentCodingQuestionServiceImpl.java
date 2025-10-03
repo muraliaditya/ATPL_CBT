@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.developer.Dto.RecentCodingQuestionDto;
 import com.aaslin.cbt.developer.Dto.RecentCodingQuestionResponse;
 import com.aaslin.cbt.developer.repository.CodingQuestionRepository;
@@ -24,9 +24,9 @@ public class RecentCodingQuestionServiceImpl implements RecentCodingQuestionServ
         int size = (limit != null && limit > 0) ? limit : 10;
 
         // Using PageRequest to simulate LIMIT size
-        List<CodingQuestions> questions = codingQuestionRepo
+        List<CodingQuestion> questions = codingQuestionRepo
                 .findByApprovalStatusOrderByCreatedAtDesc(
-                        CodingQuestions.ApprovalStatus.APPROVED,
+                        CodingQuestion.ApprovalStatus.APPROVED,
                         PageRequest.of(0, size)
                 );
 

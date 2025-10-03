@@ -6,25 +6,25 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.McqQuestions.ApprovalStatus;
-import com.aaslin.cbt.common.model.Sections;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.McqQuestion.ApprovalStatus;
+import com.aaslin.cbt.common.model.Section;
 
 
-public interface McqQuestionRepository extends JpaRepository<McqQuestions,String> {
+public interface McqQuestionRepository extends JpaRepository<McqQuestion,String> {
 	
 	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND is_active=false  ORDER BY RAND() LIMIT :count", nativeQuery = true)
-	    List<McqQuestions> findRandomBySection(@Param("sectionId") String sectionId, @Param("count") int count);
+	    List<McqQuestion> findRandomBySection(@Param("sectionId") String sectionId, @Param("count") int count);
 
 	    @Query(value = "SELECT * FROM mcq_questions_cbt WHERE section_id = :sectionId AND mcq_question_id <> :currentQuestionId AND is_active=false ORDER BY RAND() LIMIT 1", nativeQuery = true)
-	    McqQuestions findRandomOtherBySection(@Param("sectionId") String sectionId, @Param("currentQuestionId") String currentQuestionId);
+	    McqQuestion findRandomOtherBySection(@Param("sectionId") String sectionId, @Param("currentQuestionId") String currentQuestionId);
 
     
-	    List<McqQuestions> findBySectionAndIsActiveFalse(Sections section);
-	    List<McqQuestions> findAllByIsActiveFalse();
-	    List<McqQuestions> findBySection(Sections section);
-	    List<McqQuestions> findByApprovalStatus(ApprovalStatus approvalStatus);
-	    List<McqQuestions> findByCreatedByUsernameAndApprovalStatus(String username, ApprovalStatus approvalStatus);
+	    List<McqQuestion> findBySectionAndIsActiveFalse(Section section);
+	    List<McqQuestion> findAllByIsActiveFalse();
+	    List<McqQuestion> findBySection(Section section);
+	    List<McqQuestion> findByApprovalStatus(ApprovalStatus approvalStatus);
+	    List<McqQuestion> findByCreatedByUsernameAndApprovalStatus(String username, ApprovalStatus approvalStatus);
 
 	   
 

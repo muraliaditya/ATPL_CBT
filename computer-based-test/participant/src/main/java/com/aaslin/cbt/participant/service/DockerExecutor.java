@@ -2,7 +2,7 @@ package com.aaslin.cbt.participant.service;
 
 import org.springframework.stereotype.Component;
 
-import com.aaslin.cbt.common.model.CodingQuestions;
+import com.aaslin.cbt.common.model.CodingQuestion;
 import com.aaslin.cbt.common.model.TestcaseResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

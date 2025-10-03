@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.aaslin.cbt.common.model.DeveloperCodingSubmissions;
-import com.aaslin.cbt.common.model.DeveloperTestcaseResults;
-import com.aaslin.cbt.common.model.Testcases;
+import com.aaslin.cbt.common.model.DeveloperCodingSubmission;
+import com.aaslin.cbt.common.model.DeveloperTestcaseResult;
+import com.aaslin.cbt.common.model.Testcase;
 import com.aaslin.cbt.developer.Dto.PrivateTestcaseResultDto;
 import com.aaslin.cbt.developer.Dto.PublicTestcaseResultDto;
 import com.aaslin.cbt.developer.repository.DeveloperTestcaseResultsRepository;
@@ -17,34 +17,34 @@ public class SubmissionUtils {
 	
 	@Autowired
 	private DeveloperTestcaseResultsRepository resultRepo;
-	public void saveErrorResult(DeveloperCodingSubmissions submission, Testcases tc, String errorOutput) {
-	    DeveloperTestcaseResults result = resultRepo
+	public void saveErrorResult(DeveloperCodingSubmission submission, Testcase tc, String errorOutput) {
+	    DeveloperTestcaseResult result = resultRepo
 	            .findByDeveloperCodingSubmission_DeveloperCodingSubmissionIdAndTestcase_TestcaseId(
 	                    submission.getDeveloperCodingSubmissionId(), tc.getTestcaseId())
 	            .orElse(null);
 
 	    if (result == null) {
 	        String lastResultId = resultRepo.findTopByOrderByDeveloperTestcaseResultIdDesc()
-	                .map(DeveloperTestcaseResults::getDeveloperTestcaseResultId)
+	                .map(DeveloperTestcaseResult::getDeveloperTestcaseResultId)
 	                .orElse(null);
 	        String newResultId = CustomIdGenerator.generateNextId("DTCR", lastResultId);
 
-	        result = new DeveloperTestcaseResults();
+	        result = new DeveloperTestcaseResult();
 	        result.setDeveloperTestcaseResultId(newResultId);
 	        result.setDeveloperCodingSubmission(submission);
 	        result.setTestcase(tc);
 	        result.setCreatedAt(LocalDateTime.now());
 	    }
 
-	    result.setTestcaseStatus(DeveloperTestcaseResults.DeveloperTestcaseStatus.FAILED);
+	    result.setTestcaseStatus(DeveloperTestcaseResult.DeveloperTestcaseStatus.FAILED);
 	    result.setUpdatedAt(LocalDateTime.now());
 	    resultRepo.save(result);
 	}
 
-	public void addResponseResult(Testcases tc, List<PublicTestcaseResultDto> publicResults,
+	public void addResponseResult(Testcase tc, List<PublicTestcaseResultDto> publicResults,
 	                               List<PrivateTestcaseResultDto> privateResults,
 	                               String output, String status) {
-	    if (tc.getTestcaseType() == Testcases.TestcaseType.PUBLIC) {
+	    if (tc.getTestcaseType() == Testcase.TestcaseType.PUBLIC) {
 	        publicResults.add(new PublicTestcaseResultDto(
 	                tc.getTestcaseId(),
 	                tc.getInputValues(),

@@ -1,8 +1,8 @@
 package com.aaslin.cbt.super_admin.service;
 
 import org.springframework.stereotype.Service;
-import com.aaslin.cbt.common.model.McqQuestions;
-import com.aaslin.cbt.common.model.Sections;
+import com.aaslin.cbt.common.model.McqQuestion;
+import com.aaslin.cbt.common.model.Section;
 import com.aaslin.cbt.super_admin.dto.McqQuestionDTO;
 import com.aaslin.cbt.super_admin.idgenerator.McqIdGenerator;
 import com.aaslin.cbt.super_admin.repository.McqQuestionRepository;
@@ -25,7 +25,7 @@ public class McqQuestionService {
         this.mcqAuditHelper = mcqAuditHelper;
     }
 
-    public McqQuestionDTO mapToDTO(McqQuestions mcq) {
+    public McqQuestionDTO mapToDTO(McqQuestion mcq) {
         McqQuestionDTO dto = new McqQuestionDTO();
         dto.setMcqId(mcq.getMcqQuestionId());
         dto.setQuestionText(mcq.getQuestionText());
@@ -40,7 +40,7 @@ public class McqQuestionService {
     }
     
     public List<McqQuestionDTO> getQuestionsBySection(String sectionName) {
-        Sections section = sectionRepo.findBySection(sectionName)
+        Section section = sectionRepo.findBySection(sectionName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid section name: " + sectionName));
 
         return mcqRepo.findBySectionAndIsActiveFalse(section).stream()
@@ -49,8 +49,8 @@ public class McqQuestionService {
     }
 
 
-    private McqQuestions toEntity(McqQuestionDTO dto) {
-        McqQuestions entity = new McqQuestions();
+    private McqQuestion toEntity(McqQuestionDTO dto) {
+        McqQuestion entity = new McqQuestion();
         entity.setMcqQuestionId(dto.getMcqId());
         entity.setQuestionText(dto.getQuestionText());
         entity.setOption1(dto.getOption1());
@@ -61,7 +61,7 @@ public class McqQuestionService {
         entity.setWeightage(dto.getWeightage());
 
         if (dto.getSectionName() != null) {
-            Sections section = sectionRepo.findBySection(dto.getSectionName())
+            Section section = sectionRepo.findBySection(dto.getSectionName())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid section: " + dto.getSectionName()));
             entity.setSection(section);
         } else {
@@ -75,23 +75,23 @@ public class McqQuestionService {
 
     public List<McqQuestionDTO> addQuestions(List<McqQuestionDTO> dtos) {
         int lastId = mcqRepo.findMaxIdNumber();
-        List<McqQuestions> entities = new ArrayList<>();
+        List<McqQuestion> entities = new ArrayList<>();
 
         for (McqQuestionDTO dto : dtos) {
-            McqQuestions entity = toEntity(dto);
+            McqQuestion entity = toEntity(dto);
             lastId++;
             entity.setMcqQuestionId(McqIdGenerator.generateMcqId(lastId));
             entities.add(entity);
         }
 
-        List<McqQuestions> saved = mcqRepo.saveAll(entities);
+        List<McqQuestion> saved = mcqRepo.saveAll(entities);
         return saved.stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public McqQuestionDTO updateMcq(String id, McqQuestionDTO dto) {
-        McqQuestions existing = mcqRepo.findById(id)
+        McqQuestion existing = mcqRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("MCQ not found: " + id));
 
         existing.setQuestionText(dto.getQuestionText());
@@ -103,34 +103,34 @@ public class McqQuestionService {
         existing.setWeightage(dto.getWeightage());
 
         if (dto.getSectionName() != null) {
-            Sections section = sectionRepo.findBySection(dto.getSectionName())
+            Section section = sectionRepo.findBySection(dto.getSectionName())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid section: " + dto.getSectionName()));
             existing.setSection(section);
         }
 
         mcqAuditHelper.applyAuditForMcqQuestion(existing);
 
-        McqQuestions saved = mcqRepo.save(existing);
+        McqQuestion saved = mcqRepo.save(existing);
         return mapToDTO(saved);
     }
 
     public void safeDelete(String id) {
-        McqQuestions mcq = mcqRepo.findById(id)
+        McqQuestion mcq = mcqRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("MCQ not found: " + id));
         mcq.setIsActive(true);
         mcqRepo.save(mcq);
     }
 
-    public McqQuestions getMcqById(String mcqId) {
+    public McqQuestion getMcqById(String mcqId) {
         return mcqRepo.findById(mcqId)
                 .orElseThrow(() -> new RuntimeException("MCQ not found: " + mcqId));
     }
     
     public List<McqQuestionDTO> generateRandomQuestions(String sectionName, int count) {
-        Sections section = sectionRepo.findBySection(sectionName)
+        Section section = sectionRepo.findBySection(sectionName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid section name: " + sectionName));
 
-        List<McqQuestions> randomList = mcqRepo.findRandomBySection(section.getSectionId(), count);
+        List<McqQuestion> randomList = mcqRepo.findRandomBySection(section.getSectionId(), count);
         if (randomList.isEmpty()) return new ArrayList<>();
 
         return randomList.stream()
@@ -139,9 +139,9 @@ public class McqQuestionService {
     }
 
     public McqQuestionDTO regenerateQuestion(String sectionName, String currentQuestionId) {
-        Sections section = sectionRepo.findBySection(sectionName)
+        Section section = sectionRepo.findBySection(sectionName)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid section name: " + sectionName));
-        McqQuestions mcq = mcqRepo.findRandomOtherBySection(section.getSectionId(), currentQuestionId);
+        McqQuestion mcq = mcqRepo.findRandomOtherBySection(section.getSectionId(), currentQuestionId);
         if (mcq == null) return null;
         return mapToDTO(mcq);
     }
