@@ -16,8 +16,7 @@ public class JwtUtil {
     private static final String SECRET = "mysupersecretkeymysupersecretkey123456789";
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    private final long accessTokenValidity = 1000 * 60 * 60 * 24;      
-    private final long refreshTokenValidity = 1000 * 60 * 60 * 24; 
+    private final long accessTokenValidity = 1000 * 60 * 60 * 24;
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -28,14 +27,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
 
     public String extractUsername(String token) {
         return Jwts.parserBuilder()

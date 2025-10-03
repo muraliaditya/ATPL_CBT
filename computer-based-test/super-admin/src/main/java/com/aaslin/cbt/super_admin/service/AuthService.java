@@ -12,6 +12,4 @@ public interface AuthService {
     CreateUserResponse createSuperAdmin(CreateUserRequest request);
 
     CreateUserResponse createDeveloper(CreateUserRequest request);
-    
-    LoginResponse refreshAccessToken(String refreshToken);
 }

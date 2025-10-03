@@ -39,7 +39,6 @@ public class AuthServiceImpl implements AuthService {
 
         LoginResponse response = new LoginResponse();
         response.setAccessToken(jwtUtil.generateToken(user.getUsername()));
-        response.setRefreshToken(jwtUtil.generateRefreshToken(user.getUsername()));
         response.setUserId(user.getUserId());
         response.setRole(user.getRole().getRole());
         response.setExpiresIn(3600);
@@ -113,25 +112,4 @@ public class AuthServiceImpl implements AuthService {
         return new CreateUserResponse("Developer created successfully", "SUCCESS", role.getRole(), newId);
     }
 
-
-    @Override
-    public LoginResponse refreshAccessToken(String refreshToken) {
-        if (!jwtUtil.validateToken(refreshToken)) {
-            throw new RuntimeException("Invalid refresh token");
-        }
-
-        String username = jwtUtil.extractUsername(refreshToken);
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        LoginResponse response = new LoginResponse();
-        response.setAccessToken(jwtUtil.generateToken(user.getUsername()));
-        response.setRefreshToken(refreshToken);
-        response.setUserId(user.getUserId());
-        response.setRole(user.getRole().getRole());
-        response.setExpiresIn(3600);
-        response.setMessage("Token refreshed successfully");
-        response.setStatus("SUCCESS");
-        return response;
-    }
 }

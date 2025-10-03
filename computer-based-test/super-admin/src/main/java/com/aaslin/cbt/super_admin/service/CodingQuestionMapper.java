@@ -22,8 +22,8 @@ public class CodingQuestionMapper {
         dto.setPythonBoilerCode(cq.getPythonBoilerCode());
         dto.setExecutionTimeLimit(cq.getExecutionTimeLimit() != null ? cq.getExecutionTimeLimit().doubleValue() : null);
         dto.setMemoryLimit(cq.getMemoryLimit());
-        dto.setInputTypes(List.of());      // will be filled by service using deserializeList
-        dto.setParameterNames(List.of());  // will be filled by service using deserializeList
+        dto.setInputTypes(List.of());      
+        dto.setParameterNames(List.of());  
         dto.setIsActive(cq.getIsActive());
         dto.setWeightage(cq.getWeightage());
 

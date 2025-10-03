@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,9 +23,22 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
     private final CodingQuestionsRepository codingQuestionsRepository;
     private final ObjectMapper objectMapper;
 
+   
     private List<String> parseStringListJson(String json) {
         try {
             if (json == null || json.isEmpty()) return List.of();
+
+            // Try map first (for {"params":[...]} or {"types":[...]})
+            Map<String, Object> map = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+            if (!map.isEmpty()) {
+                Object firstValue = map.values().iterator().next();
+                if (firstValue instanceof List<?>) {
+                    return ((List<?>) firstValue).stream()
+                            .map(Object::toString)
+                            .toList();
+                }
+            }
+
             return objectMapper.readValue(json, new TypeReference<List<String>>() {});
         } catch (Exception e) {
             return List.of();
@@ -47,8 +61,11 @@ public class CodingQuestionGenerationServiceImpl implements CodingQuestionGenera
         dto.setQuestionDescription(cq.getDescription());
         dto.setJavaBoilerCode(cq.getJavaBoilerCode());
         dto.setPythonBoilerCode(cq.getPythonBoilerCode());
+
+        // ✅ Now properly deserializes both wrapped & plain arrays
         dto.setInputParams(parseStringListJson(cq.getInputParams()));
         dto.setInputType(parseStringListJson(cq.getInputType()));
+
         dto.setOutputType(cq.getOutputFormat());
 
         List<TestcaseResponse> tlist = new ArrayList<>();
