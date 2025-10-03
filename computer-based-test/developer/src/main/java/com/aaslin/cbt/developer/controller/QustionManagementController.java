@@ -73,18 +73,18 @@ public class QustionManagementController {
     private AddMcqQuestionService mcqQuestionService;
     
     @PostMapping("/mcq-questions")
-    public ResponseEntity<AddMcqQuestionResponse> addMcqQuestions(
+    public ResponseEntity<?> addMcqQuestions(
             @RequestBody AddMcqQuestionRequestDto request) {
-    	try {
-    		AddMcqQuestionResponse response = mcqQuestionService.addMcqQuestions(request);
-    		return ResponseEntity.ok(response);
-    	} catch(IllegalArgumentException e) {
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-    				.body(new AddMcqQuestionResponse("Failed: "+e.getMessage(),"error"));
-    	} catch(Exception e) {
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AddMcqQuestionResponse("Server error: " + e.getMessage(), "error"));
-    	}
+    //	try {
+    		
+    		return ResponseEntity.ok(mcqQuestionService.addMcqQuestions(request));
+    //	} catch(IllegalArgumentException e) {
+//    		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//    				.body(new AddMcqQuestionResponse("Failed: "+e.getMessage(),"error"));
+//    	} catch(Exception e) {
+//    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new AddMcqQuestionResponse("Server error: " + e.getMessage(), "error"));
+//    	}
     }
     
 }

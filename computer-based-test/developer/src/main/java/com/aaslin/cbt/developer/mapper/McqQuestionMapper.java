@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 
 import com.aaslin.cbt.common.model.McqQuestion;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
-
 @Mapper(componentModel = "spring")
 public interface McqQuestionMapper {
 
@@ -20,5 +19,5 @@ public interface McqQuestionMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    McqQuestion toEntity(AddMcqQuestionRequestDto.McqQuestionDto dto);
+    McqQuestion toEntity(AddMcqQuestionRequestDto.McqQuestionDto mcqQuestionDto);
 }

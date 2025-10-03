@@ -2,8 +2,8 @@ package com.aaslin.cbt.developer.service.Implementation;
 
 import com.aaslin.cbt.common.model.*;
 import com.aaslin.cbt.developer.Dto.*;
-import com.aaslin.cbt.developer.exceptions.CompilationException;
-import com.aaslin.cbt.developer.exceptions.RuntimeExecutionException;
+import com.aaslin.cbt.developer.exception.CompilationException;
+import com.aaslin.cbt.developer.exception.RuntimeExecutionException;
 import com.aaslin.cbt.developer.repository.*;
 import com.aaslin.cbt.developer.service.CompilerService;
 import com.aaslin.cbt.developer.util.CustomIdGenerator;

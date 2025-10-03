@@ -15,7 +15,7 @@ import com.aaslin.cbt.common.model.CodingQuestion;
 @Repository
 public interface CodingQuestionsRepository extends JpaRepository<CodingQuestion, String> {
 
-    @Query("SELECT c FROM CodingQuestions c " +
+    @Query("SELECT c FROM CodingQuestion c " +
            "WHERE c.isActive = true AND LOWER(c.question) LIKE LOWER(CONCAT('%', :question, '%'))")
     Page<CodingQuestion> searchByQuestion(@Param("question") String question, Pageable pageable);
 
@@ -43,11 +43,6 @@ public interface CodingQuestionsRepository extends JpaRepository<CodingQuestion,
                    "WHERE c.is_active = true ORDER BY RAND() LIMIT :count", nativeQuery = true)
     List<CodingQuestion> findRandom(@Param("count") int count);
 
-<<<<<<< HEAD
-    List<CodingQuestions> findByIsActiveFalse();
-}
-=======
     List<CodingQuestion> findByIsActiveFalse();   
 
 }
->>>>>>> 2cc18ace291975f3c2f56d61f7bd8effc46fe146

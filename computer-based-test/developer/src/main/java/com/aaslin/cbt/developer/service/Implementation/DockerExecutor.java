@@ -9,8 +9,8 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.aaslin.cbt.developer.exceptions.CompilationException;
-import com.aaslin.cbt.developer.exceptions.RuntimeExecutionException;
+import com.aaslin.cbt.developer.exception.CompilationException;
+import com.aaslin.cbt.developer.exception.RuntimeExecutionException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

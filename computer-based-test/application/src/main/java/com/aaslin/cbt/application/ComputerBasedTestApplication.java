@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = "com.aaslin.cbt.common.model")
 @EnableJpaRepositories(basePackages = { "com.aaslin.cbt.developer","com.aaslin.cbt.common","com.aaslin.cbt.super_admin","com.aaslin.cbt.participant"})
-@ComponentScan(basePackages = { "com.aaslin.cbt.developer","com.aaslin.cbt.common","com.aaslin.cbt.super_admin","com.aaslin.cbt.participant","com.aaslin.cbt.application.config"})
+@ComponentScan(basePackages = { "com.aaslin.cbt.developer.mapper","com.aaslin.cbt.common","com.aaslin.cbt.super_admin","com.aaslin.cbt.participant","com.aaslin.cbt.application.config"})
 public class ComputerBasedTestApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ComputerBasedTestApplication.class, args);

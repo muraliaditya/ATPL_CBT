@@ -1,12 +1,17 @@
 package com.aaslin.cbt.developer.service.Implementation;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aaslin.cbt.common.model.McqQuestion;
 import com.aaslin.cbt.common.model.Section;
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
-import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
+import com.aaslin.cbt.developer.exception.InvalidMcqRequestException;
+import com.aaslin.cbt.developer.exception.McqDataAccessException;
 import com.aaslin.cbt.developer.mapper.McqQuestionMapper;
 import com.aaslin.cbt.developer.repository.McqQuestionsRepository;
 import com.aaslin.cbt.developer.repository.Sectionrepository;
@@ -23,54 +28,53 @@ public class AddMcqQuestionServiceImpl implements AddMcqQuestionService {
     private final McqQuestionsRepository mcqQuestionsRepository;
     private final Sectionrepository sectionRepository;
     private final AuditHelper auditHelper;
-    private final McqQuestionMapper mcqQuestionMapper;
+    
+    @Autowired
+    private McqQuestionMapper mcqQuestionMapper;
 
     @Override
     @Transactional
-    public AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request) {
+    public Map<String,Object> addMcqQuestions(AddMcqQuestionRequestDto request) {
         if (request.getMcqQuestions() == null || request.getMcqQuestions().isEmpty()) {
-            throw new IllegalArgumentException("At least one MCQ question is required");
+            throw new InvalidMcqRequestException("Inavlid request make sure atleast one MCQ question is required");
         }
         
-        String lastId = mcqQuestionsRepository.findTopByOrderByMcqQuestionIdDesc()
-                .map(McqQuestion::getMcqQuestionId)
-                .orElse(null);
+        try {
+        	String lastId = mcqQuestionsRepository.findTopByOrderByMcqQuestionIdDesc()
+        			.map(McqQuestion::getMcqQuestionId)
+                	.orElse(null);
 
-        for (AddMcqQuestionRequestDto.McqQuestionDto dto : request.getMcqQuestions()) {
+        	for (AddMcqQuestionRequestDto.McqQuestionDto mcqQuestionDto : request.getMcqQuestions()) {
         	
-        	String lastSectionId = sectionRepository.findTopByOrderBySectionIdDesc()
-        	        .map(Section::getSectionId)
-        	        .orElse(null);
+        		String lastSectionId = sectionRepository.findTopByOrderBySectionIdDesc()
+        				.map(Section::getSectionId)
+        				.orElse(null);
         	
-            Section section = sectionRepository.findBySectionIgnoreCase(dto.getSection())
-            		.orElseGet(() -> {
-                        Section newSection = new Section();
-                        newSection.setSectionId(CustomIdGenerator.generateNextId("SEC", lastSectionId)); 
-                        newSection.setSection(dto.getSection());
-                        newSection.setIsActive(true);
-                        return sectionRepository.save(newSection);
-                    });
+        		Section section = sectionRepository.findBySectionIgnoreCase(mcqQuestionDto.getSection())
+        				.orElseGet(() -> {
+        					Section newSection = new Section();
+        					newSection.setSectionId(CustomIdGenerator.generateNextId("SEC", lastSectionId)); 
+        					newSection.setSection(mcqQuestionDto.getSection());
+        					newSection.setIsActive(true);
+        					return sectionRepository.save(newSection);
+        				});
 
-            lastId = CustomIdGenerator.generateNextId("MCQ", lastId);
+        		lastId = CustomIdGenerator.generateNextId("MCQ", lastId);
 
-            McqQuestion mcq = new McqQuestion();
-            mcq.setMcqQuestionId(lastId);
-            mcq.setQuestionText(dto.getQuestion());
-            mcq.setOption1(dto.getOption1());
-            mcq.setOption2(dto.getOption2());
-            mcq.setOption3(dto.getOption3());
-            mcq.setOption4(dto.getOption4());
-            mcq.setAnswerKey(dto.getAnswerKey());
-            mcq.setSection(section);
-            mcq.setWeightage(dto.getWeightage() != null ? dto.getWeightage() : 1);
-            mcq.setIsActive(true);
-            auditHelper.applyAuditForMcqQuestion(mcq);
-            mcqQuestionsRepository.save(mcq);
-        }
-
-        return new AddMcqQuestionResponse(
-                request.getMcqQuestions().size() + " MCQ questions added successfully",
-                "success"
+        		McqQuestion mcqQuestion = mcqQuestionMapper.toEntity(mcqQuestionDto);
+        		mcqQuestion.setMcqQuestionId(lastId);
+        		mcqQuestion.setSection(section);
+        		auditHelper.applyAuditForMcqQuestion(mcqQuestion);
+        		mcqQuestionsRepository.save(mcqQuestion);
+        	}
+        } catch(DataAccessException dataAccessException) {
+        	throw new McqDataAccessException("Falied to save MCQ questions to database",dataAccessException);
+        	
+        } 
+        return Map.of(
+        		"statusCode", 200,
+                "message",request.getMcqQuestions().size() + " MCQ questions added successfully",
+                "status","success"
         );
     }
 }

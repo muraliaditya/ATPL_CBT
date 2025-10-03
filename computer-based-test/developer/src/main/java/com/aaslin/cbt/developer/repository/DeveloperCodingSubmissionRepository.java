@@ -18,7 +18,7 @@ public interface DeveloperCodingSubmissionRepository extends JpaRepository<Devel
 		           dcs.user.username,
 		           COUNT(DISTINCT dcs.codingQuestion.codingQuestionId)
 		       )
-		       FROM DeveloperCodingSubmissions dcs
+		       FROM DeveloperCodingSubmission dcs
 		       WHERE dcs.codeStatus = :status
 		       GROUP BY dcs.user.userId, dcs.user.username
 		       ORDER BY COUNT(DISTINCT dcs.codingQuestion.codingQuestionId) DESC

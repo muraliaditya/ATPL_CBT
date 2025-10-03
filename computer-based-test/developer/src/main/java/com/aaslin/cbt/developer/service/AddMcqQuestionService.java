@@ -1,9 +1,10 @@
 package com.aaslin.cbt.developer.service;
 
+import java.util.Map;
+
 import com.aaslin.cbt.developer.Dto.AddMcqQuestionRequestDto;
-import com.aaslin.cbt.developer.Dto.AddMcqQuestionResponse;
 
 public interface AddMcqQuestionService {
 	
-	AddMcqQuestionResponse addMcqQuestions(AddMcqQuestionRequestDto request);
+	Map<String,Object> addMcqQuestions(AddMcqQuestionRequestDto request);
 }
