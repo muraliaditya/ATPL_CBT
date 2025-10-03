@@ -1,147 +1,159 @@
 package com.aaslin.cbt.participant.service;
-
+/**
+ * 
+ */
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.aaslin.cbt.common.model.Category;
-import com.aaslin.cbt.common.model.College;
-import com.aaslin.cbt.common.model.Company;
-import com.aaslin.cbt.common.model.Contest;
-import com.aaslin.cbt.common.model.Designation;
-import com.aaslin.cbt.common.model.Participant;
+import com.aaslin.cbt.common.model.*;
 import com.aaslin.cbt.participant.dto.ParticipantRequest;
 import com.aaslin.cbt.participant.dto.ParticipantResponse;
-import com.aaslin.cbt.participant.repository.CategoryRepository;
-import com.aaslin.cbt.participant.repository.CollegeRepository;
-import com.aaslin.cbt.participant.repository.CompanyRepository;
-import com.aaslin.cbt.participant.repository.ContestRepository;
-import com.aaslin.cbt.participant.repository.DesignationRepository;
-import com.aaslin.cbt.participant.repository.ParticipantRepository;
+import com.aaslin.cbt.participant.exception.CustomException;
+import com.aaslin.cbt.participant.mapper.ParticipantMapper;
+import com.aaslin.cbt.participant.repository.*;
 import com.aaslin.cbt.participant.security.JwtUtil;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ParticipantService {
 
-	private final DesignationService designationService;
-	private final ParticipantRepository participantRepo;
-	private final ContestRepository contestRepo;
-	private final CompanyRepository companyRepo;
-	private final DesignationRepository designationRepo;
-	private final CollegeRepository collegeRepo;
-	private final CategoryRepository categoryRepo;
-	
+    private final DesignationService designationService;
+    private final ParticipantRepository participantRepo;
+    private final ContestRepository contestRepo;
+    private final CompanyRepository companyRepo;
+    private final CollegeRepository collegeRepo;
+    private final CategoryRepository categoryRepo;
 
+    public ParticipantService(DesignationService designationService,
+                              ParticipantRepository participantRepo,
+                              ContestRepository contestRepo,
+                              CompanyRepository companyRepo,
+                              CollegeRepository collegeRepo,
+                              CategoryRepository categoryRepo) {
+        this.designationService = designationService;
+        this.participantRepo = participantRepo;
+        this.contestRepo = contestRepo;
+        this.companyRepo = companyRepo;
+        this.collegeRepo = collegeRepo;
+        this.categoryRepo = categoryRepo;
+    }
 
+    @Transactional
+    public ParticipantResponse registerParticipant(String contestId, ParticipantRequest request) {
+        try {
+            Contest contest = contestRepo.findById(contestId)
+                    .orElseThrow(() -> new CustomException.ContestNotFoundException("Contest not found"));
 
-	public ParticipantService(DesignationService designationService, ParticipantRepository participantRepo,
-			ContestRepository contestRepo, CompanyRepository companyRepo, DesignationRepository designationRepo,
-			CollegeRepository collegeRepo, CategoryRepository categoryRepo) {
-		super();
-		this.designationService = designationService;
-		this.participantRepo = participantRepo;
-		this.contestRepo = contestRepo;
-		this.companyRepo = companyRepo;
-		this.designationRepo = designationRepo;
-		this.collegeRepo = collegeRepo;
-		this.categoryRepo = categoryRepo;
-	}
+            Category category = getOrCreateCategory(request.getCategoryName());
 
+            Participant participant = ParticipantMapper.toParticipantEntity(request);
+            participant.setParticipantId(generateParticipantId());
+            participant.setContest(contest);
 
+            if (request.getDesignationName() != null) {
+                participant.setDesignation(designationService.createOrGetName(request.getDesignationName()));
+            }
 
+            if (request.getCurrentCompanyName() != null) {
+                participant.setCompany(getOrCreateCompany(request.getCurrentCompanyName()));
+            }
 
-	public ParticipantResponse registerParticipant(String contestId, ParticipantRequest request) {
-	    Contest contest = contestRepo.findById(contestId)
-	            .orElseThrow(() -> new RuntimeException("Contest not found"));
+            if (request.getCollegeName() != null) {
+                participant.setCollege(getOrCreateCollege(request.getCollegeName()));
+            }
 
-	    String categoryName = request.getCategoryName().toLowerCase();
-	    List<Category> categoryNames=categoryRepo.findByCategoryName(categoryName);
-	    Category category;
-        if(categoryNames.isEmpty()) {
-        	long count=categoryRepo.count()+1;
-        	String newId="CAT"+String.format("%03d", count);
-        	Category newCategory=new Category();
-        	newCategory.setCategoryId(newId);
-        	newCategory.setCategoryName(request.getCategoryName());
-        	category=categoryRepo.save(newCategory);
+            participantRepo.save(participant);
+
+            String token = JwtUtil.generateToken(participant.getParticipantId(), contest.getContestId());
+            return new ParticipantResponse(participant.getParticipantId(), token);
+
+        } catch (CustomException.ContestNotFoundException |
+                 CustomException.ParticipantValidationException |
+                 CustomException.UnsupportedCategoryException ex) {
+            throw ex;
+        } catch (Exception exception) {
+            throw new CustomException.ParticipantValidationException("Error registering participant: " + exception.getMessage());
         }
-        else {
-        	category=categoryNames.get(0);
+    }
+
+    private Category getOrCreateCategory(String categoryName) {
+        try {
+            String lowerName = categoryName.toLowerCase();
+            List<Category> categories = categoryRepo.findByCategoryName(lowerName);
+            if (categories.isEmpty()) {
+                long count = categoryRepo.count() + 1;
+                String newId = "CAT" + String.format("%03d", count);
+                Category newCategory = new Category();
+                newCategory.setCategoryId(newId);
+                newCategory.setCategoryName(categoryName);
+                return categoryRepo.save(newCategory);
+            } else {
+                return categories.get(0);
+            }
+        } catch (Exception ex) {
+            throw new CustomException.ParticipantValidationException("Error creating/finding category ");
         }
+    }
 
-	    switch (categoryName) {
-	        case "student":
-	            if (request.getCollegeRegdNo() == null || request.getCollegeName() == null) {
-	                throw new RuntimeException("Missing student details");
-	            }
-	            break;
-	        case "experienced":
-	            if (request.getCurrentCompanyName() == null || request.getOverallExperience() == null) {
-	                throw new RuntimeException("Missing experienced details");
-	            }
-	            break;
-	        default:
-	            throw new RuntimeException("Unsupported category " + category);
-	    }
+    private void validateCategory(String categoryName, ParticipantRequest request) {
+        try {
+            switch (categoryName.toLowerCase()) {
+                case "student":
+                    if (request.getCollegeName() == null || request.getCollegeRegdNo() == null)
+                        throw new CustomException.ParticipantValidationException("Missing student details");
+                    break;
+                case "experienced":
+                    if (request.getCurrentCompanyName() == null || request.getOverallExperience() == null)
+                        throw new CustomException.ParticipantValidationException("Missing experienced details");
+                    break;
+                default:
+                    throw new CustomException.UnsupportedCategoryException("Unsupported category: " + categoryName);
+            }
+        } catch (Exception categoryException) {
+            throw new CustomException.ParticipantValidationException("Category validation error: " + categoryException.getMessage());
+        }
+    }
 
-	    Participant participant = new Participant();
-	    long participant_count=participantRepo.count()+1;
-    	String newParticipantId="PAR"+String.format("%03d", participant_count);
-	    participant.setParticipantId(newParticipantId);
-	    participant.setName(request.getName());
-	    participant.setEmail(request.getEmail());
-	    participant.setCollegeRegdNo(request.getCollegeRegdNo());
-	    participant.setHighestDegree(request.getHighestDegree());
-	    participant.setOverallExperience(request.getOverallExperience());
+    private Company getOrCreateCompany(String name) {
+        try {
+            return companyRepo.findBycurrentCompanyName(name)
+                    .stream().findFirst()
+                    .orElseGet(() -> {
+                        long count = companyRepo.count() + 1;
+                        Company company = new Company();
+                        company.setCompanyId("COM" + String.format("%03d", count));
+                        company.setCurrentCompanyName(name);
+                        return companyRepo.save(company);
+                    });
+        } catch (Exception ex) {
+            throw new CustomException.ParticipantValidationException("Error creating company: " + ex.getMessage());
+        }
+    }
 
-	    if(request.getDesignationName() != null) {
-	 Designation designation=designationService.createOrGetName(request.getDesignationName());
-	    participant.setDesignation(designation);
-	    }
+    private College getOrCreateCollege(String name) {
+        try {
+            return collegeRepo.findByCollegeName(name)
+                    .stream().findFirst()
+                    .orElseGet(() -> {
+                        long count = collegeRepo.count() + 1;
+                        College college = new College();
+                        college.setCollegeId("COL" + String.format("%03d", count));
+                        college.setCollegeName(name);
+                        return collegeRepo.save(college);
+                    });
+        } catch (Exception ex) {
+            throw new CustomException.ParticipantValidationException("Error creating college: " + ex.getMessage());
+        }
+    }
 
-	    if (request.getCurrentCompanyName() != null) {
-	        List<Company> companies = companyRepo.findBycurrentCompanyName(request.getCurrentCompanyName());
-	        Company company;
-	        if(companies.isEmpty()) {
-	        	long count=companyRepo.count()+1;
-	        	String newId="COM"+String.format("%03d", count);
-	        	Company newCompany=new Company();
-	        	newCompany.setCompanyId(newId);
-	        	newCompany.setCurrentCompanyName(request.getCurrentCompanyName());
-	        	company=companyRepo.save(newCompany);
-	        }
-	        else {
-	        	company=companies.get(0);
-	        }
-	        
-	        participant.setCompany(company);
-	    }
-
-	    if (request.getCollegeName() != null) {
-	    	List<College> colleges =collegeRepo.findByCollegeName(request.getCollegeName());
-	        College college;
-	        if(colleges.isEmpty()) {
-	        	long count=collegeRepo.count()+1;
-	        	String newId="COL"+String.format("%03d", count);
-	        	College newCollege=new College();
-	        	newCollege.setCollegeId(newId);
-	        	newCollege.setCollegeName(request.getCollegeName());
-	        	college=collegeRepo.save(newCollege);
-	        }
-	        else {
-	        	college=colleges.get(0);
-	        }
-	        participant.setCollege(college);
-	    }
-
-	    participant.setContest(contest);
-
-	    participant = participantRepo.save(participant);
-
-	    String token=JwtUtil.generateToken(participant.getParticipantId().toString(), contest.getContestId());
-	    return new ParticipantResponse(participant.getParticipantId(),token);
-	}
-	
-	
+    private String generateParticipantId() {
+        try {
+            long count = participantRepo.count() + 1;
+            return "PAR" + String.format("%03d", count);
+        } catch (Exception ex) {
+            throw new CustomException.ParticipantValidationException("Error generating participant ID: " + ex.getMessage());
+        }
+    }
 }

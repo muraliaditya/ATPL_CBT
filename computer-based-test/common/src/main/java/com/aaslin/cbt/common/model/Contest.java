@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -77,6 +78,7 @@ public class Contest {
     private List<ParticipantStatus> participantStatuses;
 
     @OneToMany(mappedBy = "contest")
+    @JsonManagedReference
     private List<Submission> submissions;
 
   public enum ContestStatus {

@@ -3,6 +3,8 @@ package com.aaslin.cbt.common.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class Submission {
 
     @ManyToOne
     @JoinColumn(name = "participant_id")
+    @JsonBackReference
     private Participant participant;
 
     @Column(name = "submitted_at")
