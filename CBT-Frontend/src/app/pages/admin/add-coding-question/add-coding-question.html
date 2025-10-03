@@ -51,6 +51,39 @@
         ></textarea>
         <label for="input-type-desc">Description</label>
       </p-floatlabel>
+      <p-floatlabel variant="on">
+        <textarea
+          pTextarea
+          id="java-boiler-plate"
+          formControlName="javaBoilerPlateCode"
+          rows="5"
+          cols="30"
+          style="resize: none"
+          class="h-full w-full"
+        ></textarea>
+        <label for="java-boiler-plate">Java Boiler Plate</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <textarea
+          pTextarea
+          id="python-boiler-plate"
+          formControlName="pythonBoilerPlateCode"
+          rows="5"
+          cols="30"
+          style="resize: none"
+          class="h-full w-full"
+        ></textarea>
+        <label for="python-boiler-plate">python Boiler Plate</label>
+      </p-floatlabel>
+      <p-floatlabel class="w-full" variant="on">
+        <p-select
+          formControlName="difficulty"
+          inputId="dropdown-difficulty"
+          [options]="difficultyOptions"
+          class="w-56"
+        />
+        <label for="dropdown-difficulty"> difficulty </label>
+      </p-floatlabel>
       <div class="text-2xl font-bold">TestCases</div>
       <div class="flex gap-3 items-center">
         <h1 class="text-xl font-bold">Configure Testcases</h1>
@@ -492,6 +525,7 @@
       </button>
       <button
         type="button"
+        (click)="submitQuestion()"
         [disabled]="isQuestionFormInvalid()"
         class="py-1 h-fit text-white disabled:bg-blue-300 px-3 border-none outline-none flex gap-2 items-center justify-center font-medium cursor-pointer bg-blue-500 text-lg rounded-sm"
       >

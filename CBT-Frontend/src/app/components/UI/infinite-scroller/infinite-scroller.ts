@@ -15,12 +15,13 @@ import {
   styleUrl: './infinite-scroller.css',
 })
 export class InfiniteScroller {
-  @Input() currentPage = 1;
-  @Input() isLoading = false;
+  @Input() loadingFailed: boolean = false;
+  @Input() currentPage: number = 1;
+  @Input() isLoading: boolean = false;
+  @Input() totalPages: number | null = null;
   @Output() loadNextPage = new EventEmitter<void>();
   @ViewChild('codingQuesScroll') questionScroll!: ElementRef<HTMLDivElement>;
   onScroll(event: Event) {
-    console.log(event);
     if (this.questionScroll) {
       const questionsScrollElement = this.questionScroll.nativeElement;
       if (
@@ -28,8 +29,15 @@ export class InfiniteScroller {
           questionsScrollElement.scrollTop >=
         questionsScrollElement.scrollHeight - 50
       ) {
+        console.log(this.totalPages);
+        if (
+          typeof this.totalPages === 'number' &&
+          this.currentPage >= this.totalPages
+        )
+          return;
         console.log('bottom reached');
-        if (!this.isLoading) this.loadNextPage.emit();
+
+        if (!this.isLoading || this.loadingFailed) this.loadNextPage.emit();
       }
     }
   }

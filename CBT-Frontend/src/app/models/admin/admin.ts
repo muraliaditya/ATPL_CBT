@@ -17,8 +17,8 @@ export interface CodeQuestions {
   codeQuestionId: string;
   questionName: string;
   difficulty: string;
-  description:string;
-  inputParams:string[];
+  description: string;
+  inputParams: string[];
   inputType: string[];
   outputType: string;
   testcases: Testcase[];
@@ -27,12 +27,12 @@ export interface CodeQuestions {
 export interface Testcase {
   testcaseId: string;
   inputValues: string[];
-  expectedOutput:string;
+  expectedOutput: string;
   testcaseType: 'PUBLIC' | 'PRIVATE';
   explanation: string;
 }
 
-export interface mcqSections{
+export interface mcqSections {
   mcqQuestionId: string;
   question: string;
   option1: string;
@@ -44,7 +44,7 @@ export interface mcqSections{
   section: string;
 }
 
-export interface data{
+export interface data {
   mcqQuestionId: string;
   question: string;
   option1: string;
@@ -53,18 +53,23 @@ export interface data{
   option4: string;
   answerKey: string;
   weightage: number;
-  section:string;
+  section: string;
 }
-export interface submissions{
-   devId :  string ;
-   userName :  string ;
-   questionType :  string ;
-   questionId : string ;
+export interface submissions {
+  devId: string;
+  userName: string;
+  questionType: string;
+  questionId: string;
 }
 
-export interface codingQuestions{
-  
-      questionId: string;
-      questionName: string;
-      difficulty: string;
+export interface codingQuestions {
+  questionId: string;
+  questionName: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+}
+
+export interface codeListingResponse {
+  pageNo: number;
+  totalPages: Number;
+  codingQuestions: codingQuestions;
 }

@@ -37,7 +37,7 @@ import { NaNCheckValidate } from '../../../utils/custom-validators/nan-check';
   templateUrl: './add-coding-question.html',
   styleUrl: './add-coding-question.css',
 })
-export class AddCodingQuestion {
+export class AddCodingQuestion implements OnInit {
   testCaseTypesForm: FormGroup;
   tempTestCasesTypesForm: FormGroup;
   inputDataTypes: string[] = [
@@ -49,6 +49,8 @@ export class AddCodingQuestion {
     'strArray',
   ];
   testcaseTypesOptions: string[] = ['Public', 'Private'];
+  difficultyOptions: string[] = ['Easy', 'Medium', 'Hard'];
+
   inputTypesCount: number = 0;
   value3: string = '';
   showTestCaseForm = true;
@@ -59,8 +61,11 @@ export class AddCodingQuestion {
       question: ['', Validators.required],
       weightage: [0, [Validators.required, Validators.min(10)]],
       description: ['', Validators.required],
+      difficulty: ['', Validators.required],
       methodSignature: ['', Validators.required],
       outputType: ['', Validators.required],
+      javaBoilerPlateCode: ['', Validators.required],
+      pythonBoilerPlateCode: ['', Validators.required],
       testcasesTypes: fb.array([], [parameterDuplicateCheck]),
       testcases: fb.array([]),
     });
@@ -95,7 +100,7 @@ export class AddCodingQuestion {
 
   eachTestCaseForm: {
     fieldName: string;
-    value: number | string;
+    value: string | number;
     validators: any[];
     inputType: string;
   }[] = [];
@@ -117,7 +122,7 @@ export class AddCodingQuestion {
     console.log(testcasesType);
     let newFields = [...testcasesType].map((testcase) => ({
       fieldName: testcase.parameterName,
-      value: '',
+      value: testcase.inputType === 'int' ? 0 : '',
       validators: this.getValidators(testcase.inputType),
       inputType: testcase.inputType,
     }));
@@ -126,7 +131,6 @@ export class AddCodingQuestion {
         this.eachTestCaseForm.unshift(newFields[idx]);
       }
     }
-    console.log(this.eachTestCaseForm);
     const testcasesTypes = this.testCaseTypesForm.value.testcasesTypes;
     const outputType = this.testCaseTypesForm.value.outputType;
 
@@ -147,7 +151,6 @@ export class AddCodingQuestion {
       outputType: outputType,
     });
     this.reconstructTestCases();
-    console.log(this.testCaseTypesForm.value);
     this.showTestCaseForm = false;
   }
 
@@ -270,14 +273,12 @@ export class AddCodingQuestion {
   }
 
   submitForm(value: NgForm) {
-    console.log('Submitted value:', value.value.myNumber);
     this.AddTestCaseTypesCount(value.value.myNumber);
   }
 
   getTestCaseInputsArray(testIdx: number): FormArray {
     const testCase = this.TestCases.at(testIdx);
     if (!testCase) return this.fb.array([]);
-    console.log(testCase.get('testcaseInputs'));
     return testCase.get('testcaseInputs') as FormArray;
   }
 
@@ -313,7 +314,6 @@ export class AddCodingQuestion {
     if (!inputs) return [];
 
     if (slicingNumber === 1) {
-      console.log(inputs.controls.slice(1));
       return inputs.controls.slice(1, inputs.length);
     } else {
       return inputs.controls.slice(0, 1);
@@ -332,9 +332,35 @@ export class AddCodingQuestion {
       return 'text';
     }
   }
+  submitQuestion() {
+    console.log(this.testCaseTypesForm.value);
+
+    const testcasesArray = this.testCaseTypesForm.get('testcases') as FormArray;
+    for (let testIdx = 0; testIdx < testcasesArray.length; testIdx++) {
+      const testcaseGroup = testcasesArray.at(testIdx) as FormGroup;
+      const testcaseInputsArray = testcaseGroup.get(
+        'testcaseInputs'
+      ) as FormArray;
+
+      const inputGroup = testcaseInputsArray.at(0) as FormGroup;
+      const inputsArr = inputGroup.get('inputs') as FormArray;
+
+      console.log(`  testcaseInputs group #:`);
+
+      for (let inputIdx = 0; inputIdx < inputsArr.length; inputIdx++) {
+        const inputControl = inputsArr.at(inputIdx) as FormGroup;
+        const fieldName = inputControl.get('fieldName')?.value;
+        const value = inputControl.get('value')?.value;
+        const type = inputControl.get('type')?.value;
+
+        console.log(
+          `    Input #${inputIdx} - fieldName: ${fieldName}, value: ${value}, type: ${type}`
+        );
+      }
+    }
+  }
 
   getBasicFieldType(testIdx: number, basicIdx: number): string {
-    console.log(testIdx, basicIdx, 'in');
     let fieldName = this.basicFields[basicIdx].fieldName;
     if (!fieldName) {
       return "'text";
@@ -378,5 +404,48 @@ export class AddCodingQuestion {
     if (this.TestCases.length > 1) {
       this.TestCases.removeAt(testIdx);
     }
+  }
+
+  ngOnInit() {
+    const initialData = {
+      question: 'Sample question?',
+      weightage: 20,
+      description: 'This is a description',
+      methodSignature: 'void sampleMethod()',
+      outputType: 'int',
+      javaBoilerPlateCode: '// Java code here',
+      pythonBoilerPlateCode: '# Python code here',
+      testcasesTypes: [
+        { inputType: 'int', parameterName: 'param1' },
+        { inputType: 'string', parameterName: 'param2' },
+      ],
+      testcases: [],
+    };
+
+    this.testCaseTypesForm.patchValue({
+      question: initialData.question,
+      weightage: initialData.weightage,
+      description: initialData.description,
+      methodSignature: initialData.methodSignature,
+      outputType: initialData.outputType,
+      javaBoilerPlateCode: initialData.javaBoilerPlateCode,
+      pythonBoilerPlateCode: initialData.pythonBoilerPlateCode,
+    });
+
+    const testcasesTypesArray = this.testCaseTypesForm.get(
+      'testcasesTypes'
+    ) as FormArray;
+    testcasesTypesArray.clear();
+    initialData.testcasesTypes.forEach((tc) => {
+      testcasesTypesArray.push(
+        this.fb.group({
+          inputType: [tc.inputType, Validators.required],
+          parameterName: [tc.parameterName, Validators.required],
+        })
+      );
+    });
+
+    const testcasesArray = this.testCaseTypesForm.get('testcases') as FormArray;
+    // testcasesArray.clear();
   }
 }

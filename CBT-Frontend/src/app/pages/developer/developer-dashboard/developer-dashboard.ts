@@ -92,27 +92,27 @@ export class DeveloperDashboard {
     {
       questionId: 'code_001',
       questionName: 'Add Two Numbers',
-      difficulty: 'Easy',
+      difficulty: 'EASY',
     },
     {
       questionId: 'code_002',
       questionName: 'Integer Conversion',
-      difficulty: 'Medium',
+      difficulty: 'MEDIUM',
     },
     {
       questionId: 'code_003',
       questionName: 'Binary Tree Traversal',
-      difficulty: 'Hard',
+      difficulty: 'HARD',
     },
     {
       questionId: 'code_004',
       questionName: 'Array Sum',
-      difficulty: 'Easy',
+      difficulty: 'EASY',
     },
     {
       questionId: 'code_005',
       questionName: 'String Palindrome',
-      difficulty: 'Medium',
+      difficulty: 'MEDIUM',
     },
   ];
   developerstatus: devSummary[] = [
